@@ -4,7 +4,7 @@ import { Layout } from "react-admin";
 import { theme } from "./theme";
 import IframeEnv from "./iframeEnv";
 
-const ThemedCustomRouteNoLayout = (props) => {
+const EnvView = (props) => {
   return (
     <ThemeProvider theme={theme}>
     <Layout {...props} theme={theme}>
@@ -14,4 +14,4 @@ const ThemedCustomRouteNoLayout = (props) => {
   );
 };
 
-export default ThemedCustomRouteNoLayout;
+export default EnvView;

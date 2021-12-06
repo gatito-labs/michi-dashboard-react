@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Button from '@material-ui/core/Button';
 import { Card, CardContent, CardHeader } from '@material-ui/core';
-import { Redirect } from 'react-router'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
-const FunctionalComponent=()=>{
+const RoboticsEnvSelector=()=>{
     const[server_status , setServerStatus]=useState(false);
     const[started, setStarted] = useState(false);
     const[clicked, setClicked] = useState(false);
-    const[stopping_server, setStoppingServer] = useState(false);
-    const[spawning_status, setSpawningStatus] = useState(0);
     const[clicked_stop, setClickedStop] = useState(false);
     const[progress_data, setProgressData] = useState('');
     const ctrl = new AbortController();
@@ -113,4 +110,4 @@ const FunctionalComponent=()=>{
 };
  
  
-export default FunctionalComponent;
+export default RoboticsEnvSelector;
