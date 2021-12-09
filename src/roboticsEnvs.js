@@ -16,7 +16,7 @@ const RoboticsEnvSelector=()=>{
         try {
             const response = await fetch(url, {
                 method:'GET',
-                'headers': {'Authorization': 'token '}
+                'headers': {'Authorization': 'token 198662d000ea4178b65484b170d14aaf'}
             });
             const json = await response.json();
             //console.log(json.servers[''].ready);
@@ -43,7 +43,7 @@ const RoboticsEnvSelector=()=>{
         fetch('https://app.gatitolabs.cl/hub/api/users/dremiam@gmail.com/server', {
             // content-type header should not be specified!
             method: 'DELETE',
-            'headers':{'Authorization': 'token'}
+            'headers':{'Authorization': 'token 198662d000ea4178b65484b170d14aaf'}
           })
             .then(response => console.log(response))
             .then(success => {
@@ -61,14 +61,14 @@ const RoboticsEnvSelector=()=>{
         fetch('https://app.gatitolabs.cl/hub/api/users/dremiam@gmail.com/server', {
             // content-type header should not be specified!
             method: 'POST',
-            'headers':{'Authorization': 'token'}
+            'headers':{'Authorization': 'token 198662d000ea4178b65484b170d14aaf'}
           })
             .then(response => {
               console.log(response);
               fetchEventSource('https://app.gatitolabs.cl/hub/api/users/dremiam@gmail.com/server/progress', {
                 method: 'GET',
                 headers: {
-                  'Authorization': 'token',
+                  'Authorization': 'token 198662d000ea4178b65484b170d14aaf',
                 },
                 signal: ctrl.signal,
                 onmessage(msg) {
