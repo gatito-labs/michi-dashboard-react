@@ -23,7 +23,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 // import InboxIcon from '@mui/icons-material/MoveToInbox';
-
+import { useAuth0 } from "@auth0/auth0-react";
+import LogginButton from "../../pages/Login/LogginButton";
+import { Typography } from "@mui/material";
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -93,10 +95,10 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Layout(props) {
-  const theme = useTheme();
+  const { user, isAuthenticated, logout } = useAuth0();
 
+  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleDrawerOpen = () => {
@@ -116,26 +118,30 @@ export default function Layout(props) {
   };
 
   const handleLogout = () => {
-    setAuth(false);
+    logout({ returnTo: window.location.origin });
   };
 
+  console.log(user);
+  console.log(isAuthenticated);
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: "36px",
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
+          {isAuthenticated && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: "36px",
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
 
           <div style={{ flexGrow: 1 }}>
             <img
@@ -147,82 +153,97 @@ export default function Layout(props) {
              GatitoLabs
           </Typography> */}
           </div>
-          {auth && (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>
-                  <IconButton>
-                    <AccountCircle />
-                  </IconButton>
-                  Mi Cuenta
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                  <IconButton>
-                    <LogoutIcon />
-                  </IconButton>
-                  Cerrar Sesión
-                </MenuItem>
-              </Menu>
-            </div>
+
+          {isAuthenticated ? (
+            <React.Fragment>
+              <div>
+                <Typography>
+                  {user.nickname} - {user.email}
+                </Typography>
+              </div>
+
+              <div>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <IconButton>
+                      <AccountCircle />
+                    </IconButton>
+                    Mi Cuenta
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>
+                    <IconButton>
+                      <LogoutIcon />
+                    </IconButton>
+                    Cerrar Sesión
+                  </MenuItem>
+                </Menu>
+              </div>
+            </React.Fragment>
+          ) : (
+            <LogginButton />
           )}
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          <ListItemButton component={Link} to="/simulator">
-            <ListItemIcon>
-              <SmartToyIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Simulador"} />
-          </ListItemButton>
 
-          <ListItemButton component={Link} to="/dashboard">
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Mis Ambientes"} />
-          </ListItemButton>
-        </List>
+      {isAuthenticated && (
+        <Drawer variant="permanent" open={open}>
+          <DrawerHeader>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "rtl" ? (
+                <ChevronRightIcon />
+              ) : (
+                <ChevronLeftIcon />
+              )}
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <List>
+            <ListItemButton component={Link} to="/simulator">
+              <ListItemIcon>
+                <SmartToyIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Simulador"} />
+            </ListItemButton>
 
-        <Divider />
-        {/* <List>
+            <ListItemButton component={Link} to="/dashboard">
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Mis Ambientes"} />
+            </ListItemButton>
+          </List>
+
+          <Divider />
+          {/* <List>
           
         </List> */}
-      </Drawer>
+        </Drawer>
+      )}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         {props.children}
