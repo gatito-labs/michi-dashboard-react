@@ -11,24 +11,18 @@ export default function Home() {
   const { isAuthenticated } = useAuth0();
 
   return (
-    <div>
-      <div>
-        <Layout>
-          {isAuthenticated ? (
-            <Routes>
-              <React.Fragment>
-                <Route exact path="/dashboard" element={<Dashboard />} />
-                <Route exact path="/simulator" element={<IframeEnv />} />
-                <Route path="/" element={<Navigate to="/dashboard" />} />
-              </React.Fragment>
-            </Routes>
-          ) : (
-            <Typography>
-              Debes Ingresar para acceder a este contenido
-            </Typography>
-          )}
-        </Layout>
-      </div>
-    </div>
+    <Layout>
+      {isAuthenticated ? (
+        <Routes>
+          <React.Fragment>
+            <Route exact path="/dashboard" element={<Dashboard />} />
+            <Route exact path="/simulator" element={<IframeEnv />} />
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+          </React.Fragment>
+        </Routes>
+      ) : (
+        <Typography>Debes Ingresar para acceder a este contenido</Typography>
+      )}
+    </Layout>
   );
 }

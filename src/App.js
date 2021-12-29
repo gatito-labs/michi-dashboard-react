@@ -12,7 +12,7 @@ function App() {
   const theme = useTheme();
 
   return (
-    <div className="App">
+    <div className="App" style={{position: "absolute", height: "100%", width:"100%"}}>
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <Routes>

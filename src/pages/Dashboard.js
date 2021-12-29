@@ -128,7 +128,7 @@ const Dashboard = () => {
   // }, [started]);
 
   return (
-    <React.Fragment>
+    <div style={{padding: "1em"}}>
       <Slide
         direction="right"
         in={started && !serverReady}
@@ -205,7 +205,7 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       )}
-    </React.Fragment>
+    </div>
   );
 };
 

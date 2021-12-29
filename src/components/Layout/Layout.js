@@ -14,6 +14,8 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -25,7 +27,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 // import InboxIcon from '@mui/icons-material/MoveToInbox';
 import { useAuth0 } from "@auth0/auth0-react";
 import LogginButton from "../../pages/Login/LogginButton";
-import { Typography } from "@mui/material";
+
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -43,9 +45,9 @@ const closedMixin = (theme) => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: `calc(${theme.spacing(6)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(9)} + 1px)`,
+    width: `calc(${theme.spacing(7)} + 1px)`,
   },
 });
 
@@ -124,7 +126,7 @@ export default function Layout(props) {
   console.log(user);
   console.log(isAuthenticated);
   return (
-    <Box sx={{ display: "flex", flex:"1"}}>
+    <Box sx={{ display: "flex", flex:"1", height:"100%"}}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -245,10 +247,12 @@ export default function Layout(props) {
         </Drawer>
       )}
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3, height: "100%"}}>
-        <DrawerHeader />
-        {props.children}
-      </Box>
+      <Grid container direction={"column"} component="main" sx={{width: "100%", height:"100%"}}>
+        <Grid item component={DrawerHeader} />
+        <Grid item component={'div'} sx={{width: "100%", flexGrow:1}}>
+          {props.children}
+        </Grid>
+      </Grid>
     </Box>
   );
 }
