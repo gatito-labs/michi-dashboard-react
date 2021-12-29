@@ -1,14 +1,13 @@
 // import * as React from "react";
 import React, { useState } from "react";
 
-
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
-import CardActionArea from '@mui/material/CardActionArea';
+import CardActionArea from "@mui/material/CardActionArea";
 import Collapse from "@mui/material/Collapse";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
@@ -31,21 +30,20 @@ const EnvCard = (props) => {
     setExpanded(!expanded);
   };
 
-  const { envTitle, envImage, expandedContent } = props;
+  const { envTitle, envImage, expandedContent, summaryContent, start } = props;
 
   return (
     <Card>
-      <CardActionArea onClick={handleExpandClick}
->
-      <CardHeader title={envTitle} />
-      <CardMedia
-        component="img"
-        height="194"
-        image={envImage}
-        // alt=""
-      />
+      <CardActionArea onClick={handleExpandClick}>
+        <CardHeader title={envTitle} />
+        <CardMedia
+          component="img"
+          height="194"
+          image={envImage}
+          // alt=""
+        />
       </CardActionArea>
-      {/* <CardContent>Lorem ipsum sic dolor amet...</CardContent> */}
+      <CardContent> {summaryContent} </CardContent>
       <CardActions disableSpacing>
         <ExpandMore
           expand={expanded}
@@ -60,10 +58,16 @@ const EnvCard = (props) => {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>{expandedContent}</CardContent>
         <CardActions disableSpacing>
-            <Button variant="contained" color="success" style={{marginLeft: "auto"}}>Iniciar</Button>
+          <Button
+            variant="contained"
+            color="success"
+            style={{ marginLeft: "auto" }}
+            onClick={() => start(envTitle)}
+          >
+            Iniciar
+          </Button>
         </CardActions>
       </Collapse>
-      
     </Card>
   );
 };

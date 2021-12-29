@@ -124,7 +124,7 @@ export default function Layout(props) {
   console.log(user);
   console.log(isAuthenticated);
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", flex:"1"}}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -244,7 +244,8 @@ export default function Layout(props) {
         </List> */}
         </Drawer>
       )}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+
+      <Box component="main" sx={{ flexGrow: 1, p: 3, height: "100%"}}>
         <DrawerHeader />
         {props.children}
       </Box>
