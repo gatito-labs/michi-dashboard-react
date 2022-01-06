@@ -28,7 +28,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogginButton from "../../pages/Login/LogginButton";
 
-const drawerWidth = 240;
+const drawerWidth = 220;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -45,11 +45,8 @@ const closedMixin = (theme) => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(6)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(7)} + 1px)`,
-  },
-});
+  width: 0
+})
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -125,6 +122,7 @@ export default function Layout(props) {
 
   console.log(user);
   console.log(isAuthenticated);
+  
   return (
     <Box sx={{ display: "flex", flex:"1", height:"100%"}}>
       <CssBaseline />

@@ -1,4 +1,3 @@
-// import * as React from "react";
 import React, { useState } from "react";
 
 import Button from "@mui/material/Button";
@@ -8,22 +7,23 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
 import CardActionArea from "@mui/material/CardActionArea";
-import Collapse from "@mui/material/Collapse";
-import { styled } from "@mui/material/styles";
-import IconButton from "@mui/material/IconButton";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Typography from "@mui/material/Typography";
+// import Collapse from "@mui/material/Collapse";
+// import { styled } from "@mui/material/styles";
+// import IconButton from "@mui/material/IconButton";
+// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Link } from "react-router-dom";
 
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
+// const ExpandMore = styled((props) => {
+//   const { expand, ...other } = props;
+//   return <IconButton {...other} />;
+// })(({ theme, expand }) => ({
+//   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
+//   marginLeft: "auto",
+//   transition: theme.transitions.create("transform", {
+//     duration: theme.transitions.duration.shortest,
+//   }),
+// }));
 
 const EnvCard = (props) => {
   const [expanded, setExpanded] = useState(false);
@@ -34,13 +34,11 @@ const EnvCard = (props) => {
   const {
     envTitle,
     envImage,
-    expandedContent,
     summaryContent,
     buttonDisabled,
     active,
     startServer,
     stopServer,
-    goToServer,
   } = props;
 
   return (
@@ -51,10 +49,12 @@ const EnvCard = (props) => {
           component="img"
           height="194"
           image={envImage}
-          // alt=""
+          alt="Imagen del ambiente de robótica"
         />
 
-        <CardContent> {summaryContent} </CardContent>
+        <CardContent>
+          <Typography>{summaryContent}</Typography>
+        </CardContent>
       </CardActionArea>
 
       <CardActions disableSpacing>
@@ -71,12 +71,12 @@ const EnvCard = (props) => {
         )}
 
         {active && (
-          <div style={{ marginLeft: "auto"}}>
+          <div style={{ marginLeft: "auto" }}>
             <Link to={"/simulator"}>
               <Button
                 variant="contained"
                 color="success"
-                style={{marginRight: "0.5em"}}
+                style={{ marginRight: "0.5em" }}
                 disabled={buttonDisabled}
               >
                 Ir

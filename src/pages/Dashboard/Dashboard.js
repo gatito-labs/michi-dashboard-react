@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 
 import EnvCard from "./envCard";
 import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
@@ -16,30 +15,21 @@ const SimulationEnviroments = {
   "introduccion-a-la-robotica": {
     name: "introduccion-a-la-robotica",
     title: "Introducción a la Robótica",
-    summaryContent: (
-      <Typography>Aprende a crear un robot seguidor de línea</Typography>
-    ),
-    expandedContent: <Typography> Extra Extra ... </Typography>,
+    summaryContent: "Aprende a crear un robot seguidor de línea",
     image: `${process.env.PUBLIC_URL}/static/cards/seguidor.png`,
   },
 
   "brazo-robot": {
     title: "Brazo Robot",
     name: "brazo-robot",
-    summaryContent: <Typography>Experimenta con un brazo robot</Typography>,
-    expandedContent: <Typography> Extra Extra ... </Typography>,
+    summaryContent: "Experimenta con un brazo robot",
     image: `${process.env.PUBLIC_URL}/static/cards/brazo.png`,
   },
 
   "robotica-avanzada": {
     title: "Robótica Avanzada",
     name: "robotica-avanzada",
-    summaryContent: (
-      <Typography>
-        Aprende a crear un mapa a partir de mediciones de rango
-      </Typography>
-    ),
-    expandedContent: <Typography> Extra Extra ... </Typography>,
+    summaryContent: "Aprende a crear un mapa a partir de mediciones de rango",
     image: `${process.env.PUBLIC_URL}/static/cards/rosbot.png`,
   },
 };
@@ -206,7 +196,7 @@ const Dashboard = () => {
               <CircularProgress />
             </Grid>
           </Grid>
-          <Divider sx={{ marginBottom: "1em" }} />
+          <Divider sx={{ marginBottom: "2em" }} />
         </div>
       </Slide>
 
@@ -229,7 +219,7 @@ const Dashboard = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Divider sx={{ marginBottom: "1em" }} />
+          <Divider sx={{ marginBottom: "2em" }} />
         </div>
       </Slide>
 
@@ -246,7 +236,7 @@ const Dashboard = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Divider sx={{ marginBottom: "1em" }} />
+          <Divider sx={{ marginBottom: "2em" }} />
         </div>
       </Slide>
 
