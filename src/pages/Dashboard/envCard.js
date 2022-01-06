@@ -12,6 +12,7 @@ import Collapse from "@mui/material/Collapse";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Link } from "react-router-dom";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -30,7 +31,17 @@ const EnvCard = (props) => {
     setExpanded(!expanded);
   };
 
-  const { envTitle, envImage, expandedContent, summaryContent, start } = props;
+  const {
+    envTitle,
+    envImage,
+    expandedContent,
+    summaryContent,
+    buttonDisabled,
+    active,
+    startServer,
+    stopServer,
+    goToServer,
+  } = props;
 
   return (
     <Card>
@@ -42,9 +53,50 @@ const EnvCard = (props) => {
           image={envImage}
           // alt=""
         />
+
+        <CardContent> {summaryContent} </CardContent>
       </CardActionArea>
-      <CardContent> {summaryContent} </CardContent>
+
       <CardActions disableSpacing>
+        {!active && (
+          <Button
+            variant="contained"
+            color="success"
+            style={{ marginLeft: "auto" }}
+            onClick={() => startServer(envTitle)}
+            disabled={buttonDisabled}
+          >
+            Iniciar
+          </Button>
+        )}
+
+        {active && (
+          <div style={{ marginLeft: "auto"}}>
+            <Link to={"/simulator"}>
+              <Button
+                variant="contained"
+                color="success"
+                style={{marginRight: "0.5em"}}
+                disabled={buttonDisabled}
+              >
+                Ir
+              </Button>
+            </Link>
+
+            <Button
+              variant="contained"
+              color="error"
+              style={{ marginLeft: "auto" }}
+              onClick={stopServer}
+              disabled={buttonDisabled}
+            >
+              Detener
+            </Button>
+          </div>
+        )}
+      </CardActions>
+
+      {/* <CardActions disableSpacing>
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
@@ -57,17 +109,7 @@ const EnvCard = (props) => {
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>{expandedContent}</CardContent>
-        <CardActions disableSpacing>
-          <Button
-            variant="contained"
-            color="success"
-            style={{ marginLeft: "auto" }}
-            onClick={() => start(envTitle)}
-          >
-            Iniciar
-          </Button>
-        </CardActions>
-      </Collapse>
+      </Collapse> */}
     </Card>
   );
 };
