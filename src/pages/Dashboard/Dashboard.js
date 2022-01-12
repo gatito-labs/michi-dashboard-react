@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 
 import EnvCard from "./envCard";
+import ActiveCard from "./activeCard";
+
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -178,7 +180,6 @@ const Dashboard = () => {
         setServerStarting(false);
         setSelectedEnv(null);
         setCurrentEnviroment(null);
-
         ctrl.abort();
       })
       .catch((error) => console.log(error));
@@ -196,7 +197,6 @@ const Dashboard = () => {
               <CircularProgress />
             </Grid>
           </Grid>
-          <Divider sx={{ marginBottom: "2em" }} />
         </div>
       </Slide>
 
@@ -219,7 +219,6 @@ const Dashboard = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Divider sx={{ marginBottom: "2em" }} />
         </div>
       </Slide>
 
@@ -236,49 +235,57 @@ const Dashboard = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Divider sx={{ marginBottom: "2em" }} />
         </div>
       </Slide>
-
-      <Grid container spacing={2}>
-        {(serverReady || serverStarting) && currentEnviroment ? (
-          <Grid item xs={12} sm={6} md={4} lg={3}>
-            <EnvCard
-              active={true}
-              envTitle={SimulationEnviroments[currentEnviroment].title}
-              summaryContent={
-                SimulationEnviroments[currentEnviroment].summaryContent
-              }
-              expandedContent={
-                SimulationEnviroments[currentEnviroment].expandedContent
-              }
-              envImage={SimulationEnviroments[currentEnviroment].image}
-              buttonDisabled={loading || serverStarting || serverStopping}
-              stopServer={() => stopServer()}
-            />
+      <Slide
+        direction="right"
+        in={serverReady && currentEnviroment !== null && !serverStopping}
+        mountOnEnter
+        unmountOnExit
+      >
+        <Grid container>
+          <Grid item xl={6} md={8} xs={12}>
+            {currentEnviroment !== null && (
+              <ActiveCard
+                active={serverReady || serverStarting}
+                envTitle={SimulationEnviroments[currentEnviroment].title}
+                summaryContent={
+                  SimulationEnviroments[currentEnviroment].summaryContent
+                }
+                expandedContent={
+                  SimulationEnviroments[currentEnviroment].expandedContent
+                }
+                envImage={SimulationEnviroments[currentEnviroment].image}
+                buttonDisabled={loading || serverStarting || serverStopping}
+                stopServer={() => stopServer()}
+              />
+            )}
           </Grid>
-        ) : (
-          " "
-        )}
+        </Grid>
+      </Slide>
+      {(loading || serverReady || serverStarting || serverStopping) && (
+        <Divider sx={{ margin: "2em" }} />
+      )}
 
+      <Grid container spacing={2} sx={{ alignItems: "stretch" }}>
         {Object.values(SimulationEnviroments).map((env) => {
-          if (currentEnviroment !== env.name) {
-            return (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={env.title}>
-                <EnvCard
-                  active={env.name === currentEnviroment}
-                  envTitle={env.title}
-                  summaryContent={env.summaryContent}
-                  expandedContent={env.expandedContent}
-                  envImage={env.image}
-                  buttonDisabled={loading || serverStarting || serverReady}
-                  startServer={() => startServer(env)}
-                />
-              </Grid>
-            );
-          } else {
-            return "";
-          }
+          // if (currentEnviroment !== env.name) {
+          return (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={env.title}>
+              <EnvCard
+                active={env.name === currentEnviroment}
+                envTitle={env.title}
+                summaryContent={env.summaryContent}
+                expandedContent={env.expandedContent}
+                envImage={env.image}
+                buttonDisabled={loading || serverStarting || serverReady}
+                startServer={() => startServer(env)}
+              />
+            </Grid>
+          );
+          // } else {
+          // return "";
+          // }
         })}
       </Grid>
     </div>

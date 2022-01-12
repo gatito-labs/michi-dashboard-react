@@ -189,12 +189,12 @@ export default function Layout(props) {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleClose}>
+                  {/* <MenuItem onClick={handleClose}>
                     <IconButton>
                       <AccountCircle />
                     </IconButton>
                     Mi Cuenta
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem onClick={handleLogout}>
                     <IconButton>
                       <LogoutIcon />

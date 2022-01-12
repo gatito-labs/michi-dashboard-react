@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -8,22 +9,7 @@ import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
 import CardActionArea from "@mui/material/CardActionArea";
 import Typography from "@mui/material/Typography";
-// import Collapse from "@mui/material/Collapse";
-// import { styled } from "@mui/material/styles";
-// import IconButton from "@mui/material/IconButton";
-// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Link } from "react-router-dom";
-
-// const ExpandMore = styled((props) => {
-//   const { expand, ...other } = props;
-//   return <IconButton {...other} />;
-// })(({ theme, expand }) => ({
-//   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-//   marginLeft: "auto",
-//   transition: theme.transitions.create("transform", {
-//     duration: theme.transitions.duration.shortest,
-//   }),
-// }));
+import Tooltip from "@mui/material/Tooltip";
 
 const EnvCard = (props) => {
   const [expanded, setExpanded] = useState(false);
@@ -31,85 +17,59 @@ const EnvCard = (props) => {
     setExpanded(!expanded);
   };
 
-  const {
-    envTitle,
-    envImage,
-    summaryContent,
-    buttonDisabled,
-    active,
-    startServer,
-    stopServer,
-  } = props;
+  const { envTitle, envImage, summaryContent, buttonDisabled, startServer } =
+    props;
 
   return (
-    <Card>
-      <CardActionArea onClick={handleExpandClick}>
-        <CardHeader title={envTitle} />
-        <CardMedia
-          component="img"
-          height="194"
-          image={envImage}
-          alt="Imagen del ambiente de robótica"
-        />
+    <Card sx={{ height: "100%" }}>
+      <CardHeader title={envTitle} />
 
-        <CardContent>
-          <Typography>{summaryContent}</Typography>
-        </CardContent>
-      </CardActionArea>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <CardActionArea onClick={handleExpandClick}>
+          <Box>
+            <CardMedia
+              component="img"
+              height="194"
+              image={envImage}
+              alt="Imagen del ambiente de robótica"
+            />
 
-      <CardActions disableSpacing>
-        {!active && (
-          <Button
-            variant="contained"
-            color="success"
-            style={{ marginLeft: "auto" }}
-            onClick={() => startServer(envTitle)}
-            disabled={buttonDisabled}
-          >
-            Iniciar
-          </Button>
-        )}
+            <CardContent>
+              <Typography>{summaryContent}</Typography>
+            </CardContent>
+          </Box>
+        </CardActionArea>
 
-        {active && (
-          <div style={{ marginLeft: "auto" }}>
-            <Link to={"/simulator"}>
-              <Button
-                variant="contained"
-                color="success"
-                style={{ marginRight: "0.5em" }}
-                disabled={buttonDisabled}
-              >
-                Ir
-              </Button>
-            </Link>
-
-            <Button
-              variant="contained"
-              color="error"
-              style={{ marginLeft: "auto" }}
-              onClick={stopServer}
-              disabled={buttonDisabled}
+        <Box>
+          <CardActions disableSpacing>
+            <Tooltip
+              title={
+                buttonDisabled
+                  ? "Debes detener el ambiente actual para iniciar uno nuevo."
+                  : "Iniciar ambiente."
+              }
             >
-              Detener
-            </Button>
-          </div>
-        )}
-      </CardActions>
-
-      {/* <CardActions disableSpacing>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
-      </CardActions>
-
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>{expandedContent}</CardContent>
-      </Collapse> */}
+              <span>
+                <Button
+                  variant="contained"
+                  color="success"
+                  style={{ marginLeft: "auto" }}
+                  onClick={() => startServer(envTitle)}
+                  disabled={buttonDisabled}
+                >
+                  Iniciar
+                </Button>
+              </span>
+            </Tooltip>
+          </CardActions>
+        </Box>
+      </Box>
     </Card>
   );
 };
