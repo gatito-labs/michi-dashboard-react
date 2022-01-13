@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -22,17 +22,18 @@ const EnvCard = (props) => {
 
   return (
     <Card sx={{ height: "100%" }}>
-      <CardHeader title={envTitle} />
-
-      <Box
+      <Grid
+        container
+        direction="column"
         sx={{
-          display: "flex",
-          flexDirection: "column",
           justifyContent: "space-between",
+          height: "100%",
         }}
       >
-        <CardActionArea onClick={handleExpandClick}>
-          <Box>
+        <CardHeader title={envTitle} />
+
+        <Grid item>
+          <CardActionArea onClick={handleExpandClick}>
             <CardMedia
               component="img"
               height="194"
@@ -43,10 +44,10 @@ const EnvCard = (props) => {
             <CardContent>
               <Typography>{summaryContent}</Typography>
             </CardContent>
-          </Box>
-        </CardActionArea>
+          </CardActionArea>
+        </Grid>
 
-        <Box>
+        <Grid item>
           <CardActions disableSpacing>
             <Tooltip
               title={
@@ -68,8 +69,8 @@ const EnvCard = (props) => {
               </span>
             </Tooltip>
           </CardActions>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </Card>
   );
 };
