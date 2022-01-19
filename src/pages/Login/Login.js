@@ -1,6 +1,5 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { withStyles, createStyles } from "@mui/styles";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import Button from "@mui/material/Button";
@@ -8,16 +7,7 @@ import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-
-// const styles = ({ spacing }) =>
-//   createStyles({
-//     button: {
-//       width: "100%",
-//     },
-//     icon: {
-//       marginRight: spacing.unit,
-//     },
-//   });
+import Typography from "@mui/material/Typography";
 
 const LoginButton = () => {
   const { isAuthenticated, loginWithRedirect } = useAuth0();
@@ -52,7 +42,7 @@ export const LoginLanding = () => {
           height: "100%",
           justifyContent: "flex-start",
           alignItems: "center",
-          padding: "3em"
+          padding: "3em",
         }}
       >
         {isLoading ? (
@@ -75,6 +65,40 @@ export const LoginLanding = () => {
       </Grid>
     );
   }
+};
+
+export const NotLoggedPage = () => {
+  const { isLoading } = useAuth0();
+  return (
+    <Grid
+      container
+      direction="column"
+      sx={{
+        height: "100%",
+        width: "100%",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        padding: "3em",
+      }}
+    >
+      {isLoading ? (
+        <Grid item>
+          <CircularProgress />
+        </Grid>
+      ) : (
+        <React.Fragment>
+          <Grid item sx={{marginBottom: "3em"}}>
+            <Typography>
+              Debes Ingresar para acceder a este contenido
+            </Typography>
+          </Grid>
+          <Grid>
+            <LoginButton />
+          </Grid>
+        </React.Fragment>
+      )}
+    </Grid>
+  );
 };
 
 export default LoginButton;

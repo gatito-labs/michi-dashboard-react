@@ -5,11 +5,13 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
-import { LoginLanding } from "./pages/Login/Loggin";
+import { LoginLanding, NotLoggedPage } from "./pages/Login/Login";
 import Layout from "./components/Layout/Layout";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
   const theme = useTheme();
+  const { isAuthenticated } = useAuth0();
 
   return (
     <div
@@ -27,7 +29,19 @@ function App() {
               </Layout>
             }
           />
-          <Route path="/*" element={<Home />} /> :
+
+          <Route
+            path="/*"
+            element={
+              isAuthenticated ? (
+                <Home />
+              ) : (
+                <Layout>
+                  <NotLoggedPage />
+                </Layout>
+              )
+            }
+          />
         </Routes>
       </ThemeProvider>
     </div>
