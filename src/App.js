@@ -1,37 +1,37 @@
 // in src/App.js
 import * as React from "react";
-import { Admin, Resource} from 'react-admin';
-import { Route } from 'react-router-dom';
-import { PostList, PostEdit, PostCreate } from "./posts";
-import Dashboard from "./Dashboard"
-import authProvider from './utils/authProvider'
-import jsonServerProvider from 'ra-data-json-server';
-import RoboticsEnvSelector from "./roboticsEnvs";
-import EnvView from "./envMain";
-import PostIcon from '@material-ui/icons/Book';
+import { Routes, Route } from "react-router-dom";
 
-import loginPage from "./login";
+import Home from "./pages/Home";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider, useTheme } from "@mui/material/styles";
+import { LoginLanding } from "./pages/Login/Loggin";
+import Layout from "./components/Layout/Layout";
 
-// Dummy API para el tutorial de React-Admin
-// Se deja por ahora ya que es necesaria una pagina <Resources> para que react-admin funcione
-const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
+function App() {
+  const theme = useTheme();
 
-const App = () => (
-    <Admin dashboard={Dashboard} authProvider={authProvider} dataProvider={dataProvider} loginPage={loginPage}
-        customRoutes={[
-            <Route
-                path="/selector"
-                component={RoboticsEnvSelector}
-            />,
-            <Route
-                path="/env"
-                component={(props) => <EnvView {...props} />}
-                noLayout
-            />
-        ]}
+  return (
+    <div
+      className="App"
+      style={{ position: "absolute", height: "100%", width: "100%" }}
     >
-        <Resource name="posts" list={PostList} edit={PostEdit} create={PostCreate} icon={PostIcon}/>
-    </Admin>
-);
+      <CssBaseline />
+      <ThemeProvider theme={theme}>
+        <Routes>
+          <Route
+            path="/login/success"
+            element={
+              <Layout>
+                <LoginLanding />
+              </Layout>
+            }
+          />
+          <Route path="/*" element={<Home />} /> :
+        </Routes>
+      </ThemeProvider>
+    </div>
+  );
+}
 
 export default App;
