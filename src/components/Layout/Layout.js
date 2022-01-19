@@ -26,7 +26,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 // import InboxIcon from '@mui/icons-material/MoveToInbox';
 import { useAuth0 } from "@auth0/auth0-react";
-import LogginButton from "../../pages/Login/LogginButton";
+import LogginButton from "../../pages/Login/Loggin";
 
 const drawerWidth = 220;
 
