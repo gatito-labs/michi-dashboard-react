@@ -14,8 +14,8 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const SimulationEnviroments = {
-  "introduccion-a-la-robotica": {
-    name: "introduccion-a-la-robotica",
+  "taller-de-robotica": {
+    name: "taller-de-robotica",
     title: "Introducción a la Robótica",
     summaryContent: "Aprende a crear un robot seguidor de línea",
     image: `${process.env.PUBLIC_URL}/static/cards/seguidor.png`,
@@ -61,32 +61,41 @@ function CircularProgressWithLabel(props) {
 }
 
 const Dashboard = () => {
-  const { user } = useAuth0();
-  const [currentEnviroment, setCurrentEnviroment] = useState(null);
+  const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
 
+  const [token, setToken] = useState();
+  const [currentEnviroment, setCurrentEnviroment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedEnv, setSelectedEnv] = useState(null);
   const [serverReady, setServerReady] = useState(null);
   const [serverStarting, setServerStarting] = useState(false);
   const [serverStopping, setServerStopping] = useState(false);
-
   const [progress, setProgress] = useState(0);
-  // const [progressData, setProgressData] = useState(null);
 
   const ctrl = useMemo(() => new AbortController(), []);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      getIdTokenClaims().then((res) => {
+        let _token = res.__raw;
+        console.log(_token);
+        setToken(_token);
+      });
+    }
+  }, [isAuthenticated, getIdTokenClaims]);
+
   const startServer = useCallback(
-    (env) => {
+    async (env) => {
       // setClicked(true);
       setServerStarting(true);
       setSelectedEnv(env);
       setCurrentEnviroment(env.name);
       setProgress(0);
 
-      fetch(`https://app.gatitolabs.cl/hub/api/users/${user.email}/server`, {
+      fetch(`${process.env.REACT_APP_API_DOMAIN}${user.email}/server`, {
         // content-type header should not be specified!
         method: "POST",
-        headers: { Authorization: `token ${process.env.REACT_APP_TOKEN}` },
+        headers: { Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           profile: env.name,
         }),
@@ -95,18 +104,14 @@ const Dashboard = () => {
           console.log(response);
 
           fetchEventSource(
-            `https://app.gatitolabs.cl/hub/api/users/${user.email}/server/progress`,
+            `${process.env.REACT_APP_API_DOMAIN}${user.email}/server/progress`,
             {
               method: "GET",
               headers: {
-                Authorization: `token ${process.env.REACT_APP_TOKEN}`,
+                Authorization: `Bearer ${token}`,
               },
               signal: ctrl.signal,
               onmessage(msg) {
-                //setServerStatus(json.ready);
-                //setSpawningStatus(json.progress);
-                //console.log(msg.data);
-                //var evt = JSON.parse(msg.data);
                 console.log(msg.data);
                 var progressData = msg.data;
 
@@ -134,43 +139,47 @@ const Dashboard = () => {
           // setServerLoading(false);
         });
     },
-    [user.email, ctrl]
+    [user.email, ctrl, token]
   );
 
   const getServerStatus = useCallback(async () => {
-    const url = `https://app.gatitolabs.cl/hub/api/users/${user.email}`;
+    const url = `${process.env.REACT_APP_API_DOMAIN}${user.email}`;
 
     try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: { Authorization: `token ${process.env.REACT_APP_TOKEN}` },
-      });
-      const json = await response.json();
-      console.log(json);
+      if (token) {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-      setLoading(false);
-      setServerReady(json.server ? json.servers[""].ready : false);
-      setCurrentEnviroment(
-        json.server && json.servers[""]
-          ? json.servers[""].user_options.profile
-          : null
-      );
+        const json = await response.json();
+        console.log(json);
+
+        setLoading(false);
+        setServerReady(json.server ? json.servers[""].ready : false);
+        setCurrentEnviroment(
+          json.server && json.servers[""]
+            ? json.servers[""].user_options.profile
+            : null
+        );
+      }
     } catch (error) {
       console.log("error", error);
     }
-  }, [user]);
+  }, [user, token]);
 
   useEffect(() => {
     setLoading(true);
     getServerStatus();
   }, [setLoading, getServerStatus]);
 
-  const stopServer = useCallback(() => {
+  const stopServer = useCallback(async () => {
     setServerStopping(true);
-    fetch(`https://app.gatitolabs.cl/hub/api/users/${user.email}/server`, {
+
+    fetch(`${process.env.REACT_APP_API_DOMAIN}${user.email}/server`, {
       // content-type header should not be specified!
       method: "DELETE",
-      headers: { Authorization: `token ${process.env.REACT_APP_TOKEN}` },
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => console.log(response))
       .then(() => {
@@ -183,7 +192,7 @@ const Dashboard = () => {
         ctrl.abort();
       })
       .catch((error) => console.log(error));
-  }, [user.email, ctrl]);
+  }, [user.email, ctrl, token]);
 
   return (
     <div style={{ padding: "1em" }}>
@@ -283,9 +292,6 @@ const Dashboard = () => {
               />
             </Grid>
           );
-          // } else {
-          // return "";
-          // }
         })}
       </Grid>
     </div>
