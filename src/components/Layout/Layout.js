@@ -26,7 +26,6 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 // import InboxIcon from '@mui/icons-material/MoveToInbox';
 import { useAuth0 } from "@auth0/auth0-react";
-import LogginButton from "../../pages/Login/Loggin";
 
 const drawerWidth = 220;
 
@@ -45,8 +44,8 @@ const closedMixin = (theme) => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: 0
-})
+  width: 0,
+});
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -122,9 +121,9 @@ export default function Layout(props) {
 
   console.log(user);
   console.log(isAuthenticated);
-  
+
   return (
-    <Box sx={{ display: "flex", flex:"1", height:"100%"}}>
+    <Box sx={{ display: "flex", flex: "1", height: "100%" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -189,12 +188,6 @@ export default function Layout(props) {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  {/* <MenuItem onClick={handleClose}>
-                    <IconButton>
-                      <AccountCircle />
-                    </IconButton>
-                    Mi Cuenta
-                  </MenuItem> */}
                   <MenuItem onClick={handleLogout}>
                     <IconButton>
                       <LogoutIcon />
@@ -205,7 +198,7 @@ export default function Layout(props) {
               </div>
             </React.Fragment>
           ) : (
-            <LogginButton />
+            <div />
           )}
         </Toolbar>
       </AppBar>
@@ -239,15 +232,17 @@ export default function Layout(props) {
           </List>
 
           <Divider />
-          {/* <List>
-          
-        </List> */}
         </Drawer>
       )}
 
-      <Grid container direction={"column"} component="main" sx={{width: "100%", height:"100%"}}>
+      <Grid
+        container
+        direction={"column"}
+        component="main"
+        sx={{ width: "100%", height: "100%" }}
+      >
         <Grid item component={DrawerHeader} />
-        <Grid item component={'div'} sx={{width: "100%", flexGrow:1}}>
+        <Grid item component={"div"} sx={{ width: "100%", flexGrow: 1 }}>
           {props.children}
         </Grid>
       </Grid>
