@@ -1,9 +1,7 @@
-// import * as React from "react";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Iframe from "react-iframe";
 import Alert from "@mui/material/Alert";
-// import AlertTitle from "@mui/material/AlertTitle";
 
 const IframeEnv = ({ user, loadingServerStatus, serverRunning }) => {
   if (loadingServerStatus || !serverRunning) {
