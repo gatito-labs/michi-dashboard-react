@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 
 import EnvCard from "./envCard";
 import ActiveCard from "./activeCard";
@@ -11,7 +11,6 @@ import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { useAuth0 } from "@auth0/auth0-react";
 
 const SimulationEnviroments = {
   "taller-de-robotica": {

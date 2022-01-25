@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import Dashboard from "./Dashboard/Dashboard";
-import IframeEnv from "./iframeEnv";
+import IframeEnv from "./Simulator/iframeEnv";
 import Layout from "../components/Layout/Layout";
 
 import { NotLoggedPage } from "./Login/Login";
