@@ -39,12 +39,15 @@ const openedMixin = (theme) => ({
 });
 
 const closedMixin = (theme) => ({
-  transition: theme.transitions.create("width", {
+  transition: theme.transitions.create(["width", "height"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: "hidden",
+
   width: 0,
+  height: 0,
+  margin: "none",
+  overflowX: "hidden",
 });
 
 const DrawerHeader = styled("div")(({ theme }) => ({

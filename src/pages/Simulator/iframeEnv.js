@@ -35,9 +35,10 @@ const IframeEnv = ({ user, loadingServerStatus, serverRunning }) => {
       <Iframe
         title="test"
         src={`https://app.gatitolabs.cl/user/${user.email}/`}
-        frameborder="0"
+        frameBorder="0"
         height="100%"
         width="100%"
+        sx={{border: "none"}}
       />
     );
   }
