@@ -122,9 +122,6 @@ export default function Layout(props) {
     logout({ returnTo: window.location.origin });
   };
 
-  console.log(user);
-  console.log(isAuthenticated);
-
   return (
     <Box sx={{ display: "flex", flex: "1", height: "100%" }}>
       <CssBaseline />

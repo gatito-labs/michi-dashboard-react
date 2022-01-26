@@ -20,7 +20,6 @@ export default function Home() {
     if (isAuthenticated) {
       getIdTokenClaims().then((res) => {
         let _token = res.__raw;
-        console.log(_token);
         setToken(_token);
       });
     }
@@ -37,7 +36,6 @@ export default function Home() {
         });
 
         const json = await response.json();
-        console.log(json);
 
         setLoadingServerStatus(false);
         setServerRunning(json.server ? json.servers[""].ready : false);
@@ -48,7 +46,7 @@ export default function Home() {
         );
       }
     } catch (error) {
-      console.log("error", error);
+      console.log(error);
     }
   }, [user, token]);
 

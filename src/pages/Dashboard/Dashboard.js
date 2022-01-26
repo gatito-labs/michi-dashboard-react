@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 
 import EnvCard from "./envCard";
 import ActiveCard from "./activeCard";
@@ -9,31 +9,7 @@ import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
-
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-
-const SimulationEnviroments = {
-  "taller-de-robotica": {
-    name: "taller-de-robotica",
-    title: "Introducción a la Robótica",
-    summaryContent: "Aprende a crear un robot seguidor de línea",
-    image: `${process.env.PUBLIC_URL}/static/cards/seguidor.png`,
-  },
-
-  "brazo-robot": {
-    title: "Brazo Robot",
-    name: "brazo-robot",
-    summaryContent: "Experimenta con un brazo robot",
-    image: `${process.env.PUBLIC_URL}/static/cards/brazo.png`,
-  },
-
-  "robotica-avanzada": {
-    title: "Robótica Avanzada",
-    name: "robotica-avanzada",
-    summaryContent: "Aprende a crear un mapa a partir de mediciones de rango",
-    image: `${process.env.PUBLIC_URL}/static/cards/rosbot.png`,
-  },
-};
 
 function CircularProgressWithLabel(props) {
   return (
@@ -72,11 +48,20 @@ const Dashboard = ({
   const [serverStarting, setServerStarting] = useState(false);
   const [serverStopping, setServerStopping] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [simulationEnviroments, setSimulationEnviroments] = useState(null);
+
   const ctrl = useMemo(() => new AbortController(), []);
+
+  useEffect(() => {
+    fetch("./enviroments.json").then((res) => {
+      res.json().then((envs) => {
+        setSimulationEnviroments(envs);
+      });
+    });
+  }, []);
 
   const startServer = useCallback(
     async (env) => {
-      // setClicked(true);
       setServerStarting(true);
       setSelectedEnv(env);
       setCurrentEnviroment(env.name);
@@ -90,9 +75,7 @@ const Dashboard = ({
           profile: env.name,
         }),
       })
-        .then((response) => {
-          console.log(response);
-
+        .then(() => {
           fetchEventSource(
             `${process.env.REACT_APP_API_DOMAIN}${user.email}/server/progress`,
             {
@@ -102,7 +85,6 @@ const Dashboard = ({
               },
               signal: ctrl.signal,
               onmessage(msg) {
-                console.log(msg.data);
                 var progressData = msg.data;
 
                 if (progressData && progressData !== "") {
@@ -140,7 +122,6 @@ const Dashboard = ({
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => console.log(response))
       .then(() => {
         // Do something with the successful response
         setServerStopping(false);
@@ -218,23 +199,25 @@ const Dashboard = ({
       >
         <Grid container>
           <Grid item xl={6} md={8} xs={12}>
-            {currentEnviroment !== null && (
-              <ActiveCard
-                active={serverRunning || serverStarting}
-                envTitle={SimulationEnviroments[currentEnviroment].title}
-                summaryContent={
-                  SimulationEnviroments[currentEnviroment].summaryContent
-                }
-                expandedContent={
-                  SimulationEnviroments[currentEnviroment].expandedContent
-                }
-                envImage={SimulationEnviroments[currentEnviroment].image}
-                buttonDisabled={
-                  loadingServerStatus || serverStarting || serverStopping
-                }
-                stopServer={() => stopServer()}
-              />
-            )}
+            {currentEnviroment !== null &&
+              simulationEnviroments !== null &&
+              simulationEnviroments[currentEnviroment] && (
+                <ActiveCard
+                  active={serverRunning || serverStarting}
+                  envTitle={simulationEnviroments[currentEnviroment].title}
+                  summaryContent={
+                    simulationEnviroments[currentEnviroment].summaryContent
+                  }
+                  expandedContent={
+                    simulationEnviroments[currentEnviroment].expandedContent
+                  }
+                  envImage={simulationEnviroments[currentEnviroment].image}
+                  buttonDisabled={
+                    loadingServerStatus || serverStarting || serverStopping
+                  }
+                  stopServer={() => stopServer()}
+                />
+              )}
           </Grid>
         </Grid>
       </Slide>
@@ -244,24 +227,25 @@ const Dashboard = ({
         serverStopping) && <Divider sx={{ margin: "2em" }} />}
 
       <Grid container spacing={2} sx={{ alignItems: "stretch" }}>
-        {Object.values(SimulationEnviroments).map((env) => {
-          // if (currentEnviroment !== env.name) {
-          return (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={env.title}>
-              <EnvCard
-                active={env.name === currentEnviroment}
-                envTitle={env.title}
-                summaryContent={env.summaryContent}
-                expandedContent={env.expandedContent}
-                envImage={env.image}
-                buttonDisabled={
-                  loadingServerStatus || serverStarting || serverRunning
-                }
-                startServer={() => startServer(env)}
-              />
-            </Grid>
-          );
-        })}
+        {simulationEnviroments &&
+          Object.values(simulationEnviroments).map((env) => {
+            // if (currentEnviroment !== env.name) {
+            return (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={env.title}>
+                <EnvCard
+                  active={env.name === currentEnviroment}
+                  envTitle={env.title}
+                  summaryContent={env.summaryContent}
+                  expandedContent={env.expandedContent}
+                  envImage={env.image}
+                  buttonDisabled={
+                    loadingServerStatus || serverStarting || serverRunning
+                  }
+                  startServer={() => startServer(env)}
+                />
+              </Grid>
+            );
+          })}
       </Grid>
     </div>
   );
