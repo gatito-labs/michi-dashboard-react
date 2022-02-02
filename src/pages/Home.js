@@ -35,15 +35,33 @@ export default function Home() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const json = await response.json();
+        if (response.status === 200) {
+          const json = await response.json();
 
-        setLoadingServerStatus(false);
-        setServerRunning(json.server ? json.servers[""].ready : false);
-        setCurrentEnviroment(
-          json.server && json.servers[""]
-            ? json.servers[""].user_options.profile
-            : null
-        );
+          setLoadingServerStatus(false);
+          setServerRunning(json.server ? json.servers[""].ready : false);
+          setCurrentEnviroment(
+            json.server && json.servers[""]
+              ? json.servers[""].user_options.profile
+              : null
+          );
+        } else if (response.status === 404) {
+          const createHubUserResponse = await fetch(url, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (createHubUserResponse.status === 201) {
+            setLoadingServerStatus(false);
+            setServerRunning(false);
+            setCurrentEnviroment(null);
+          } else {
+            console.log(createHubUserResponse);
+            console.log(
+              "Error al crear usuario en el hub, recargar para probar de nuevo."
+            );
+          }
+        }
       }
     } catch (error) {
       console.log(error);
