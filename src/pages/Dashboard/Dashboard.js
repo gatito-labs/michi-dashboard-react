@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import EnvCard from "./envCard";
-import ActiveCard from "./activeCard";
+import EnvCard from "./EnvCard";
+import ActiveCard from "./ActiveCard";
 
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { useHubServer } from "../../store";
 
 function CircularProgressWithLabel(props) {
   return (
@@ -35,22 +35,21 @@ function CircularProgressWithLabel(props) {
   );
 }
 
-const Dashboard = ({
-  user,
-  token,
-  serverRunning,
-  loadingServerStatus,
-  currentEnviroment,
-  setCurrentEnviroment,
-  setServerRunning,
-}) => {
-  const [selectedEnv, setSelectedEnv] = useState(null);
-  const [serverStarting, setServerStarting] = useState(false);
-  const [serverStopping, setServerStopping] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [simulationEnviroments, setSimulationEnviroments] = useState(null);
+const Dashboard = () => {
+  const {
+    serverRunning,
+    startingServer: serverStarting,
+    stopingServer: serverStopping,
+    startingServerProgress,
+    loadingStatus,
+    runningEnviroment,
+    startServer,
+    stopServer,
+  } = useHubServer();
 
-  const ctrl = useMemo(() => new AbortController(), []);
+  
+  const [selectedEnv, setSelectedEnv] = useState(null);
+  const [simulationEnviroments, setSimulationEnviroments] = useState(null);
 
   useEffect(() => {
     fetch("./enviroments.json").then((res) => {
@@ -60,85 +59,11 @@ const Dashboard = ({
     });
   }, []);
 
-  const startServer = useCallback(
-    async (env) => {
-      setServerStarting(true);
-      setSelectedEnv(env);
-      setCurrentEnviroment(env.name);
-      setProgress(0);
-
-      fetch(`${process.env.REACT_APP_API_DOMAIN}${user.email}/server`, {
-        // content-type header should not be specified!
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          profile: env.name,
-        }),
-      })
-        .then(() => {
-          fetchEventSource(
-            `${process.env.REACT_APP_API_DOMAIN}${user.email}/server/progress`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              signal: ctrl.signal,
-              onmessage(msg) {
-                var progressData = msg.data;
-
-                if (progressData && progressData !== "") {
-                  progressData = JSON.parse(progressData);
-
-                  if (progressData.progress) {
-                    setProgress(progressData.progress);
-
-                    if (progressData.progress === 100) {
-                      setServerStarting(false);
-                    }
-                  }
-
-                  setServerRunning(
-                    progressData.ready ? progressData.ready : false
-                  );
-                }
-              },
-            }
-          );
-        })
-        .catch((error) => {
-          console.log(error);
-          // setServerLoading(false);
-        });
-    },
-    [user.email, ctrl, token, setCurrentEnviroment, setServerRunning]
-  );
-
-  const stopServer = useCallback(async () => {
-    setServerStopping(true);
-
-    fetch(`${process.env.REACT_APP_API_DOMAIN}${user.email}/server`, {
-      // content-type header should not be specified!
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(() => {
-        // Do something with the successful response
-        setServerStopping(false);
-        setServerRunning(false);
-        setServerStarting(false);
-        setSelectedEnv(null);
-        setCurrentEnviroment(null);
-        ctrl.abort();
-      })
-      .catch((error) => console.log(error));
-  }, [user.email, ctrl, token, setServerRunning, setCurrentEnviroment]);
-
   return (
     <div style={{ padding: "1em" }}>
       <Slide
         direction="right"
-        in={loadingServerStatus}
+        in={loadingStatus}
         mountOnEnter
         unmountOnExit
       >
@@ -166,7 +91,7 @@ const Dashboard = ({
             sx={{ justifyContent: "center", width: "100%", height: "100%" }}
           >
             <Grid item xs={6} sx={{ textAlign: "center", marginBottom: "2em" }}>
-              <CircularProgressWithLabel value={progress} />
+              <CircularProgressWithLabel value={startingServerProgress} />
               <Typography sx={{ marginTop: "1em" }}>
                 Iniciando ambiente:{" "}
                 {selectedEnv !== null ? selectedEnv.title : ""}
@@ -193,27 +118,27 @@ const Dashboard = ({
       </Slide>
       <Slide
         direction="right"
-        in={serverRunning && currentEnviroment !== null && !serverStopping}
+        in={serverRunning && runningEnviroment !== null && !serverStopping}
         mountOnEnter
         unmountOnExit
       >
         <Grid container>
           <Grid item xl={6} md={8} xs={12}>
-            {currentEnviroment !== null &&
+            {runningEnviroment !== null &&
               simulationEnviroments !== null &&
-              simulationEnviroments[currentEnviroment] && (
+              simulationEnviroments[runningEnviroment] && (
                 <ActiveCard
                   active={serverRunning || serverStarting}
-                  envTitle={simulationEnviroments[currentEnviroment].title}
+                  envTitle={simulationEnviroments[runningEnviroment].title}
                   summaryContent={
-                    simulationEnviroments[currentEnviroment].summaryContent
+                    simulationEnviroments[runningEnviroment].summaryContent
                   }
                   expandedContent={
-                    simulationEnviroments[currentEnviroment].expandedContent
+                    simulationEnviroments[runningEnviroment].expandedContent
                   }
-                  envImage={simulationEnviroments[currentEnviroment].image}
+                  envImage={simulationEnviroments[runningEnviroment].image}
                   buttonDisabled={
-                    loadingServerStatus || serverStarting || serverStopping
+                    loadingStatus || serverStarting || serverStopping
                   }
                   stopServer={() => stopServer()}
                 />
@@ -221,7 +146,7 @@ const Dashboard = ({
           </Grid>
         </Grid>
       </Slide>
-      {(loadingServerStatus ||
+      {(loadingStatus ||
         serverRunning ||
         serverStarting ||
         serverStopping) && <Divider sx={{ margin: "2em" }} />}
@@ -233,15 +158,18 @@ const Dashboard = ({
             return (
               <Grid item xs={12} sm={6} md={4} lg={3} key={env.title}>
                 <EnvCard
-                  active={env.name === currentEnviroment}
+                  active={env.name === runningEnviroment}
                   envTitle={env.title}
                   summaryContent={env.summaryContent}
                   expandedContent={env.expandedContent}
                   envImage={env.image}
                   buttonDisabled={
-                    loadingServerStatus || serverStarting || serverRunning
+                    loadingStatus || serverStarting || serverRunning
                   }
-                  startServer={() => startServer(env)}
+                  startServer={() => {
+                    setSelectedEnv(env);
+                    startServer(env);
+                  }}
                 />
               </Grid>
             );

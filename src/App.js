@@ -8,6 +8,7 @@ import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { LoginLanding, NotLoggedPage } from "./pages/Login/Login";
 import Layout from "./components/Layout/Layout";
 import { useAuth0 } from "@auth0/auth0-react";
+import { HubServerProvider } from "./store";
 
 function App() {
   const theme = useTheme();
@@ -20,29 +21,31 @@ function App() {
     >
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <Routes>
-          <Route
-            path="/login/success"
-            element={
-              <Layout>
-                <LoginLanding />
-              </Layout>
-            }
-          />
-
-          <Route
-            path="/*"
-            element={
-              isAuthenticated ? (
-                <Home />
-              ) : (
+        <HubServerProvider>
+          <Routes>
+            <Route
+              path="/login/success"
+              element={
                 <Layout>
-                  <NotLoggedPage />
+                  <LoginLanding />
                 </Layout>
-              )
-            }
-          />
-        </Routes>
+              }
+            />
+
+            <Route
+              path="/*"
+              element={
+                isAuthenticated ? (
+                  <Home />
+                ) : (
+                  <Layout>
+                    <NotLoggedPage />
+                  </Layout>
+                )
+              }
+            />
+          </Routes>
+        </HubServerProvider>
       </ThemeProvider>
     </div>
   );
