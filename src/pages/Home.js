@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import Dashboard from "./Dashboard/Dashboard";
+import Dashboard from "./Dashboard";
 import IframeEnv from "./Simulator/IframeEnv";
-import Layout from "../components/Layout/Layout";
+import Layout from "../components/Layout";
 
 import { NotLoggedPage } from "./Login/Login";
 import { useHubServer } from "../store";

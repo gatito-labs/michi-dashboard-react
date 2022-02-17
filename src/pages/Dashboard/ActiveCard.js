@@ -6,6 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
+
 import { Link } from "react-router-dom";
 
 const ActiveCard = (props) => {
@@ -46,6 +47,7 @@ const ActiveCard = (props) => {
                     disabled={buttonDisabled}
                   >
                     Ir
+                    
                   </Button>
                 </Link>
 
