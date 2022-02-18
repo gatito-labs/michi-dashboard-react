@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -13,12 +13,18 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 import MenuIcon from "@mui/icons-material/Menu";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+// import SmartToyIcon from "@mui/icons-material/SmartToy";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { useAuth0 } from "@auth0/auth0-react";
+import { IconMenuItem } from "mui-nested-menu";
 
-import { SimButton, SimMenu } from "./SimMenu";
+import { useAuth0 } from "@auth0/auth0-react";
+import { SimStatus } from "./SimStatus";
+
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const headerHeight = 48;
 
@@ -57,7 +63,16 @@ export default function Layout(props) {
   const { user, isAuthenticated, logout } = useAuth0();
   const [anchorElNavMenu, setAnchorElNavMenu] = useState(null);
   const [anchorElAccMenu, setAnchorElAccMenu] = useState(null);
-  const [anchorElSimMenu, setAnchorElSimMenu] = useState(null);
+
+  const theme = useTheme();
+  const matchSM = useMediaQuery(theme.breakpoints.up("sm"));
+
+  useEffect(() => {
+    // This it to avoid keeping the anchor of the small menu if the screen is width enough
+    if (matchSM) {
+      setAnchorElNavMenu(null);
+    }
+  }, [matchSM]);
 
   const handleMenu = (f) => {
     return (event) => f(event.currentTarget);
@@ -119,54 +134,71 @@ export default function Layout(props) {
                     display: { xs: "block", md: "none" },
                   }}
                 >
-                  <MenuItem onClick={handleClose(setAnchorElNavMenu)}>
-                    <Typography textAlign="center"> Mis Ambientes </Typography>
-                  </MenuItem>
+                  <IconMenuItem
+                    leftIcon={<DashboardIcon />}
+                    label={
+                      <Link
+                        to="/dashboard"
+                        style={{
+                          color: "black",
+                          textDecoration: "none",
+                          textTransform: "none",
+                        }}
+                      >
+                        {" "}
+                        Mis Ambientes{" "}
+                      </Link>
+                    }
+                  ></IconMenuItem>
 
-                  <MenuItem onClick={handleClose(setAnchorElNavMenu)}>
-                    <Typography textAlign="center"> Simulador </Typography>
-                  </MenuItem>
+                  <IconMenuItem
+                    leftIcon={<SimStatus />}
+                    label={
+                      <Link
+                        to="/simulator"
+                        style={{
+                          color: "black",
+                          textDecoration: "none",
+                          textTransform: "none",
+                        }}
+                      >
+                        {" "}
+                        Simulador{" "}
+                      </Link>
+                    }
+                  />
                 </Menu>
               </Box>
 
               <Logo sx={{ flexGrow: 1 }} />
 
-              <div>
-                <Link to={"/dashboard"} sx={{ textTransform: "none" }}>
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <Link to={"/dashboard"} style={{ textDecoration: "none" }}>
                   <Button
                     sx={{
                       mx: 0,
                       color: "white",
-                      // display: "block",
                       textTransform: "none",
                     }}
                   >
                     Mis Ambientes
                   </Button>
                 </Link>
-              </div>
-
-              <div>
-                <SimButton onClick={handleMenu(setAnchorElSimMenu)} />
-
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElSimMenu}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElSimMenu)}
-                  onClose={handleClose(setAnchorElSimMenu)}
-                >
-                  <SimMenu />
-                </Menu>
-              </div>
+                <Link to={"/simulator"} style={{ textDecoration: "none" }}>
+                  <Button
+                    sx={{
+                      mx: 0,
+                      color: "white",
+                      textTransform: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    Simulador <SimStatus />
+                  </Button>
+                </Link>
+              </Box>
 
               <div>
                 <IconButton

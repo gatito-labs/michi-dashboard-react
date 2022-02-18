@@ -1,8 +1,7 @@
 version: '3.7'
 
 services:
-
-  sample:
+  dashboard:
     container_name: michi-dashboard-dev
     build:
       context: .
