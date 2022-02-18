@@ -8,6 +8,7 @@ import Layout from "../components/Layout";
 
 import { NotLoggedPage } from "./Login/Login";
 import { useHubServer } from "../store";
+import Simulator from "./Simulator";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth0();
@@ -29,6 +30,7 @@ export default function Home() {
               element={<IframeEnv user={user} />}
             />
             <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route exact path="/simulator2" element={<Simulator />} />
           </React.Fragment>
         </Routes>
       </Layout>
