@@ -2,17 +2,20 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Iframe from "react-iframe";
 import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function PanelSimulador() {
+  const { user } = useAuth0();
   const [simulatorLoading, setSimulatorLoading] = useState(true);
-  const [simulatorSuccess, setSimulatorSuccess] = useState(true);
+  const [simulatorSuccess, setSimulatorSuccess] = useState(null);
 
-  const simulatorUrl = `${process.env.REACT_APP_SIMULATOR_URL}`;
+  const simulatorUrl = `${process.env.REACT_APP_SIMULATOR_URL}/${user.email}/proxy/1234/`;
   const failedUrl = simulatorUrl; // url del mensaje personalizado de error
 
   function onLoad() {
     setSimulatorLoading(false);
-  };
+  }
 
   // Chequea si se obtiene respuesta del simulador, sirve para mostrar un mensaje de error personalizado
   /*fetch(simulatorUrl)
@@ -24,10 +27,13 @@ export default function PanelSimulador() {
   })*/
 
   return (
-    <Box id="right-panel" pointerEvents="auto">
-      <Box width="100%" height="100%" alignItems="center" justifyContent="center" display={simulatorLoading ? "flex" : "none"}>
-        <CircularProgress color="secondary" />
-      </Box>
+    <Box
+      id="right-panel"
+      width="100%"
+      height="100%"
+      pointerEvents="auto"
+      sx={{ position: "relative" }}
+    >
       <Iframe
         onLoad={onLoad}
         id="simuladorFrame"
@@ -37,8 +43,20 @@ export default function PanelSimulador() {
         frameBorder={0}
         src={simulatorSuccess ? simulatorUrl : failedUrl}
       ></Iframe>
+
+      <Backdrop
+        id="loading"
+        open={simulatorLoading}
+        width="100%"
+        height="100%"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ position: "absolute", width: "100%", height: "100%", zIndex: 1 }}
+      >
+        <CircularProgress color="secondary" />
+      </Backdrop>
     </Box>
   );
-};
-
+}
+// </Box>
 // react context para obtener el user en el dominio

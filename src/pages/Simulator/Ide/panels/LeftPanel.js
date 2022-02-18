@@ -1,21 +1,22 @@
+import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
 export const PanelButton = ({name, selected, onClickHandler}) => (
-  <Box display="flex">
+  <Grid display="flex" sx={{flexGrow: 1,}}>
     <Button
-      sx={{flex: 1, borderRadius: 0}}
+      sx={{ width: "100%", borderRadius: 0}}
       variant={selected ? "contained" : "outlined"}
       onClick={onClickHandler}
       color="secondary"
     >
       {name}
     </Button>
-  </Box>
+  </Grid>
 );
 
 export const Panel = ({selected, children}) => (
-  <Box display={selected ? "flex" : "none"}>
+  <Box sx={{display: selected ? "flex" : "none", height:"100%"}}>
     {children}
   </Box>
 );

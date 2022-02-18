@@ -32,9 +32,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
+  // padding: theme.spacing(0, 1),
+  width: "100%",
   // necessary for content to be below app bar
   // ...theme.mixins.toolbar,
+
   minHeight: `${headerHeight}px !important`,
 }));
 
@@ -251,7 +253,7 @@ export default function Layout(props) {
         component="main"
         sx={{ width: "100%", height: "100%" }}
       >
-        <Grid item component={DrawerHeader} />
+        <Grid item component={DrawerHeader} id="headerSpacer" />
         <Grid item component={"div"} sx={{ width: "100%", flexGrow: 1 }}>
           {props.children}
         </Grid>
