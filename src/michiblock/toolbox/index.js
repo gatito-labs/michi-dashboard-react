@@ -1,22 +1,24 @@
-import * as BuiltinCategories from './builtinCategories';
-import * as CustomCategories from './customCategories';
+import * as BuiltinCategories from './BuiltinCategories';
+import * as CustomCategories from './CustomCategories';
 
-const Toolbox = {
+const toolbox = {
   contents: [
     CustomCategories.MovementCategory,
     CustomCategories.SensorsCategory,
+    CustomCategories.ScreenCategory,
     BuiltinCategories.Separator,
     BuiltinCategories.LogicCategory,
     BuiltinCategories.LoopsCategory,
     BuiltinCategories.MathCategory,
     BuiltinCategories.TextCategory,
     BuiltinCategories.ListsCategory,
-    BuiltinCategories.ColourCategory,
+    // BuiltinCategories.ColourCategory,
     BuiltinCategories.Separator,
     BuiltinCategories.VariablesCategory,
     BuiltinCategories.FunctionsCategory,
   ],
   id: 'toolbox',
+  style: 'display: none',
 };
 
-export default Toolbox;
+export default toolbox;

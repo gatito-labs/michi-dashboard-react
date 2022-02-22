@@ -49,9 +49,14 @@ export default function PanelSimulador() {
         open={simulatorLoading}
         width="100%"
         height="100%"
-        alignItems="center"
-        justifyContent="center"
-        sx={{ position: "absolute", width: "100%", height: "100%", zIndex: 1 }}
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1,
+        }}
       >
         <CircularProgress color="secondary" />
       </Backdrop>

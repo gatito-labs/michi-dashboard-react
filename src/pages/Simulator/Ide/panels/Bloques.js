@@ -1,11 +1,13 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
-import { BlocklyWorkspace } from "react-blockly";
-import Blockly from "blockly";
+
 import "./Blockly.css"
-import Toolbox from "./blockly/toolbox/toolbox";
+import "blockly/python";
+
+import Blockly from "blockly";
+import { BlocklyWorkspace } from "react-blockly";
+import toolbox from "../../../../michiblock/toolbox";
 
 const PanelBloques = React.memo(({editorRef}) => {
   const handleOnXmlChange = React.useCallback((xml) => {
@@ -20,7 +22,7 @@ const PanelBloques = React.memo(({editorRef}) => {
   return (
     <Grid className="Blockly"  display="flex" flex={1} width={"100%"} height={"100%"}>
       <BlocklyWorkspace
-        toolboxConfiguration={Toolbox}
+        toolboxConfiguration={toolbox}
         workspaceConfiguration={{
           grid: {
             spacing: 50,

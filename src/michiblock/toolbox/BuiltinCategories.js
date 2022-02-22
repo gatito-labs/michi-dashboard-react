@@ -1,375 +1,375 @@
 const LogicCategory = {
-  kind: 'CATEGORY',
-  id: 'catLogic',
-  colour: '210',
-  name: 'Lógica',
+  kind: "CATEGORY",
+  id: "catLogic",
+  colour: "210",
+  name: "Lógica",
   contents: [
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="controls_if"></block>',
-      type: 'controls_if',
+      type: "controls_if",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="logic_compare"></block>',
-      type: 'logic_compare',
+      type: "logic_compare",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="logic_operation"></block>',
-      type: 'logic_operation',
+      type: "logic_operation",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="logic_negate"></block>',
-      type: 'logic_negate',
+      type: "logic_negate",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="logic_boolean"></block>',
-      type: 'logic_boolean',
+      type: "logic_boolean",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="logic_null"></block>',
-      type: 'logic_null',
+      type: "logic_null",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="logic_ternary"></block>',
-      type: 'logic_ternary',
+      type: "logic_ternary",
     },
   ],
-}
+};
 
 const LoopsCategory = {
-  kind: 'CATEGORY',
-  id: 'catLoops',
-  colour: '120',
-  name: 'Bucles',
+  kind: "CATEGORY",
+  id: "catLoops",
+  colour: "120",
+  name: "Bucles",
   contents: [
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="controls_repeat_ext">\n          <value name="TIMES">\n            <shadow type="math_number">\n              <field name="NUM">10</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'controls_repeat_ext',
+      type: "controls_repeat_ext",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="controls_whileUntil"></block>',
-      type: 'controls_whileUntil',
+      type: "controls_whileUntil",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="controls_for">\n          <value name="FROM">\n            <shadow type="math_number">\n              <field name="NUM">1</field>\n            </shadow>\n          </value>\n          <value name="TO">\n            <shadow type="math_number">\n              <field name="NUM">10</field>\n            </shadow>\n          </value>\n          <value name="BY">\n            <shadow type="math_number">\n              <field name="NUM">1</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'controls_for',
+      type: "controls_for",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="controls_forEach"></block>',
-      type: 'controls_forEach',
+      type: "controls_forEach",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="controls_flow_statements"></block>',
-      type: 'controls_flow_statements',
+      type: "controls_flow_statements",
     },
   ],
-}
+};
 
 const MathCategory = {
-  kind: 'CATEGORY',
-  id: 'catMath',
-  colour: '230',
-  name: 'Matemática',
+  kind: "CATEGORY",
+  id: "catMath",
+  colour: "230",
+  name: "Matemática",
   contents: [
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="math_number"></block>',
-      type: 'math_number',
+      type: "math_number",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_arithmetic">\n          <value name="A">\n            <shadow type="math_number">\n              <field name="NUM">1</field>\n            </shadow>\n          </value>\n          <value name="B">\n            <shadow type="math_number">\n              <field name="NUM">1</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_arithmetic',
+      type: "math_arithmetic",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_single">\n          <value name="NUM">\n            <shadow type="math_number">\n              <field name="NUM">9</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_single',
+      type: "math_single",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_trig">\n          <value name="NUM">\n            <shadow type="math_number">\n              <field name="NUM">45</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_trig',
+      type: "math_trig",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="math_constant"></block>',
-      type: 'math_constant',
+      type: "math_constant",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_number_property">\n          <value name="NUMBER_TO_CHECK">\n            <shadow type="math_number">\n              <field name="NUM">0</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_number_property',
+      type: "math_number_property",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_change">\n          <value name="DELTA">\n            <shadow type="math_number">\n              <field name="NUM">1</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_change',
+      type: "math_change",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_round">\n          <value name="NUM">\n            <shadow type="math_number">\n              <field name="NUM">3.1</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_round',
+      type: "math_round",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="math_on_list"></block>',
-      type: 'math_on_list',
+      type: "math_on_list",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_modulo">\n          <value name="DIVIDEND">\n            <shadow type="math_number">\n              <field name="NUM">64</field>\n            </shadow>\n          </value>\n          <value name="DIVISOR">\n            <shadow type="math_number">\n              <field name="NUM">10</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_modulo',
+      type: "math_modulo",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_constrain">\n          <value name="VALUE">\n            <shadow type="math_number">\n              <field name="NUM">50</field>\n            </shadow>\n          </value>\n          <value name="LOW">\n            <shadow type="math_number">\n              <field name="NUM">1</field>\n            </shadow>\n          </value>\n          <value name="HIGH">\n            <shadow type="math_number">\n              <field name="NUM">100</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_constrain',
+      type: "math_constrain",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="math_random_int">\n          <value name="FROM">\n            <shadow type="math_number">\n              <field name="NUM">1</field>\n            </shadow>\n          </value>\n          <value name="TO">\n            <shadow type="math_number">\n              <field name="NUM">100</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'math_random_int',
+      type: "math_random_int",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="math_random_float"></block>',
-      type: 'math_random_float',
+      type: "math_random_float",
     },
   ],
-}
+};
 
 const TextCategory = {
-  kind: 'CATEGORY',
-  id: 'catText',
-  colour: '160',
-  name: 'Texto',
+  kind: "CATEGORY",
+  id: "catText",
+  colour: "160",
+  name: "Texto",
   contents: [
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="text"></block>',
-      type: 'text',
+      type: "text",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="text_join"></block>',
-      type: 'text_join',
+      type: "text_join",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_append">\n          <value name="TEXT">\n            <shadow type="text"></shadow>\n          </value>\n        </block>',
-      type: 'text_append',
+      type: "text_append",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_length">\n          <value name="VALUE">\n            <shadow type="text">\n              <field name="TEXT">abc</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'text_length',
+      type: "text_length",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_isEmpty">\n          <value name="VALUE">\n            <shadow type="text">\n              <field name="TEXT"></field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'text_isEmpty',
+      type: "text_isEmpty",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_indexOf">\n          <value name="VALUE">\n            <block type="variables_get">\n              <field name="VAR">text</field>\n            </block>\n          </value>\n          <value name="FIND">\n            <shadow type="text">\n              <field name="TEXT">abc</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'text_indexOf',
+      type: "text_indexOf",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_charAt">\n          <value name="VALUE">\n            <block type="variables_get">\n              <field name="VAR">text</field>\n            </block>\n          </value>\n        </block>',
-      type: 'text_charAt',
+      type: "text_charAt",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_getSubstring">\n          <value name="STRING">\n            <block type="variables_get">\n              <field name="VAR">text</field>\n            </block>\n          </value>\n        </block>',
-      type: 'text_getSubstring',
+      type: "text_getSubstring",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_changeCase">\n          <value name="TEXT">\n            <shadow type="text">\n              <field name="TEXT">abc</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'text_changeCase',
+      type: "text_changeCase",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_trim">\n          <value name="TEXT">\n            <shadow type="text">\n              <field name="TEXT">abc</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'text_trim',
+      type: "text_trim",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_print">\n          <value name="TEXT">\n            <shadow type="text">\n              <field name="TEXT">abc</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'text_print',
+      type: "text_print",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="text_prompt_ext">\n          <value name="TEXT">\n            <shadow type="text">\n              <field name="TEXT">abc</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'text_prompt_ext',
+      type: "text_prompt_ext",
     },
   ],
-}
+};
 
 const ListsCategory = {
-  kind: 'CATEGORY',
-  id: 'catLists',
-  colour: '260',
-  name: 'Listas',
+  kind: "CATEGORY",
+  id: "catLists",
+  colour: "260",
+  name: "Listas",
   contents: [
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="lists_create_with">\n          <mutation items="0"></mutation>\n        </block>',
-      type: 'lists_create_with',
+      type: "lists_create_with",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="lists_create_with"></block>',
-      type: 'lists_create_with',
+      type: "lists_create_with",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="lists_repeat">\n          <value name="NUM">\n            <shadow type="math_number">\n              <field name="NUM">5</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'lists_repeat',
+      type: "lists_repeat",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="lists_length"></block>',
-      type: 'lists_length',
+      type: "lists_length",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="lists_isEmpty"></block>',
-      type: 'lists_isEmpty',
+      type: "lists_isEmpty",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="lists_indexOf">\n          <value name="VALUE">\n            <block type="variables_get">\n              <field name="VAR">list</field>\n            </block>\n          </value>\n        </block>',
-      type: 'lists_indexOf',
+      type: "lists_indexOf",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="lists_getIndex">\n          <value name="VALUE">\n            <block type="variables_get">\n              <field name="VAR">list</field>\n            </block>\n          </value>\n        </block>',
-      type: 'lists_getIndex',
+      type: "lists_getIndex",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="lists_setIndex">\n          <value name="LIST">\n            <block type="variables_get">\n              <field name="VAR">list</field>\n            </block>\n          </value>\n        </block>',
-      type: 'lists_setIndex',
+      type: "lists_setIndex",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="lists_getSublist">\n          <value name="LIST">\n            <block type="variables_get">\n              <field name="VAR">list</field>\n            </block>\n          </value>\n        </block>',
-      type: 'lists_getSublist',
+      type: "lists_getSublist",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="lists_split">\n          <value name="DELIM">\n            <shadow type="text">\n              <field name="TEXT">,</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'lists_split',
+      type: "lists_split",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="lists_sort"></block>',
-      type: 'lists_sort',
+      type: "lists_sort",
     },
   ],
-}
+};
 
 const ColourCategory = {
-  kind: 'CATEGORY',
-  id: 'catColour',
-  colour: '20',
-  name: 'Colores',
+  kind: "CATEGORY",
+  id: "catColour",
+  colour: "20",
+  name: "Colores",
   contents: [
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="colour_picker"></block>',
-      type: 'colour_picker',
+      type: "colour_picker",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml: '<block type="colour_random"></block>',
-      type: 'colour_random',
+      type: "colour_random",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="colour_rgb">\n          <value name="RED">\n            <shadow type="math_number">\n              <field name="NUM">100</field>\n            </shadow>\n          </value>\n          <value name="GREEN">\n            <shadow type="math_number">\n              <field name="NUM">50</field>\n            </shadow>\n          </value>\n          <value name="BLUE">\n            <shadow type="math_number">\n              <field name="NUM">0</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'colour_rgb',
+      type: "colour_rgb",
     },
     {
-      kind: 'BLOCK',
+      kind: "BLOCK",
       blockxml:
         '<block type="colour_blend">\n          <value name="COLOUR1">\n            <shadow type="colour_picker">\n              <field name="COLOUR">#ff0000</field>\n            </shadow>\n          </value>\n          <value name="COLOUR2">\n            <shadow type="colour_picker">\n              <field name="COLOUR">#3333ff</field>\n            </shadow>\n          </value>\n          <value name="RATIO">\n            <shadow type="math_number">\n              <field name="NUM">0.5</field>\n            </shadow>\n          </value>\n        </block>',
-      type: 'colour_blend',
+      type: "colour_blend",
     },
   ],
-}
+};
 
 const Separator = {
-  kind: 'SEP',
-} 
+  kind: "SEP",
+};
 
 const VariablesCategory = {
-  kind: 'CATEGORY',
-  id: 'catVariables',
-  colour: '330',
-  custom: 'VARIABLE',
-  name: 'Variables',
-}
+  kind: "CATEGORY",
+  id: "catVariables",
+  colour: "330",
+  custom: "VARIABLE",
+  name: "Variables",
+};
 
 const FunctionsCategory = {
-  kind: 'CATEGORY',
-  id: 'catFunctions',
-  colour: '290',
-  custom: 'PROCEDURE',
-  name: 'Funciones',
-}
+  kind: "CATEGORY",
+  id: "catFunctions",
+  colour: "290",
+  custom: "PROCEDURE",
+  name: "Funciones",
+};
 
 export {
   LogicCategory,
-    LoopsCategory,
-    MathCategory,
-    TextCategory,
-    ListsCategory,
-    ColourCategory,
-    Separator,
-    VariablesCategory,
-    FunctionsCategory,
-}
+  LoopsCategory,
+  MathCategory,
+  TextCategory,
+  ListsCategory,
+  ColourCategory,
+  Separator,
+  VariablesCategory,
+  FunctionsCategory,
+};
