@@ -62,22 +62,14 @@ export function Ide() {
   // HANDLING CODE BUTTONS
   const [runLoading, setRunLoading] = useState(false);
   const [terminalOutput, setTerminalOutput] = useState("");
-  const IDETerminal = () => <Terminal output={terminalOutput} />;
 
-  function addOutput(output) {
-    const oldOutput = terminalOutput;
-    setTerminalOutput(oldOutput + "\n" + output);
-  }
-
-  function restartOutput() {
-    setTerminalOutput("");
+  function setOutput(output) {
+    setTerminalOutput("" + output);
   }
 
   function handleRun() {
     setRunLoading(true);
-    restartOutput();
-    console.log("Corriendo código");
-    addOutput("Corriendo código");
+    setOutput("Subiendo código");
 
     let formData = new FormData();
     formData.append("arduino_code", editorRef.current.getValue());
@@ -94,20 +86,20 @@ export function Ide() {
         setRunLoading(false);
         console.log("STDOUT:\n", data.stdout); // outputs del compilador/intérprete del servidor
         console.log("STDERR:\n", data.stderr); // errores del compilador/intérprete del servidor
-        addOutput(data.stdout);
-        addOutput(data.stderr);
 
-        if (data.stderr) {
+        if (data.stderr !== "No Error") {
           setAlertType("error");
+          setOutput(data.stderr);
         } else {
           setAlertType("success");
+          setOutput(data.stdout);
         }
       })
       .catch((error) => {
         setRunLoading(false);
         setAlertType("error");
         console.log("Error en fetch:\n", error);
-        addOutput(error);
+        setOutput("Error", error);
       });
   }
 
@@ -140,7 +132,7 @@ export function Ide() {
   }
 
   // HANDLE RESIZE (WITH DRAGGING MIDDLE BAR)
-  const [leftPanelMaxWidth, setLeftPanelMaxWidth] = useState(50);
+  const [leftPanelMaxWidth, setLeftPanelMaxWidth] = useState(parseInt(localStorage.getItem("LPWidth")) || 50);
   const [isDragging, setIsDragging] = useState(false);
 
   function activatePanelsPointerEvents() {
