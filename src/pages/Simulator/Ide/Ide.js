@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 
 import CodeButtons from "./panels/components/CodeButtons";
 import { Panel, PanelButton } from "./panels/LeftPanel";
@@ -13,7 +11,7 @@ import PanelSimulador from "./panels/Simulador";
 import Terminal from "./panels/components/Terminal";
 import AlertsHandler from "./panels/components/AlertsHandler";
 
-// DEFAULT CONFIGS
+// DEFAULT CONFIGS (almacenar en localstorage con algún formato estándar de configuraciones)
 const DEFAULT_THEME = "default";
 const DEFAULT_LEFT_PANEL_WIDTH = 50;
 
@@ -61,7 +59,7 @@ export function Ide() {
 
   // HANDLING CODE BUTTONS
   const [runLoading, setRunLoading] = useState(false);
-  const [terminalOutput, setTerminalOutput] = useState("");
+  const [terminalOutput, setTerminalOutput] = useState("Output de ejemplo,\nesta terminal necesita usar el símbolo \\n para\nsimular el salto de línea.\n\nEsta terminal no se mostrará si no existe un mensaje impreso.");
 
   function setOutput(output) {
     setTerminalOutput("" + output);
@@ -240,6 +238,9 @@ export function Ide() {
               <PanelDocumentacion />
             </Panel>
           </Grid>
+          <Grid minHeight="50%" display={terminalOutput ? "block" : "none"}>
+            <Terminal output={terminalOutput} />
+          </Grid>
           <Grid item>
             <Grid
               container
@@ -250,7 +251,7 @@ export function Ide() {
               minHeight="50px"
               width="100%"
               borderTop={2}
-              borderColor="secondary.main"
+              borderColor="#7F2982"
             >
               <PanelButton
                 name="Bloques"
@@ -303,7 +304,7 @@ export function Ide() {
           <PanelSimulador />{" "}
         </Grid>
       </Grid>
-
+      
       <AlertsHandler alertType={alertType} setAlertType={setAlertType} />
     </Grid>
   );
