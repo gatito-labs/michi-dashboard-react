@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 
 import CodeButtons from "./panels/components/CodeButtons";
 import { Panel, PanelButton } from "./panels/LeftPanel";
@@ -13,7 +11,7 @@ import PanelSimulador from "./panels/Simulador";
 import Terminal from "./panels/components/Terminal";
 import AlertsHandler from "./panels/components/AlertsHandler";
 
-// DEFAULT CONFIGS
+// DEFAULT CONFIGS (almacenar en localstorage con algún formato estándar de configuraciones)
 const DEFAULT_THEME = "default";
 const DEFAULT_LEFT_PANEL_WIDTH = 50;
 
@@ -61,23 +59,15 @@ export function Ide() {
 
   // HANDLING CODE BUTTONS
   const [runLoading, setRunLoading] = useState(false);
-  const [terminalOutput, setTerminalOutput] = useState("");
-  const IDETerminal = () => <Terminal output={terminalOutput} />;
+  const [terminalOutput, setTerminalOutput] = useState("Output de ejemplo,\nesta terminal necesita usar el símbolo \\n para\nsimular el salto de línea.\n\nEsta terminal no se mostrará si no existe un mensaje impreso.");
 
-  function addOutput(output) {
-    const oldOutput = terminalOutput;
-    setTerminalOutput(oldOutput + "\n" + output);
-  }
-
-  function restartOutput() {
-    setTerminalOutput("");
+  function setOutput(output) {
+    setTerminalOutput("" + output);
   }
 
   function handleRun() {
     setRunLoading(true);
-    restartOutput();
-    console.log("Corriendo código");
-    addOutput("Corriendo código");
+    setOutput("Subiendo código");
 
     let formData = new FormData();
     formData.append("arduino_code", editorRef.current.getValue());
@@ -94,20 +84,20 @@ export function Ide() {
         setRunLoading(false);
         console.log("STDOUT:\n", data.stdout); // outputs del compilador/intérprete del servidor
         console.log("STDERR:\n", data.stderr); // errores del compilador/intérprete del servidor
-        addOutput(data.stdout);
-        addOutput(data.stderr);
 
-        if (data.stderr) {
+        if (data.stderr !== "No Error") {
           setAlertType("error");
+          setOutput(data.stderr);
         } else {
           setAlertType("success");
+          setOutput(data.stdout);
         }
       })
       .catch((error) => {
         setRunLoading(false);
         setAlertType("error");
         console.log("Error en fetch:\n", error);
-        addOutput(error);
+        setOutput("Error", error);
       });
   }
 
@@ -140,7 +130,7 @@ export function Ide() {
   }
 
   // HANDLE RESIZE (WITH DRAGGING MIDDLE BAR)
-  const [leftPanelMaxWidth, setLeftPanelMaxWidth] = useState(50);
+  const [leftPanelMaxWidth, setLeftPanelMaxWidth] = useState(parseInt(localStorage.getItem("LPWidth")) || 50);
   const [isDragging, setIsDragging] = useState(false);
 
   function activatePanelsPointerEvents() {
@@ -248,6 +238,9 @@ export function Ide() {
               <PanelDocumentacion />
             </Panel>
           </Grid>
+          <Grid minHeight="50%" display={terminalOutput ? "block" : "none"}>
+            <Terminal output={terminalOutput} />
+          </Grid>
           <Grid item>
             <Grid
               container
@@ -258,7 +251,7 @@ export function Ide() {
               minHeight="50px"
               width="100%"
               borderTop={2}
-              borderColor="secondary.main"
+              borderColor="#7F2982"
             >
               <PanelButton
                 name="Bloques"
@@ -311,7 +304,7 @@ export function Ide() {
           <PanelSimulador />{" "}
         </Grid>
       </Grid>
-
+      
       <AlertsHandler alertType={alertType} setAlertType={setAlertType} />
     </Grid>
   );

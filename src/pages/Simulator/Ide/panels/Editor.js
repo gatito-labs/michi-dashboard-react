@@ -1,9 +1,7 @@
-import React from "react";
+import { memo } from "react";
 import Editor from "@monaco-editor/react";
 
-const PanelEditor = React.memo(
-  ({ handleEditorDidMount, handleEditorChange }) => {
-    console.log("uwuuuuuuuuuuuu editor");
+const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
     return (
       <Editor
         className="panel"
