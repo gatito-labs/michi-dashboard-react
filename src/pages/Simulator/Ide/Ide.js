@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Grid from "@mui/material/Grid";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import PanelSimulador from "./Simulador";
 import AlertsHandler from "./panels/components/AlertsHandler";
 import LeftPanel from "./LeftPanel";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { IconButton } from "@mui/material";
 
 // DEFAULT CONFIGS (almacenar en localstorage con algún formato estándar de configuraciones)
 const DEFAULT_THEME = "default";
@@ -18,6 +21,7 @@ export function Ide() {
     parseInt(localStorage.getItem("LPWidth")) || 50
   );
 
+  const [hideLeftPanel, setHideLeftPanel] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const onMove = useCallback((clientX) => {
@@ -117,19 +121,27 @@ export function Ide() {
             maxWidth: `${leftPanelMaxWidth}%`,
             height: "100%",
             overflowX: "hidden",
+            display: hideLeftPanel ? "none" : "flex",
           }}
         >
-          <LeftPanel setAlertType={setAlertType} />
+          <LeftPanel
+            setAlertType={setAlertType}
+            handleHide={() => setHideLeftPanel(true)}
+          />
         </Grid>
 
         <Grid
-          item
+          container
           id="divider"
           onMouseDown={onMouseDown}
           onTouchStart={onTouchStart}
           onTouchEnd={onMouseUp}
           sx={[
             {
+              justifyContent: "center",
+              alignItems: "center",
+              margin: 0,
+              padding: 0,
               height: "100%",
               width: "10px",
               "&": {
@@ -138,13 +150,27 @@ export function Ide() {
                 maxWidth: "12px",
               },
             },
+
             {
               "&:hover": {
                 backgroundColor: "gray",
               },
             },
           ]}
-        />
+        >
+          {hideLeftPanel ? (
+            <IconButton onClick={() => setHideLeftPanel(false)} sx={{height: "100%"}}>
+              <ChevronRightIcon
+                sx={{ color: "white", position: "relative", top: "-50px" }}
+              />
+            </IconButton>
+          ) : (
+            <MoreVertIcon
+              id="three-dots"
+              sx={{ color: "white", position: "relative", top: "-50px" }} // -50px is to position the dots higher
+            />
+          )}
+        </Grid>
 
         <Grid
           item

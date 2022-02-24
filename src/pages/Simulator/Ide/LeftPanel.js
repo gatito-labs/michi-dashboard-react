@@ -6,6 +6,7 @@ import MuiTab, { tabClasses } from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 import CodeButtons from "./panels/components/CodeButtons";
+
 import { Panel } from "./panels/Panel";
 
 import PanelBloques from "./panels/Bloques";
@@ -26,8 +27,7 @@ const Tab = styled(MuiTab)`
   }
 `;
 
-export default function LeftPanel({ setAlertType }) {
-
+export default function LeftPanel({ setAlertType, handleHide }) {
   const [runLoading, setRunLoading] = useState(false);
   const [terminalOutput, setTerminalOutput] = useState(
     "Output de ejemplo,\nesta terminal necesita usar el símbolo \\n para\nsimular el salto de línea.\n\nEsta terminal no se mostrará si no existe un mensaje impreso."
@@ -52,23 +52,22 @@ export default function LeftPanel({ setAlertType }) {
   const editorRef = useRef();
   const monacoRef = useRef();
 
-  function handleEditorDidMount(editor, monaco) {
+  const handleEditorDidMount = useCallback((editor, monaco) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
     editorRef.current.setValue(localStorage.getItem("code"));
-  }
+  }, []);
 
-  function handleEditorChange(value, _) {
+  const handleEditorChange = useCallback((value, _) => {
     localStorage.setItem("code", value);
-  }
+  }, []);
 
   // HANDLING CODE BUTTONS
-
-  function setOutput(output) {
+  const setOutput = useCallback((output) => {
     setTerminalOutput("" + output);
-  }
+  }, []);
 
-  function handleRun() {
+  const handleRun = useCallback(() => {
     setRunLoading(true);
     setOutput("Subiendo código");
 
@@ -102,13 +101,13 @@ export default function LeftPanel({ setAlertType }) {
         console.log("Error en fetch:\n", error);
         setOutput("Error", error);
       });
-  }
+  }, [setAlertType, setOutput]);
 
-  function handleStop() {
+  const handleStop = useCallback(() => {
     console.log("parar función");
-  }
+  }, []);
 
-  function handleDownload() {
+  const handleDownload = useCallback(() => {
     const element = document.createElement("a");
     const file = new Blob([localStorage.getItem("code")], {
       type: "text/plain;charset=utf-8",
@@ -116,68 +115,65 @@ export default function LeftPanel({ setAlertType }) {
     element.href = URL.createObjectURL(file);
     element.download = "archivo.py";
     element.click();
-  }
+  }, []);
 
-  function handleUpload(event) {
+  const handleUpload = useCallback((event) => {
     const file = event.target.files[0];
 
-    function handleFileRead(e) {
+    const fileReader = new FileReader();
+
+    fileReader.onloadend = () => {
       const content = fileReader.result;
       editorRef.current.setValue(content);
       setPanelSelected(1);
-    }
+    };
 
-    const fileReader = new FileReader();
-    fileReader.onloadend = handleFileRead;
     fileReader.readAsText(file);
-  }
+  }, []);
 
   return (
     <>
-      <Grid
-        item
-        id="code-buttons"
-        sx={{
-          alignItems: "center",
-          display: "flex",
-          minHeight: "10px",
-          height: "4vh",
-        }}
-      >
-        <CodeButtons
-          runLoading={runLoading}
-          handleRun={handleRun}
-          handleStop={handleStop}
-          handleDownload={handleDownload}
-          handleUpload={handleUpload}
-        />
-      </Grid>
-      <Grid item sx={{ flexGrow: 2 }}>
+      <CodeButtons
+        runLoading={runLoading}
+        handleRun={handleRun}
+        handleStop={handleStop}
+        handleDownload={handleDownload}
+        handleUpload={handleUpload}
+        handleHide={handleHide}
+      />
+
+      <Grid item sx={{ flexGrow: 2, width: "100%", overflowX: "hidden" }}>
         <Panel selected={panelSelected === BLOCKLY}>
-          <PanelBloques editorRef={editorRef} />
+          {/* this is because blockly-ws breaks when leftPanel is resized while blockly is not active */}
+          {panelSelected === BLOCKLY && <PanelBloques editorRef={editorRef} />}
         </Panel>
 
         <Panel selected={panelSelected === EDITOR}>
-          <PanelEditor
-            handleEditorDidMount={useCallback(
-              (editor, monaco) => handleEditorDidMount(editor, monaco),
-              []
-            )}
-            handleEditorChange={useCallback(
-              (value, _) => handleEditorChange(value, _),
-              []
-            )}
-          />
+          <Grid container direction="column">
+            <Grid item sx={{ flexGrow: 2, width: "100%" }}>
+              <PanelEditor
+                handleEditorDidMount={handleEditorDidMount}
+                handleEditorChange={handleEditorChange}
+              />
+            </Grid>
+
+            <Grid
+              item
+              height="50%"
+              width="100%"
+              display={terminalOutput ? "block" : "none"}
+            >
+              <Terminal output={terminalOutput} />
+            </Grid>
+          </Grid>
         </Panel>
 
         <Panel id="documentacion" selected={panelSelected === DOCUMENTATION}>
           <PanelDocumentacion />
         </Panel>
       </Grid>
-      <Grid minHeight="50%" display={terminalOutput ? "block" : "none"}>
-        <Terminal output={terminalOutput} />
-      </Grid>
-      <Grid item>
+
+      <Grid item sx={{ width: "100%" }}>
         <Tabs
           value={panelSelected}
           onChange={(event, newValue) => {
