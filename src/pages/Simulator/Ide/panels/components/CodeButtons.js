@@ -9,7 +9,7 @@ import StopCircleIcon from '@mui/icons-material/StopCircle';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 
-const FONT_SIZE = "4vh";
+const FONT_SIZE = "3vh";
 
 const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -85,11 +85,11 @@ const UploadButton = ({handleUpload}) => (
 
 export default function CodeButtons({runLoading, handleRun, handleStop, handleDownload, handleUpload, sx}) {
     return (
-      <Box id="code-buttons" sx={{...sx, alignItems: "center"}}>
+      <>
           <RunButton runLoading={runLoading} handleRun={handleRun} />
           <StopButton handleStop={handleStop} />
           <DownloadButton handleDownload={handleDownload} />
           <UploadButton handleUpload={handleUpload} />
-      </Box>
+      </>
     )
 };
