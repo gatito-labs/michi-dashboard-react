@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Grid from "@mui/material/Grid";
 
 import PanelSimulador from "./Simulador";
@@ -9,71 +9,90 @@ import LeftPanel from "./LeftPanel";
 const DEFAULT_THEME = "default";
 const DEFAULT_LEFT_PANEL_WIDTH = 50;
 
-// CONSTANTS
-const dragImg = new Image(0, 0);
-
 // GENERATING THE IDE
 export function Ide() {
-  // IDE COMPONENTS
   const [alertType, setAlertType] = useState();
 
-  // HANDLE RESIZE (WITH DRAGGING MIDDLE BAR)
+  // variable to handle panel resize
   const [leftPanelMaxWidth, setLeftPanelMaxWidth] = useState(
     parseInt(localStorage.getItem("LPWidth")) || 50
   );
+
   const [isDragging, setIsDragging] = useState(false);
 
-  function activatePanelsPointerEvents() {
-    // funciona sin react dada la urgencia de actualizar esta propiedad
-    [...document.getElementsByClassName("panel")].forEach(
-      (element) => (element.style.pointerEvents = "auto")
-    );
-    document.getElementById("right-panel").style.pointerEvents = "auto";
-  }
+  const onMove = useCallback((clientX) => {
+    const widthPercentage = Math.floor((clientX * 100) / window.innerWidth);
 
-  function deactivatePanelsPointerEvents() {
-    // funciona sin react dada la urgencia de actualizar esta propiedad
-    [...document.getElementsByClassName("panel")].forEach(
-      (element) => (element.style.pointerEvents = "none")
-    );
-    document.getElementById("right-panel").style.pointerEvents = "none";
-  }
-
-  function onDragHandler(e) {
-    const widthPercentage = Math.floor((e.clientX * 100) / window.innerWidth);
-    if (30 <= widthPercentage && widthPercentage <= 50) {
+    if (20 <= widthPercentage && widthPercentage <= 70) {
       setLeftPanelMaxWidth(widthPercentage);
       localStorage.setItem("LPWidth", widthPercentage);
-      // if (panelSelected === BLOCKLY) {
-      // si llama a resize cuando blockly está con display: none ,
-      // entonces el workspace desaparecería, necesitando refrescar
       window.dispatchEvent(new Event("resize"));
-      // }
     }
-  }
+  }, []);
 
-  function onDragStartHandler(e) {
+  const activatePanelsPointerEvents = useCallback(() => {
+    document.getElementById("left-panel-container").style.pointerEvents =
+      "auto";
+    document.getElementById("simulator-panel-container").style.pointerEvents =
+      "auto";
+  }, []);
+
+  const deactivatePanelsPointerEvents = useCallback(() => {
+    document.getElementById("left-panel-container").style.pointerEvents =
+      "none";
+    document.getElementById("simulator-panel-container").style.pointerEvents =
+      "none";
+  }, []);
+
+  const onMouseDown = useCallback(() => {
     setIsDragging(true);
     deactivatePanelsPointerEvents();
-    e.dataTransfer.setDragImage(dragImg, 0, 0);
-  }
+  }, [deactivatePanelsPointerEvents]);
 
-  function onDragEndHandler(e) {
+  const onMouseUp = useCallback(() => {
     setIsDragging(false);
     activatePanelsPointerEvents();
-  }
+  }, [activatePanelsPointerEvents]);
 
-  function onMouseEnterDrag(e) {
-    if (!isDragging) {
-      deactivatePanelsPointerEvents();
-    }
-  }
+  const onMouseMove = useCallback(
+    (e) => {
+      if (isDragging) {
+        e.preventDefault();
+        onMove(e.clientX);
+      }
+    },
+    [isDragging, onMove]
+  );
 
-  function onMouseLeaveDrag(e) {
-    if (!isDragging) {
-      activatePanelsPointerEvents();
-    }
-  }
+  const onTouchStart = useCallback(
+    (e) => {
+      onMove(e.touches[0].clientX);
+      setIsDragging(true);
+    },
+    [onMove]
+  );
+
+  const onTouchMove = useCallback(
+    (e) => {
+      if (isDragging) {
+        e.preventDefault();
+        onMove(e.touches[0].clientX);
+      }
+    },
+    [isDragging, onMove]
+  );
+
+  useEffect(() => {
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("touchmove", onTouchMove);
+
+    return () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("touchmove", onTouchMove);
+    };
+  });
 
   // SETUP
   useEffect(() => {
@@ -83,7 +102,7 @@ export function Ide() {
   }, []);
 
   return (
-    <Grid item sx={{ width: "100%", height: "100%" }}>
+    <Grid item sx={{ position: "relative", width: "100%", height: "100%" }}>
       <Grid
         container
         direction="row"
@@ -94,20 +113,21 @@ export function Ide() {
           container
           direction="column"
           id="left-panel-container"
-          sx={{ maxWidth: `${leftPanelMaxWidth}%`, height: "100%" }}
+          sx={{
+            maxWidth: `${leftPanelMaxWidth}%`,
+            height: "100%",
+            overflowX: "hidden",
+          }}
         >
           <LeftPanel setAlertType={setAlertType} />
         </Grid>
 
         <Grid
           item
-          id="draggable"
-          draggable
-          onDragStart={onDragStartHandler}
-          onDrag={onDragHandler}
-          onDragEnd={onDragEndHandler}
-          onMouseEnter={onMouseEnterDrag}
-          onMouseLeave={onMouseLeaveDrag}
+          id="divider"
+          onMouseDown={onMouseDown}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onMouseUp}
           sx={[
             {
               height: "100%",
@@ -131,7 +151,6 @@ export function Ide() {
           id="simulator-panel-container"
           sx={{ flexGrow: 1, height: "100%" }}
         >
-          {" "}
           <PanelSimulador />{" "}
         </Grid>
       </Grid>

@@ -7,8 +7,8 @@ import { ReactTerminal } from "react-terminal";
 const textToJsx = (text) => {
   const splittedText = text.split("\n");
   const output = [];
-  splittedText.forEach(line => {
-    output.push(<Grid container fontSize={16} lineHeight={1.2} marginBottom={2}>{line}</Grid>);
+  splittedText.forEach((line, i) => {
+    output.push(<Grid container fontSize={16} lineHeight={1.2} marginBottom={2} key={i}>{line}</Grid>);
   });
   return output;
 };
