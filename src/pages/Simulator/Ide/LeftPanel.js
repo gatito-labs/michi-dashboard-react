@@ -152,22 +152,14 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         </Panel>
 
         <Panel selected={panelSelected === EDITOR}>
-          <Grid container direction="column">
-            <Grid item sx={{ flexGrow: 2, width: "100%" }}>
+          <Grid container direction="column" overflow="hidden">
+            <Grid item sx={{ flexGrow: 2, width: "100%", overflow: "hidden" }}>
               <PanelEditor
                 handleEditorDidMount={handleEditorDidMount}
                 handleEditorChange={handleEditorChange}
               />
             </Grid>
-
-            <Grid
-              item
-              height="50%"
-              width="100%"
-              display={terminalOutput ? "block" : "none"}
-            >
-              <Terminal output={terminalOutput} />
-            </Grid>
+            <Terminal output={terminalOutput} />
           </Grid>
         </Panel>
 

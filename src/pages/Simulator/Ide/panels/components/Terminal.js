@@ -1,6 +1,8 @@
-import { memo } from "react";
-import { Grid } from "@mui/material";
+import { memo, useState } from "react";
+import { Grid, ButtonBase } from "@mui/material";
 import { ReactTerminal } from "react-terminal";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 
 // esta terminal no viene implementada con saltos de línea, por lo que,
 // debemos simularlo nosotros con JSX [solución entregada por el autor de react-terminal]
@@ -8,24 +10,44 @@ const textToJsx = (text) => {
   const splittedText = text.split("\n");
   const output = [];
   splittedText.forEach((line, i) => {
-    output.push(<Grid container fontSize={16} lineHeight={1.2} marginBottom={2} key={i}>{line}</Grid>);
+    output.push(<Grid fontSize={16} lineHeight={1} marginBottom={2} key={i}>{line}</Grid>);
   });
   return output;
 };
 
-const Terminal = memo(({output}) => {
+const Terminal = ({output}) => {
+  const [hidden, setHidden] = useState(false);
   const formattedOutput = textToJsx(output);
-  // zIndex de blockly es superior a 60 al parecer
+
+  console.log("terminalaaalalal");
   
   return (
-    <Grid height="100%">
-      <ReactTerminal
-        welcomeMessage={formattedOutput}
-        enableInput={false}
-        prompt=""
-      />
+    <Grid width="100%" height={hidden ? "25px" : "50%"} position="relative">
+      <Grid
+        backgroundColor="#e0dcdc"
+        height="25px"
+        width="100%"
+        position="absolute"
+        zIndex="1"
+        textAlign="center"
+      >
+        <ButtonBase
+          aria-label="hide terminal"
+          onClick={() => setHidden(!hidden)}
+          sx={{height:"100%", width:"100%"}}>
+          <KeyboardArrowDownIcon />
+        </ButtonBase>
+      </Grid>
+      {
+        hidden ||
+        <ReactTerminal
+          welcomeMessage={formattedOutput}
+          enableInput={false}
+          prompt=""
+        />
+      }
     </Grid>
   );
-});
+};
 
 export default Terminal; 
