@@ -1,5 +1,5 @@
-export function sendCodeToRobot({code, onLogMessage, onSuccessMessage, onErrorMessage, onFinish}) {
-  const ws = new WebSocket("ws://localhost:9999/");
+export function sendCodeToRobot({ws_url, code, onLogMessage, onSuccessMessage, onErrorMessage, onFinish}) {
+  const ws = new WebSocket(ws_url);
 
   ws.onopen = event => {
     ws.send(code);

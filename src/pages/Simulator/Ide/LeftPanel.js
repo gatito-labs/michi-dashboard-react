@@ -16,6 +16,7 @@ import PanelDocumentacion from "./panels/Documentacion";
 import Terminal from "./panels/components/Terminal";
 
 import { sendCodeToRobot } from "./services/GazeboSocket";
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 // ENUM PANEL
@@ -74,10 +75,13 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     setTerminalOutput(terminalOutput + "\n" + output);
   };
 
+  const { user } = useAuth0();
+
   const handleRun = () => {
     setRunLoading(true);
     setOutput("Subiendo código");
     sendCodeToRobot({
+      ws_url: `ws://app.gatitolabs.cl/user/${user.email}/proxy/9999`,
       code: editorRef.current.getValue(),
       onLogMessage: msg => {
         addOutput(msg);
