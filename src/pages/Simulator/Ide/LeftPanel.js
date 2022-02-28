@@ -15,6 +15,9 @@ import PanelDocumentacion from "./panels/Documentacion";
 
 import Terminal from "./panels/components/Terminal";
 
+import { sendCodeToRobot } from "./services/GazeboSocket";
+
+
 // ENUM PANEL
 const BLOCKLY = 0;
 const EDITOR = 1;
@@ -67,41 +70,32 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     setTerminalOutput("" + output);
   }, []);
 
-  const handleRun = useCallback(() => {
+  const addOutput = (output) => {
+    setTerminalOutput(terminalOutput + "\n" + output);
+  };
+
+  const handleRun = () => {
     setRunLoading(true);
     setOutput("Subiendo código");
-
-    let formData = new FormData();
-    formData.append("arduino_code", editorRef.current.getValue());
-
-    fetch(`${process.env.REACT_APP_FLASK_URL}`, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
+    sendCodeToRobot({
+      code: editorRef.current.getValue(),
+      onLogMessage: msg => {
+        addOutput(msg);
+      },
+      onSuccessMessage: msg => {
+        addOutput(msg);
+        setSuccessAlert();
+      },
+      onErrorMessage: msg => {
+        setOutput(msg);
+        setErrorAlert();
+      },
+      onFinish: () => {
         setRunLoading(false);
-        return response.json();
-      })
-      .then((data) => {
-        setRunLoading(false);
-        console.log("STDOUT:\n", data.stdout); // outputs del compilador/intérprete del servidor
-        console.log("STDERR:\n", data.stderr); // errores del compilador/intérprete del servidor
+      },
+    });
+  };
 
-        if (data.stderr !== "No Error") {
-          setAlertType("error");
-          setOutput(data.stderr);
-        } else {
-          setAlertType("success");
-          setOutput(data.stdout);
-        }
-      })
-      .catch((error) => {
-        setRunLoading(false);
-        setAlertType("error");
-        console.log("Error en fetch:\n", error);
-        setOutput("Error", error);
-      });
-  }, [setAlertType, setOutput]);
 
   const handleStop = useCallback(() => {
     console.log("parar función");
@@ -130,6 +124,15 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
     fileReader.readAsText(file);
   }, []);
+
+  // HANDLING ALERTS
+  function setSuccessAlert() {
+    setAlertType("success");
+  }
+
+  function setErrorAlert() {
+    setAlertType("error");
+  }
 
   return (
     <>
