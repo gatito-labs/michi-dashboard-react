@@ -10,12 +10,12 @@ const textToJsx = (text) => {
   const splittedText = text.split("\n");
   const output = [];
   splittedText.forEach((line, i) => {
-    output.push(<Grid fontSize={16} lineHeight={1} marginBottom={2} key={i}>{line}</Grid>);
+    output.push(<Grid fontSize={16} lineHeight={1} marginLeft={1} marginBottom={2} key={i}>{line}</Grid>);
   });
   return output;
 };
 
-const Terminal = ({output}) => {
+const Terminal = memo(({output}) => {
   const [hidden, setHidden] = useState(false);
   const formattedOutput = textToJsx(output);
 
@@ -48,6 +48,6 @@ const Terminal = ({output}) => {
       }
     </Grid>
   );
-};
+});
 
 export default Terminal; 

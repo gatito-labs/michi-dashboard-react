@@ -35,7 +35,13 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const [runLoading, setRunLoading] = useState(false);
   const [terminalOutput, setTerminalOutput] = useState(
     "Output de ejemplo,\nesta terminal necesita usar el símbolo \\n para\nsimular el salto de línea.\n\nEsta terminal no se mostrará si no existe un mensaje impreso."
-  );
+    );
+  const [terminalLine, setTerminalLine] = useState("");
+
+  useEffect(() => {
+    setTerminalOutput(terminalOutput + "\n" + terminalLine);
+  }, [terminalLine]); // soluciona el bug de función estática y terminal que no updatea (habrá otra forma directa?)
+
   const [panelSelected, setPanelSelected] = useState(
     parseInt(localStorage.getItem("panelSelected")) || 0
   );
@@ -67,31 +73,24 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   }, []);
 
   // HANDLING CODE BUTTONS
-  const setOutput = useCallback((output) => {
-    setTerminalOutput("" + output);
-  }, []);
 
-  const addOutput = (output) => {
-    setTerminalOutput(terminalOutput + "\n" + output);
-  };
-
-  const { user } = useAuth0();
+  const user_email = useAuth0().user.email;
 
   const handleRun = () => {
     setRunLoading(true);
-    setOutput("Subiendo código");
+    setTerminalOutput("Subiendo código");
     sendCodeToRobot({
-      ws_url: `ws://app.gatitolabs.cl/user/${user.email}/proxy/9999`,
+      ws_url: `ws://app.gatitolabs.cl/user/${user_email}/proxy/9999`,
       code: editorRef.current.getValue(),
       onLogMessage: msg => {
-        addOutput(msg);
+        setTerminalLine(msg);
       },
       onSuccessMessage: msg => {
-        addOutput(msg);
+        setTerminalLine(msg);
         setSuccessAlert();
       },
       onErrorMessage: msg => {
-        setOutput(msg);
+        setTerminalLine(msg);
         setErrorAlert();
       },
       onFinish: () => {
