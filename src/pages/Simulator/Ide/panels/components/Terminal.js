@@ -3,6 +3,7 @@ import { Grid, ButtonBase } from "@mui/material";
 import { ReactTerminal } from "react-terminal";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import TerminalIcon from "@mui/icons-material/Terminal";
 
 // esta terminal no viene implementada con saltos de línea, por lo que,
 // debemos simularlo nosotros con JSX [solución entregada por el autor de react-terminal]
@@ -55,11 +56,12 @@ const Terminal = memo(({ output, onHide }) => {
           }}
           sx={{ height: "100%", width: "100%" }}
         >
+          <TerminalIcon sx={{ position: "absolute", left: "2.5%" }} />
           {hidden ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </ButtonBase>
       </Grid>
 
-      { !hidden && (
+      {!hidden && (
         <>
           <Grid>
             <ReactTerminal
