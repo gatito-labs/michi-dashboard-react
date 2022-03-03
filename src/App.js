@@ -8,7 +8,7 @@ import { LoginLanding, NotLoggedPage } from "./pages/Login/Login";
 import Layout from "./components/Layout/Layout";
 import { useAuth0 } from "@auth0/auth0-react";
 import { HubServerProvider } from "./store";
-
+import "./App.css";
 const theme = createTheme({
   palette: {
     primary: {
