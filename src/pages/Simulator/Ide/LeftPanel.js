@@ -18,7 +18,6 @@ import Terminal from "./panels/components/Terminal";
 import { sendCodeToRobot } from "./services/GazeboSocket";
 import { useAuth0 } from "@auth0/auth0-react";
 
-
 // ENUM PANEL
 const BLOCKLY = 0;
 const EDITOR = 1;
@@ -33,18 +32,18 @@ const Tab = styled(MuiTab)`
 
 export default function LeftPanel({ setAlertType, handleHide }) {
   const [runLoading, setRunLoading] = useState(false);
+  const [panelSelected, setPanelSelected] = useState(
+    parseInt(localStorage.getItem("panelSelected")) || 0
+  );
+
   const [terminalOutput, setTerminalOutput] = useState(
     "Output de ejemplo,\nesta terminal necesita usar el símbolo \\n para\nsimular el salto de línea.\n\nEsta terminal no se mostrará si no existe un mensaje impreso."
-    );
+  );
   const [terminalLine, setTerminalLine] = useState("");
 
   useEffect(() => {
     setTerminalOutput(terminalOutput + "\n" + terminalLine);
   }, [terminalLine]); // soluciona el bug de función estática y terminal que no updatea (habrá otra forma directa?)
-
-  const [panelSelected, setPanelSelected] = useState(
-    parseInt(localStorage.getItem("panelSelected")) || 0
-  );
 
   useEffect(() => {
     localStorage.setItem("panelSelected", panelSelected);
@@ -72,7 +71,9 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     localStorage.setItem("code", value);
   }, []);
 
-  // HANDLING CODE BUTTONS
+  const handleHideTerminal = useCallback(() => {
+    editorRef.current.layout({ width: "auto", height: "auto" });
+  }, [editorRef]);
 
   const user_email = useAuth0().user.email;
 
@@ -82,14 +83,14 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     sendCodeToRobot({
       ws_url: `ws://app.gatitolabs.cl/user/${user_email}/proxy/9999`,
       code: editorRef.current.getValue(),
-      onLogMessage: msg => {
+      onLogMessage: (msg) => {
         setTerminalLine(msg);
       },
-      onSuccessMessage: msg => {
+      onSuccessMessage: (msg) => {
         setTerminalLine(msg);
         setSuccessAlert();
       },
-      onErrorMessage: msg => {
+      onErrorMessage: (msg) => {
         setTerminalLine(msg);
         setErrorAlert();
       },
@@ -98,7 +99,6 @@ export default function LeftPanel({ setAlertType, handleHide }) {
       },
     });
   };
-
 
   const handleStop = useCallback(() => {
     console.log("parar función");
@@ -156,13 +156,19 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
         <Panel selected={panelSelected === EDITOR}>
           <Grid container direction="column" overflow="hidden">
-            <Grid item sx={{ flexGrow: 2, width: "100%", overflow: "hidden" }}>
+            <Grid item sx={{ flexGrow: 1, height: "50%", minHeight: "50%" }}>
               <PanelEditor
                 handleEditorDidMount={handleEditorDidMount}
                 handleEditorChange={handleEditorChange}
               />
             </Grid>
-            <Terminal output={terminalOutput} />
+
+            <Grid
+              item
+              sx={{ flexGrow: 0, maxHeight: "50%", overflowY: "auto" }}
+            >
+              <Terminal output={terminalOutput} onHide={handleHideTerminal} />
+            </Grid>
           </Grid>
         </Panel>
 
@@ -182,9 +188,9 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Bloques" key="Bloques" />
-          <Tab label="Editor" key="Editor" />
-          <Tab label="Documentación" key="Documentación" />
+          <Tab label="Bloques" />
+          <Tab label="Editor" />
+          <Tab label="Documentación" />
         </Tabs>
       </Grid>
     </>

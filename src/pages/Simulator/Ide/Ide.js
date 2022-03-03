@@ -9,7 +9,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { IconButton } from "@mui/material";
 
 // DEFAULT CONFIGS (almacenar en localstorage con algún formato estándar de configuraciones)
-const DEFAULT_THEME = "default";
+// const DEFAULT_THEME = "default";
 const DEFAULT_LEFT_PANEL_WIDTH = 50;
 
 // GENERATING THE IDE
@@ -25,7 +25,8 @@ export function Ide() {
   const [isDragging, setIsDragging] = useState(false);
 
   const onMove = useCallback((clientX) => {
-    const widthPercentage = Math.floor((clientX * 100) / window.innerWidth);
+    const widthPercentage =
+      Math.round((10 * (clientX * 100)) / window.innerWidth) / 10;
 
     if (20 <= widthPercentage && widthPercentage <= 70) {
       setLeftPanelMaxWidth(widthPercentage);
@@ -155,11 +156,18 @@ export function Ide() {
               "&:hover": {
                 backgroundColor: "gray",
               },
+
+              "&:active": {
+                backgroundColor: "gray",
+              },
             },
           ]}
         >
           {hideLeftPanel ? (
-            <IconButton onClick={() => setHideLeftPanel(false)} sx={{height: "100%"}}>
+            <IconButton
+              onClick={() => setHideLeftPanel(false)}
+              sx={{ height: "100%" }}
+            >
               <ChevronRightIcon
                 sx={{ color: "white", position: "relative", top: "-50px" }}
               />
@@ -177,7 +185,7 @@ export function Ide() {
           id="simulator-panel-container"
           sx={{ flexGrow: 1, height: "100%" }}
         >
-          <PanelSimulador />{" "}
+          <PanelSimulador />
         </Grid>
       </Grid>
 

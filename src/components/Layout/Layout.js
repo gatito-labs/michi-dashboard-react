@@ -251,10 +251,19 @@ export default function Layout(props) {
         container
         direction={"column"}
         component="main"
-        sx={{ width: "100%", height: "100%" }}
+        sx={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          left: 0,
+        }}
       >
         <Grid item component={DrawerHeader} id="headerSpacer" />
-        <Grid item component={"div"} sx={{ width: "100%", flexGrow: 1 }}>
+        <Grid
+          item
+          component={"div"}
+          sx={{ width: "100%", flexGrow: 1 }}
+        >
           {props.children}
         </Grid>
       </Grid>
