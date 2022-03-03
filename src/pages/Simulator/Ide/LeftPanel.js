@@ -17,20 +17,23 @@ import Terminal from "./panels/components/Terminal";
 
 import { sendCodeToRobot } from "./services/GazeboSocket";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useTheme } from "@mui/material/styles";
 
 // ENUM PANEL
 const BLOCKLY = 0;
 const EDITOR = 1;
 const DOCUMENTATION = 2;
 
-const Tab = styled(MuiTab)`
-  &.${tabClasses.selected} {
-    background-color: #7f2982;
+const Tab = styled(MuiTab)(
+  ({ theme }) =>
+    `&.${tabClasses.selected} {
+    background-color: ${theme.palette.primary.main};
     color: white;
-  }
-`;
+  }`
+);
 
 export default function LeftPanel({ setAlertType, handleHide }) {
+  const theme = useTheme();
   const [runLoading, setRunLoading] = useState(false);
   const [panelSelected, setPanelSelected] = useState(
     parseInt(localStorage.getItem("panelSelected")) || 0
@@ -183,7 +186,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           onChange={(event, newValue) => {
             setPanelSelected(newValue);
           }}
-          indicatorColor="secondary"
+          indicatorColor="primary"
           textColor="inherit"
           variant="fullWidth"
           aria-label="full width tabs example"

@@ -7,6 +7,8 @@ import AlertsHandler from "./panels/components/AlertsHandler";
 import LeftPanel from "./LeftPanel";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { IconButton } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+
 
 // DEFAULT CONFIGS (almacenar en localstorage con algún formato estándar de configuraciones)
 // const DEFAULT_THEME = "default";
@@ -14,6 +16,8 @@ const DEFAULT_LEFT_PANEL_WIDTH = 50;
 
 // GENERATING THE IDE
 export function Ide() {
+
+  const theme = useTheme();
   const [alertType, setAlertType] = useState();
 
   // variable to handle panel resize
@@ -146,7 +150,7 @@ export function Ide() {
               height: "100%",
               width: "10px",
               "&": {
-                backgroundColor: "#7f2982",
+                backgroundColor: theme.palette.primary.main,
                 cursor: "col-resize",
                 maxWidth: "12px",
               },

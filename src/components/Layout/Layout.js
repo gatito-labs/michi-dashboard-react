@@ -41,7 +41,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
-  backgroundColor: "#7F2982",
+  color: "#444444",
+  backgroundColor: theme.palette.primary.main,
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
@@ -159,7 +160,7 @@ export default function Layout(props) {
                       <Link
                         to="/simulator"
                         style={{
-                          color: "black",
+                          color: "inherit",
                           textDecoration: "none",
                           textTransform: "none",
                         }}
@@ -175,22 +176,28 @@ export default function Layout(props) {
               <Logo sx={{ flexGrow: 1 }} />
 
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <Link to={"/dashboard"} style={{ textDecoration: "none" }}>
+                <Link
+                  to={"/dashboard"}
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
                   <Button
                     sx={{
                       mx: 0,
-                      color: "white",
+                      color: "inherit",
                       textTransform: "none",
                     }}
                   >
                     Mis Ambientes
                   </Button>
                 </Link>
-                <Link to={"/simulator"} style={{ textDecoration: "none" }}>
+                <Link
+                  to={"/simulator"}
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
                   <Button
                     sx={{
                       mx: 0,
-                      color: "white",
+                      color: "inherit",
                       textTransform: "none",
                       display: "flex",
                       alignItems: "center",
@@ -259,11 +266,7 @@ export default function Layout(props) {
         }}
       >
         <Grid item component={DrawerHeader} id="headerSpacer" />
-        <Grid
-          item
-          component={"div"}
-          sx={{ width: "100%", flexGrow: 1 }}
-        >
+        <Grid item component={"div"} sx={{ width: "100%", flexGrow: 1 }}>
           {props.children}
         </Grid>
       </Grid>

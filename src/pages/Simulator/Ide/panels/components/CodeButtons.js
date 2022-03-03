@@ -15,7 +15,7 @@ const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    color: theme.palette.secondary.main,
+    color: theme.palette.secondary.dark,
     backgroundColor: theme.palette.common.white,
     boxShadow: theme.shadows[1],
     fontSize: 18,
@@ -87,7 +87,7 @@ const UploadButton = ({ handleUpload }) => (
 const HidePanelButton = ({ handleHide }) => (
   <CodeButtonTooltip title="Ocultar Panel Editor">
     <IconButton onClick={handleHide}>
-      <ChevronLeftIcon style={{ fill: "#7f2982", fontSize: FONT_SIZE }} />
+      <ChevronLeftIcon color="primary" sx={{ fontSize: FONT_SIZE }} />
     </IconButton>
   </CodeButtonTooltip>
 );
@@ -98,7 +98,7 @@ export default function CodeButtons({
   handleStop,
   handleDownload,
   handleUpload,
-  handleHide
+  handleHide,
 }) {
   return (
     <>

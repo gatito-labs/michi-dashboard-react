@@ -1,17 +1,27 @@
-// in src/App.js
 import * as React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider, useTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { LoginLanding, NotLoggedPage } from "./pages/Login/Login";
 import Layout from "./components/Layout/Layout";
 import { useAuth0 } from "@auth0/auth0-react";
 import { HubServerProvider } from "./store";
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#A6B2FF",
+    },
+    secondary: {
+      main: "#9BCCE8",
+    },
+  },
+});
+
 function App() {
-  const theme = useTheme();
+  // const theme = useTheme();
   const { isAuthenticated } = useAuth0();
 
   return (
