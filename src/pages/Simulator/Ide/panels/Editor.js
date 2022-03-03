@@ -17,7 +17,6 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   const onResize = useCallback(
     (width, height) => {
       if (editorRef.current) {
-        console.log(`resize ${width} ${height}`);
         editorRef.current.layout({ height, width });
       }
     },
@@ -33,7 +32,6 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   });
 
   const windowResize = useCallback(() => {
-    console.log("window resize");
     editorRef.current.layout({
       width: "auto",
       height: "auto",

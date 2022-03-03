@@ -127,6 +127,7 @@ export function Ide() {
             height: "100%",
             overflowX: "hidden",
             display: hideLeftPanel ? "none" : "flex",
+            flexWrap: "nowrap"
           }}
         >
           <LeftPanel

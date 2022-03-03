@@ -266,7 +266,7 @@ export default function Layout(props) {
         }}
       >
         <Grid item component={DrawerHeader} id="headerSpacer" />
-        <Grid item component={"div"} sx={{ width: "100%", flexGrow: 1 }}>
+        <Grid item component={"div"} sx={{ width: "100%", flexGrow: 1, height: `calc(100% - ${headerHeight}px)`, overflow: "auto"}}>
           {props.children}
         </Grid>
       </Grid>

@@ -44,7 +44,6 @@ const Terminal = memo(({ output, onHide }) => {
         backgroundColor="#e0dcdc"
         height="25px"
         width="100%"
-        position="absolute"
         zIndex="1"
         textAlign="center"
       >
@@ -63,10 +62,11 @@ const Terminal = memo(({ output, onHide }) => {
 
       {!hidden && (
         <>
-          <Grid>
+          <Grid sx={{ maxHeight: "225px", overflow: "auto" }}>
             <ReactTerminal
               welcomeMessage={formattedOutput}
               enableInput={false}
+              showControlBar={false}
               prompt=""
             />
           </Grid>

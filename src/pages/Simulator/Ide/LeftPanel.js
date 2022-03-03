@@ -40,7 +40,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   );
 
   const [terminalOutput, setTerminalOutput] = useState(
-    "Output de ejemplo,\nesta terminal necesita usar el símbolo \\n para\nsimular el salto de línea.\n\nEsta terminal no se mostrará si no existe un mensaje impreso."
+    "Output de ejemplo,\nesta terminal necesita usar el símbolo \\n para\nsimular el salto de línea.\n\nEsta terminal no se mostrará si no existe un mensaje impreso.\n a \n a \n \n a \n a \n"
   );
   const [terminalLine, setTerminalLine] = useState("");
 
@@ -158,8 +158,8 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         </Panel>
 
         <Panel selected={panelSelected === EDITOR}>
-          <Grid container direction="column" overflow="hidden">
-            <Grid item sx={{ flexGrow: 1, height: "50%", minHeight: "50%" }}>
+          <Grid container direction="column" >
+            <Grid item sx={{ flexGrow: 1, height: "20%"}}>
               <PanelEditor
                 handleEditorDidMount={handleEditorDidMount}
                 handleEditorChange={handleEditorChange}
@@ -168,7 +168,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
             <Grid
               item
-              sx={{ flexGrow: 0, maxHeight: "50%", overflowY: "auto" }}
+              sx={{ flexGrow: 0, maxHeight: "250px", overflowY: "auto" }}
             >
               <Terminal output={terminalOutput} onHide={handleHideTerminal} />
             </Grid>
