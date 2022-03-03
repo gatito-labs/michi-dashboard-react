@@ -2,6 +2,7 @@ import { memo, useState } from "react";
 import { Grid, ButtonBase } from "@mui/material";
 import { ReactTerminal } from "react-terminal";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import TerminalIcon from '@mui/icons-material/Terminal';
 
 
 // esta terminal no viene implementada con saltos de línea, por lo que,
@@ -18,8 +19,6 @@ const textToJsx = (text) => {
 const Terminal = memo(({output}) => {
   const [hidden, setHidden] = useState(false);
   const formattedOutput = textToJsx(output);
-
-  console.log("terminalaaalalal");
   
   return (
     <Grid width="100%" height={hidden ? "25px" : "50%"} position="relative">
@@ -31,10 +30,12 @@ const Terminal = memo(({output}) => {
         zIndex="1"
         textAlign="center"
       >
+        
         <ButtonBase
           aria-label="hide terminal"
           onClick={() => setHidden(!hidden)}
           sx={{height:"100%", width:"100%"}}>
+          <TerminalIcon sx={{position: "absolute", left: "2.5%"}} />
           <KeyboardArrowDownIcon />
         </ButtonBase>
       </Grid>
