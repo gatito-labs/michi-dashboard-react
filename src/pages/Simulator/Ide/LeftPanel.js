@@ -9,15 +9,14 @@ import CodeButtons from "./panels/components/CodeButtons";
 
 import { Panel } from "./panels/Panel";
 
-import PanelBloques from "./panels/Bloques";
-import PanelEditor from "./panels/Editor";
-import PanelDocumentacion from "./panels/Documentacion";
-
+import BlocklyPanel from "./panels/BlocklyPanel";
+import EditorPanel from "./panels/EditorPanel";
+import DocumentationPanel from "./panels/DocumentationPanel";
 import Terminal from "./panels/components/Terminal";
 
 import { sendCodeToRobot } from "./services/GazeboSocket";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useTheme } from "@mui/material/styles";
+// import { useTheme } from "@mui/material/styles";
 
 // ENUM PANEL
 const BLOCKLY = 0;
@@ -33,15 +32,13 @@ const Tab = styled(MuiTab)(
 );
 
 export default function LeftPanel({ setAlertType, handleHide }) {
-  const theme = useTheme();
+  // const theme = useTheme();
   const [runLoading, setRunLoading] = useState(false);
   const [panelSelected, setPanelSelected] = useState(
     parseInt(localStorage.getItem("panelSelected")) || 0
   );
 
-  const [terminalOutput, setTerminalOutput] = useState(
-    "Output de ejemplo,\nesta terminal necesita usar el símbolo \\n para\nsimular el salto de línea.\n\nEsta terminal no se mostrará si no existe un mensaje impreso.\n a \n a \n \n a \n a \n"
-  );
+  const [terminalOutput, setTerminalOutput] = useState("Terminal ");
   const [terminalLine, setTerminalLine] = useState("");
 
   useEffect(() => {
@@ -154,13 +151,13 @@ export default function LeftPanel({ setAlertType, handleHide }) {
       <Grid item sx={{ flexGrow: 2, width: "100%", overflowX: "hidden" }}>
         <Panel selected={panelSelected === BLOCKLY}>
           {/* this is because blockly-ws breaks when leftPanel is resized while blockly is not active */}
-          {panelSelected === BLOCKLY && <PanelBloques editorRef={editorRef} />}
+          {panelSelected === BLOCKLY && <BlocklyPanel editorRef={editorRef} />}
         </Panel>
 
         <Panel selected={panelSelected === EDITOR}>
           <Grid container direction="column" >
             <Grid item sx={{ flexGrow: 1, height: "20%"}}>
-              <PanelEditor
+              <EditorPanel
                 handleEditorDidMount={handleEditorDidMount}
                 handleEditorChange={handleEditorChange}
               />
@@ -176,7 +173,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         </Panel>
 
         <Panel id="documentacion" selected={panelSelected === DOCUMENTATION}>
-          <PanelDocumentacion />
+          <DocumentationPanel />
         </Panel>
       </Grid>
 

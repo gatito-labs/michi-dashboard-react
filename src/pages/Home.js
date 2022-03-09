@@ -23,14 +23,19 @@ export default function Home() {
       <Layout>
         <Routes>
           <React.Fragment>
-            <Route exact path="/dashboard" element={<Dashboard />} />
+            <Route exact path="/ambientes" element={<Dashboard />} />
+            <Route exact path="/simulador" element={<Simulator />} />
             <Route
               exact
               path="/simulator"
               element={<IframeEnv user={user} />}
             />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route exact path="/simulator2" element={<Simulator />} />
+            <Route exact path="/" element={<Navigate to="/ambientes" />} />
+            <Route
+              exact
+              path="/dashboard"
+              element={<Navigate to="/ambientes" />}
+            />
           </React.Fragment>
         </Routes>
       </Layout>

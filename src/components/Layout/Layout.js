@@ -141,7 +141,7 @@ export default function Layout(props) {
                     leftIcon={<DashboardIcon />}
                     label={
                       <Link
-                        to="/dashboard"
+                        to="/ambientes"
                         style={{
                           color: "black",
                           textDecoration: "none",
@@ -158,7 +158,7 @@ export default function Layout(props) {
                     leftIcon={<SimStatus />}
                     label={
                       <Link
-                        to="/simulator"
+                        to="/simulador"
                         style={{
                           color: "inherit",
                           textDecoration: "none",
@@ -177,7 +177,7 @@ export default function Layout(props) {
 
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <Link
-                  to={"/dashboard"}
+                  to="/ambientes"
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <Button
@@ -191,7 +191,7 @@ export default function Layout(props) {
                   </Button>
                 </Link>
                 <Link
-                  to={"/simulator"}
+                  to="/simulador"
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <Button

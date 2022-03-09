@@ -42,7 +42,7 @@ export default function PanelSimulador() {
         height="100%"
         frameBorder={0}
         src={simulatorSuccess ? simulatorUrl : failedUrl}
-      ></Iframe>
+      />
 
       <Backdrop
         id="loading"

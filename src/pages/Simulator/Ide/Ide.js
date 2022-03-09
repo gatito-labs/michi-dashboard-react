@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
-import PanelSimulador from "./Simulador";
-import AlertsHandler from "./panels/components/AlertsHandler";
-import LeftPanel from "./LeftPanel";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { IconButton } from "@mui/material";
+
+import LeftPanel from "./LeftPanel";
+import SimulatorPanel from "./SimulatorPanel";
+import AlertsHandler from "./panels/components/AlertsHandler";
+
 import { useTheme } from "@mui/material/styles";
 
 
@@ -190,7 +191,7 @@ export function Ide() {
           id="simulator-panel-container"
           sx={{ flexGrow: 1, height: "100%" }}
         >
-          <PanelSimulador />
+          <SimulatorPanel />
         </Grid>
       </Grid>
 
