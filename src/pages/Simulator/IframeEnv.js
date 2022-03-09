@@ -2,9 +2,12 @@ import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Iframe from "react-iframe";
 import Alert from "@mui/material/Alert";
+import { useHubServer } from "../../store";
 
-const IframeEnv = ({ user, loadingServerStatus, serverRunning }) => {
-  if (loadingServerStatus || !serverRunning) {
+const IframeEnv = ({ user }) => {
+  const { loadingStatus, serverRunning } = useHubServer();
+
+  if (loadingStatus || !serverRunning) {
     return (
       <Grid
         container
@@ -17,14 +20,15 @@ const IframeEnv = ({ user, loadingServerStatus, serverRunning }) => {
           padding: "3em",
         }}
       >
-        {loadingServerStatus ? (
+        {loadingStatus ? (
           <Grid item>
             <CircularProgress />
           </Grid>
         ) : (
           <Grid item>
             <Alert severity="error" sx={{ marginBottom: "2em" }}>
-              No hay ningún ambiente de simulación corriendo, debes iniciar un ambiente en "Mis Ambientes".
+              No hay ningún ambiente de simulación corriendo, debes iniciar un
+              ambiente en "Mis Ambientes".
             </Alert>
           </Grid>
         )}
@@ -38,7 +42,7 @@ const IframeEnv = ({ user, loadingServerStatus, serverRunning }) => {
         frameBorder="0"
         height="100%"
         width="100%"
-        sx={{border: "none"}}
+        sx={{ border: "none" }}
       />
     );
   }
