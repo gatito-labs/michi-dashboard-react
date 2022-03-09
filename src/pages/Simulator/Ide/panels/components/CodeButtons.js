@@ -24,16 +24,6 @@ const LightTooltip = styled(({ className, ...props }) => (
   },
 }));
 
-const BootstrapTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.black,
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.black,
-  },
-}));
 
 const CodeButtonTooltip = ({ title, children }) => (
   <LightTooltip title={title} arrow disableInteractive followCursor>

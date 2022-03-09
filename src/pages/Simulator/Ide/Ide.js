@@ -102,7 +102,7 @@ export function Ide() {
       document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("touchmove", onTouchMove);
     };
-  });
+  }, [onMouseMove, onMouseUp, onTouchMove]);
 
   // SETUP
   useEffect(() => {

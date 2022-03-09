@@ -42,7 +42,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const [terminalLine, setTerminalLine] = useState("");
 
   useEffect(() => {
-    setTerminalOutput(terminalOutput + "\n" + terminalLine);
+    setTerminalOutput((oldOutput) => oldOutput + "\n" + terminalLine);
   }, [terminalLine]); // soluciona el bug de función estática y terminal que no updatea (habrá otra forma directa?)
 
   useEffect(() => {
@@ -155,8 +155,8 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         </Panel>
 
         <Panel selected={panelSelected === EDITOR}>
-          <Grid container direction="column" >
-            <Grid item sx={{ flexGrow: 1, height: "20%"}}>
+          <Grid container direction="column">
+            <Grid item sx={{ flexGrow: 1, height: "20%" }}>
               <EditorPanel
                 handleEditorDidMount={handleEditorDidMount}
                 handleEditorChange={handleEditorChange}

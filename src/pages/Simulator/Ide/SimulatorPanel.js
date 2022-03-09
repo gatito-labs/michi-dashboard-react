@@ -8,7 +8,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 export default function PanelSimulador() {
   const { user } = useAuth0();
   const [simulatorLoading, setSimulatorLoading] = useState(true);
-  const [simulatorSuccess, setSimulatorSuccess] = useState(null);
+  // const [simulatorSuccess, setSimulatorSuccess] = useState(null);
+  const simulatorSuccess = null;
 
   const simulatorUrl = `${process.env.REACT_APP_SIMULATOR_URL}/${user.email}/proxy/1234/`;
   const failedUrl = simulatorUrl; // url del mensaje personalizado de error
