@@ -3,6 +3,8 @@ import Editor from "@monaco-editor/react";
 import { useResizeDetector } from "react-resize-detector";
 import Grid from "@mui/material/Grid";
 
+import { createDependencyProposals } from "./utils/EditorUtils";
+
 const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   const editorRef = useRef();
 
@@ -10,6 +12,35 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
     (editor, monaco) => {
       editorRef.current = editor;
       handleEditorDidMount(editor, monaco);
+  
+      monaco.languages.registerCompletionItemProvider('cpp', {
+        provideCompletionItems: function (model, position) {
+          // find out if we are completing a property in the 'dependencies' object.
+          var textUntilPosition = model.getValueInRange({
+            startLineNumber: 1,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: position.column
+          });
+          var match = textUntilPosition.match(
+            ".*"
+          );
+          if (!match) {
+            return { suggestions: [] };
+          }
+          var word = model.getWordUntilPosition(position);
+          var range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn
+          };
+          return {
+            suggestions: createDependencyProposals(range, monaco)
+          };
+        }
+      });
+
     },
     [handleEditorDidMount]
   );
@@ -59,7 +90,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
     >
       <Editor
         className="panel"
-        defaultLanguage="python"
+        defaultLanguage="cpp"
         theme="vs-dark"
         onChange={handleEditorChange}
         onMount={_handleEditorDidMount}
