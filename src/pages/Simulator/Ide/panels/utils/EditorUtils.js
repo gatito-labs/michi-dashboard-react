@@ -33,7 +33,13 @@ const _createSignatureHelpResult = (commands, activeSignature, activeParameter) 
   commands.forEach(command => {
     signatures.push({
       label: `void ${command.label}`,
-      documentation: command.documentation,
+      documentation: [
+        command.documentation,
+        "",
+        command.parameters.map((parameter => (
+          parameter.label + " : " + parameter.documentation
+        ))).join("\n"),
+      ].join("\n"),
       parameters: command.parameters.map(p => ({label: p.label})),
     });
   });
@@ -83,7 +89,7 @@ const _setUpSignaturesHelp = (monaco, language) => {
     signatureHelpTriggerCharacters: ["(", ","],
     provideSignatureHelp: function(model, position, token, context) {
 
-      const match = model.getValueInRange({
+      let match = model.getValueInRange({
         startLineNumber: position.lineNumber,
         startColumn: 1,
         endLineNumber: position.lineNumber,
@@ -97,21 +103,19 @@ const _setUpSignaturesHelp = (monaco, language) => {
       const penultimateParenthesis = match.lastIndexOf("(", match.lastIndexOf("(") - 1);
       const lastParenthesis = match.lastIndexOf("(");
 
-      console.log(penultimateParenthesis, lastParenthesis);
-
       const commandName = match.slice(
         penultimateParenthesis + 1,
         lastParenthesis
       );
 
-      console.log(commandName)
-      
       const commands = _getCommands(commandName);
       
       if (commands) {
         const activeSignature = 0;
         const activeParameter = -1;
-        //const activeParameter = (match.match(",") || []).length;
+        //const activeParameter = commandFull.split(",").length - 1;
+        // también detecta las comas (,) que se encuentran dentro de strings
+        // TO-DO: resolver el bug para contar las comas efectivas que separan parámetros
         return _createSignatureHelpResult(commands, activeSignature, activeParameter);
       } else {
         return { dispose: () => {}, value: {} };
