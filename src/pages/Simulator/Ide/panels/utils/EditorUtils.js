@@ -4,7 +4,7 @@ const _getCommands = name => {
   return commands[name];
 }
 
-const _createCompletionItem = (command, range, monaco) => {
+const _createCompletionItem = (command, monaco) => {
   const args = command.parameters.map(p => p.label);
   
   return {
@@ -13,16 +13,15 @@ const _createCompletionItem = (command, range, monaco) => {
     kind: monaco.languages.CompletionItemKind.Function, // symbol
     documentation: command.documentation, // text folded at the right
     insertText: command.insertText, // text inserted when it is selected
-    range: range, // range of text that should be replaced by this completion item
     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
   }
 };
 
-const _createCompletionItems = (range, monaco) => {
+const _createCompletionItems = (monaco) => {
   const data = [];
   Object.values(commands).forEach(signatures => {
     signatures.forEach(signature => {
-      data.push(_createCompletionItem(signature, range, monaco));
+      data.push(_createCompletionItem(signature, monaco));
     })
   });
   return data;
@@ -56,29 +55,8 @@ const _createSignatureHelpResult = (commands, activeSignature, activeParameter) 
 
 const _setUpCompletionItems = (monaco, language) => {
   monaco.languages.registerCompletionItemProvider(language, {
-    provideCompletionItems: function (model, position) {
-      const match = model.getValueInRange({
-        startLineNumber: position.lineNumber,
-        startColumn: 1,
-        endLineNumber: position.lineNumber,
-        endColumn: position.column
-      });
-
-      if (!match) {
-        return { suggestions: [] };
-      }
-
-      const word = model.getWordUntilPosition(position);
-      const range = {
-        startLineNumber: position.lineNumber,
-        endLineNumber: position.lineNumber,
-        startColumn: word.startColumn,
-        endColumn: word.endColumn
-      };
-
-      return {
-        suggestions: _createCompletionItems(range, monaco)
-      };
+    provideCompletionItems: function() {
+      return { suggestions: _createCompletionItems(monaco) }
     }
   });
 };
@@ -124,7 +102,41 @@ const _setUpSignaturesHelp = (monaco, language) => {
   });
 };
 
+export function setUpArduinoCompletions(monaco) {
+  monaco.languages.registerCompletionItemProvider("cpp", {
+    provideCompletionItems: function() {
+      return {
+        suggestions: [
+          {
+            label: "setup",
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: [
+              "void setup() {",
+              "\t$0",
+              "}",
+            ].join("\n"),
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            detail: "Setup Function",
+          },
+          {
+            label: "loop",
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: [
+              "void loop() {",
+              "\t$0",
+              "}",
+            ].join("\n"),
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            detail: "Loop Function",
+          },
+        ]
+      };
+    }
+  });
+}
+
 export default function setUpMustakisEditor(monaco) {
   _setUpCompletionItems(monaco, "cpp");
   _setUpSignaturesHelp(monaco, "cpp");
+  setUpArduinoCompletions(monaco);
 };
