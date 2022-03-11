@@ -1,0 +1,371 @@
+{
+    "inicializarMovimiento": [
+        {
+            "label": "inicializarMovimiento()",
+            "documentation": "Inicia el movimiento del robot",
+            "insertText": "inicializarMovimiento()",
+            "name": "inicializarMovimiento",
+            "parameters": []
+        }
+    ],
+    "inicializarCabeza": [
+        {
+            "label": "inicializarCabeza()",
+            "documentation": "Inicia la cabeza del robot",
+            "insertText": "inicializarCabeza()",
+            "name": "inicializarCabeza",
+            "parameters": []
+        }
+    ],
+    "inicializarGolpe": [
+        {
+            "label": "inicializarGolpe()",
+            "documentation": "Inicia la palanca del robot",
+            "insertText": "inicializarGolpe()",
+            "name": "inicializarGolpe",
+            "parameters": []
+        }
+    ],
+    "inicializarSensores": [
+        {
+            "label": "inicializarSensores()",
+            "documentation": "Inicia los sensores del robot",
+            "insertText": "inicializarSensores()",
+            "name": "inicializarSensores",
+            "parameters": []
+        }
+    ],
+    "inicializarPantalla": [
+        {
+            "label": "inicializarPantalla()",
+            "documentation": "Inicia la pantalla del robot",
+            "insertText": "inicializarPantalla()",
+            "name": "inicializarPantalla",
+            "parameters": []
+        }
+    ],
+    "retroceder": [
+        {
+            "label": "retroceder(vel)",
+            "documentation": "Retrocede a la velocidad “vel”",
+            "insertText": "retroceder(${1:vel})",
+            "name": "retroceder",
+            "parameters": [
+                {
+                    "label": "vel",
+                    "documentation": "Velocidad lineal"
+                }
+            ]
+        },
+        {
+            "label": "retroceder(izq, der)",
+            "documentation": "Retrocede a diferentes velocidades según “izq” y “der”",
+            "insertText": "retroceder(${1:izq},${2:der})",
+            "name": "retroceder",
+            "parameters": [
+                {
+                    "label": "izq",
+                    "documentation": "Velocidad rueda izquierda"
+                },
+                {
+                    "label": "der",
+                    "documentation": "Velocidad rueda derecha"
+                }
+            ]
+        }
+    ],
+    "avanzar": [
+        {
+            "label": "avanzar(vel)",
+            "documentation": "Avanza a la velocidad “vel”",
+            "insertText": "avanzar(${1:vel})",
+            "name": "avanzar",
+            "parameters": [
+                {
+                    "label": "vel",
+                    "documentation": "Velocidad lineal"
+                }
+            ]
+        },
+        {
+            "label": "avanzar(izq, der)",
+            "documentation": "Avanza a diferentes velocidades según “izq” y “der”",
+            "insertText": "avanzar(${1:izq}, ${2:der})",
+            "name": "avanzar",
+            "parameters": [
+                {
+                    "label": "izq",
+                    "documentation": "Velocidad rueda izquierda"
+                },
+                {
+                    "label": "der",
+                    "documentation": "Velocidad rueda derecha"
+                }
+            ]
+        }
+    ],
+    "mover": [
+        {
+            "label": "mover(izq, der)",
+            "documentation": "Se mueve a diferentes velocidades según “izq” y “der”",
+            "insertText": "mover(${1:izq}, ${2:der})",
+            "name": "mover",
+            "parameters": [
+                {
+                    "label": "izq",
+                    "documentation": "Velocidad rueda izquierda"
+                },
+                {
+                    "label": "der",
+                    "documentation": "Velocidad rueda derecha"
+                }
+            ]
+        }
+    ],
+    "detenerse": [
+        {
+            "label": "detenerse()",
+            "documentation": "Detiene el movimiento del robot",
+            "insertText": "detenerse()",
+            "name": "detenerse",
+            "parameters": []
+        }
+    ],
+    "girarDerecha": [
+        {
+            "label": "girarDerecha(vel)",
+            "documentation": "Gira hacia la derecha sobre su eje",
+            "insertText": "girarDerecha(${1:vel})",
+            "name": "girarDerecha",
+            "parameters": [
+                {
+                    "label": "vel",
+                    "documentation": "Velocidad angular"
+                }
+            ]
+        }
+    ],
+    "girarIzquierda": [
+        {
+            "label": "girarIzquierda(vel)",
+            "documentation": "Gira hacia la izquierda sobre su eje",
+            "insertText": "girarIzquierda(${1:vel})",
+            "name": "girarIzquierda",
+            "parameters": [
+                {
+                    "label": "vel",
+                    "documentation": "Velocidad angular"
+                }
+            ]
+        }
+    ],
+    "moverServoYaw": [
+        {
+            "label": "moverServoYaw(pos)",
+            "documentation": "mueve la cabeza hacia los lados (valores entre 0 y 180)",
+            "insertText": "moverServoYaw(${1:pos})",
+            "name": "moverServoYaw",
+            "parameters": [
+                {
+                    "label": "pos",
+                    "documentation": "Posición [0 - 180]"
+                }
+            ]
+        }
+    ],
+    "moverServoPitch": [
+        {
+            "label": "moverServoPitch(pos)",
+            "documentation": "mueve la cabeza hacia arriba o abajo (valores entre 0 y 90)",
+            "insertText": "moverServoPitch(${1:pos})",
+            "name": "moverServoPitch",
+            "parameters": [
+                {
+                    "label": "pos",
+                    "documentation": "Posición [0 - 90]"
+                }
+            ]
+        }
+    ],
+    "moverServoGolpe": [
+        {
+            "label": "moverServoGolpe(pos)",
+            "documentation": "mueve la palanca del robot (valores -1, 0 o 1)",
+            "insertText": "moverServoGolpe(${1:pos})",
+            "name": "moverServoGolpe",
+            "parameters": [
+                {
+                    "label": "pos",
+                    "documentation": "Posición [-1, 0, 1]"
+                }
+            ]
+        }
+    ],
+    "botonInicio": [
+        {
+            "label": "botonInicio()",
+            "documentation": "Enciende el robot",
+            "insertText": "botonInicio()",
+            "name": "botonInicio",
+            "parameters": []
+        }
+    ],
+    "leerBoton": [
+        {
+            "label": "leerBoton()",
+            "documentation": "Lee el sensor de tacto",
+            "insertText": "leerBoton()",
+            "name": "leerBoton",
+            "parameters": []
+        }
+    ],
+    "leerDistanciaSonar": [
+        {
+            "label": "leerDistanciaSonar()",
+            "documentation": "Lee la distancia del ultrasonido",
+            "insertText": "leerDistanciaSonar()",
+            "name": "leerDistanciaSonar",
+            "parameters": []
+        }
+    ],
+    "leerSensorLineaIzquierdo": [
+        {
+            "label": "leerSensorLineaIzquierdo()",
+            "documentation": "Lee el sensor de línea izquierdo",
+            "insertText": "leerSensorLineaIzquierdo()",
+            "name": "leerSensorLineaIzquierdo",
+            "parameters": []
+        }
+    ],
+    "leerSensorLineaCentral": [
+        {
+            "label": "leerSensorLineaCentral()",
+            "documentation": "Lee el sensor de línea central",
+            "insertText": "leerSensorLineaCentral()",
+            "name": "leerSensorLineaCentral",
+            "parameters": []
+        }
+    ],
+    "leerSensorLineaDerecho": [
+        {
+            "label": "leerSensorLineaDerecho()",
+            "documentation": "Lee el sensor de línea derecho",
+            "insertText": "leerSensorLineaDerecho()",
+            "name": "leerSensorLineaDerecho",
+            "parameters": []
+        }
+    ],
+    "leerSensorObstaculoIzquierdo": [
+        {
+            "label": "leerSensorObstaculoIzquierdo()",
+            "documentation": "Lee el sensor de obstáculo izquierdo",
+            "insertText": "leerSensorObstaculoIzquierdo()",
+            "name": "leerSensorObstaculoIzquierdo",
+            "parameters": []
+        }
+    ],
+    "leerSensorObstaculoDerecho": [
+        {
+            "label": "leerSensorObstaculoDerecho()",
+            "documentation": "Lee el sensor de obstáculo derecho",
+            "insertText": "leerSensorObstaculoDerecho()",
+            "name": "leerSensorObstaculoDerecho",
+            "parameters": []
+        }
+    ],
+    "escribirPantalla": [
+        {
+            "label": "escribirPantalla(col, fila, texto)",
+            "documentation": "Escribe por pantalla el texto ingresado",
+            "insertText": "escribirPantalla(${1:col}, ${2:fila}, ${3:texto})",
+            "name": "escribirPantalla",
+            "parameters": [
+                {
+                    "label": "col",
+                    "documentation": "Índice de la columna"
+                },
+                {
+                    "label": "fila",
+                    "documentation": "Índice de la fila"
+                },
+                {
+                    "label": "texto",
+                    "documentation": "Texto a escribir"
+                }
+            ]
+        }
+    ],
+    "apagarPantalla": [
+        {
+            "label": "apagarPantalla()",
+            "documentation": "Apaga la pantalla",
+            "insertText": "apagarPantalla()",
+            "name": "apagarPantalla",
+            "parameters": []
+        }
+    ],
+    "prenderPantalla": [
+        {
+            "label": "prenderPantalla()",
+            "documentation": "Enciende la pantalla",
+            "insertText": "prenderPantalla()",
+            "name": "prenderPantalla",
+            "parameters": []
+        }
+    ],
+    "borrarPantalla": [
+        {
+            "label": "borrarPantalla()",
+            "documentation": "Borra lo escrito por pantalla",
+            "insertText": "borrarPantalla()",
+            "name": "borrarPantalla",
+            "parameters": []
+        }
+    ],
+    "apagarCabeza": [
+        {
+            "label": "apagarCabeza()",
+            "documentation": "Apaga la cabeza del robot",
+            "insertText": "apagarCabeza()",
+            "name": "apagarCabeza",
+            "parameters": []
+        }
+    ],
+    "finPrograma": [
+        {
+            "label": "finPrograma()",
+            "documentation": "Detiene todo el programa",
+            "insertText": "finPrograma()",
+            "name": "finPrograma",
+            "parameters": []
+        }
+    ],
+    "pausa": [
+        {
+            "label": "pausa(tiempo)",
+            "documentation": "Mantiene la acción anterior por “tiempo” determinado",
+            "insertText": "pausa(${1:tiempo})",
+            "name": "pausa",
+            "parameters": [
+                {
+                    "label": "tiempo",
+                    "documentation": "Tiempo en segundos para mantener la acción anterior"
+                }
+            ]
+        }
+    ],
+    "delay": [
+        {
+            "label": "delay(tiempo)",
+            "documentation": "Mantiene la acción anterior por “tiempo” determinado",
+            "insertText": "delay(${1:tiempo})",
+            "name": "delay",
+            "parameters": [
+                {
+                    "label": "tiempo",
+                    "documentation": "Tiempo en segundos para mantener la acción anterior"
+                }
+            ]
+        }
+    ]
+}
