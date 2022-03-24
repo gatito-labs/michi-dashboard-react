@@ -105,11 +105,14 @@ export const reducer = (state, action) => {
       };
 
     case GET_AVAILABLE_ENVIROMENTS:
-      console.log("setting available enviroments");
       let new_envs = {};
 
       action.payload.forEach((e) => {
         new_envs[e.name] = e;
+        new_envs[e.name]["blockly"] = new_envs[e.name]["blockly"] === "true";
+        new_envs[e.name]["editor"] = new_envs[e.name]["editor"]
+          ? new_envs[e.name]["editor"]
+          : null;
       });
 
       return { ...state, availableEnviroments: new_envs };

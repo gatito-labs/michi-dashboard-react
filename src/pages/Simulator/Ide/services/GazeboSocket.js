@@ -6,8 +6,6 @@ export function sendCodeToRobot({
   onErrorMessage,
   onFinish,
 }) {
-
-  console.log(ws_url);
   const ws = new WebSocket(ws_url);
 
   ws.onopen = () => {

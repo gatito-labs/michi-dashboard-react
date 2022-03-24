@@ -1,14 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { styled } from "@mui/system";
 import Grid from "@mui/material/Grid";
-
 import MuiTab, { tabClasses } from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 import CodeButtons from "./panels/components/CodeButtons";
-
-import { Panel } from "./panels/Panel";
-
+import Panel from "./panels/Panel";
 import BlocklyPanel from "./panels/BlocklyPanel";
 import EditorPanel from "./panels/EditorPanel";
 import DocumentationPanel from "./panels/DocumentationPanel";
@@ -16,12 +13,12 @@ import Terminal from "./panels/components/Terminal";
 
 import { sendCodeToRobot } from "./services/GazeboSocket";
 import { useAuth0 } from "@auth0/auth0-react";
-// import { useTheme } from "@mui/material/styles";
+import { useHubServer } from "../../../store";
 
 // ENUM PANEL
-const BLOCKLY = 0;
-const EDITOR = 1;
-const DOCUMENTATION = 2;
+const BLOCKLY = "blockly";
+const EDITOR = "editor";
+const DOCUMENTATION = "docs";
 
 const ARDUINO_TEMPLATE_CODE = `
 // En este editor debes escribir código arduino.
@@ -43,13 +40,10 @@ void setup(){
 void loop(){
 
 }
-`
+`;
 
 const getWsUrl = (user_email) => {
-  if (
-    !process.env.REACT_APP_WS_URL  &&
-    process.env.REACT_APP_WS_URL_PREPEND
-  ) {
+  if (!process.env.REACT_APP_WS_URL && process.env.REACT_APP_WS_URL_PREPEND) {
     return (
       process.env.REACT_APP_WS_URL_PREPEND +
       user_email +
@@ -69,10 +63,20 @@ const Tab = styled(MuiTab)(
 );
 
 export default function LeftPanel({ setAlertType, handleHide }) {
-  // const theme = useTheme();
+  const { serverRunning, runningEnviroment, availableEnviroments } =
+    useHubServer();
+
+  const [enviromentConfig, setEnviromentConfig] = useState(null);
+
+  useEffect(() => {
+    if (serverRunning) {
+      setEnviromentConfig(availableEnviroments[runningEnviroment]);
+    }
+  }, [serverRunning, runningEnviroment, availableEnviroments]);
+
   const [runLoading, setRunLoading] = useState(false);
   const [panelSelected, setPanelSelected] = useState(
-    parseInt(localStorage.getItem("panelSelected")) || 0
+    parseInt(localStorage.getItem("panelSelected")) || "docs"
   );
 
   const [terminalOutput, setTerminalOutput] = useState("Terminal ");
@@ -104,7 +108,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
     const savedCode = localStorage.getItem("code");
 
-    editorRef.current.setValue( savedCode ? savedCode : ARDUINO_TEMPLATE_CODE);
+    editorRef.current.setValue(savedCode ? savedCode : ARDUINO_TEMPLATE_CODE);
   }, []);
 
   const handleEditorChange = useCallback((value, _) => {
@@ -124,7 +128,6 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const onSuccessMessage = useCallback(
     (msg) => {
       setTerminalLine(msg);
-      console.log("setting alert type");
       setAlertType("success");
     },
     [setAlertType]
@@ -132,7 +135,6 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const onErrorMessage = useCallback(
     (msg) => {
       setTerminalLine(msg);
-      console.log("setting alert type error");
       setAlertType("error");
     },
     [setAlertType]
@@ -143,9 +145,6 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
   const handleRun = useCallback(() => {
     let url = getWsUrl(user_email);
-    console.log(user_email);
-    console.log(url);
-
     setRunLoading(true);
     setTerminalOutput("Subiendo código");
 
@@ -199,10 +198,14 @@ export default function LeftPanel({ setAlertType, handleHide }) {
       />
 
       <Grid item sx={{ flexGrow: 2, width: "100%", overflowX: "hidden" }}>
-        <Panel selected={panelSelected === BLOCKLY}>
-          {/* this is because blockly-ws breaks when leftPanel is resized while blockly is not active */}
-          {panelSelected === BLOCKLY && <BlocklyPanel editorRef={editorRef} />}
-        </Panel>
+        {enviromentConfig && enviromentConfig.blockly && (
+          <Panel selected={panelSelected === BLOCKLY}>
+            {/* this is because blockly-ws breaks when leftPanel is resized while blockly is not active */}
+            {panelSelected === BLOCKLY && (
+              <BlocklyPanel editorRef={editorRef} />
+            )}
+          </Panel>
+        )}
 
         <Panel selected={panelSelected === EDITOR}>
           <Grid container direction="column">
@@ -238,9 +241,13 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Bloques" />
-          <Tab label="Editor" />
-          <Tab label="Documentación" />
+          {enviromentConfig && enviromentConfig.blockly && (
+            <Tab value={BLOCKLY} label="Bloques" />
+          )}
+          {enviromentConfig && enviromentConfig.editor && (
+            <Tab value={EDITOR} label="Editor" />
+          )}
+          <Tab value={DOCUMENTATION} label="Documentación" />
         </Tabs>
       </Grid>
     </>
