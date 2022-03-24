@@ -24,7 +24,6 @@ const LightTooltip = styled(({ className, ...props }) => (
   },
 }));
 
-
 const CodeButtonTooltip = ({ title, children }) => (
   <LightTooltip title={title} arrow disableInteractive followCursor>
     {children}
@@ -35,7 +34,7 @@ const RunButton = ({ runLoading, handleRun }) => (
   <CodeButtonTooltip title="Lanzar programa">
     <IconButton onClick={handleRun} disabled={runLoading}>
       {runLoading ? (
-        <CircularProgress color="success" style={{ fontSize: FONT_SIZE }} />
+        <CircularProgress color="success" size={FONT_SIZE} />
       ) : (
         <PlayCircleIcon style={{ fill: "green", fontSize: FONT_SIZE }} />
       )}
