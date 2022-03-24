@@ -23,6 +23,43 @@ const BLOCKLY = 0;
 const EDITOR = 1;
 const DOCUMENTATION = 2;
 
+const ARDUINO_TEMPLATE_CODE = `
+// En este editor debes escribir código arduino.
+
+#include <KnightRoboticsLibs_Iroh.h>
+#include <NewPing.h>
+#include <Servo.h>
+#include <Wire.h>         
+#include <LiquidCrystal_I2C.h>
+
+int IR_Derecho;
+int IR_Izquierdo;
+
+void setup(){
+    inicializarMovimientoRobot();
+    botonInicio();
+}
+
+void loop(){
+
+}
+`
+
+const getWsUrl = (user_email) => {
+  if (
+    !process.env.REACT_APP_WS_URL  &&
+    process.env.REACT_APP_WS_URL_PREPEND
+  ) {
+    return (
+      process.env.REACT_APP_WS_URL_PREPEND +
+      user_email +
+      process.env.REACT_APP_WS_URL_APPEND
+    );
+  } else {
+    return process.env.REACT_APP_WS_URL;
+  }
+};
+
 const Tab = styled(MuiTab)(
   ({ theme }) =>
     `&.${tabClasses.selected} {
@@ -64,7 +101,10 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const handleEditorDidMount = useCallback((editor, monaco) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
-    editorRef.current.setValue(localStorage.getItem("code"));
+
+    const savedCode = localStorage.getItem("code");
+
+    editorRef.current.setValue( savedCode ? savedCode : ARDUINO_TEMPLATE_CODE);
   }, []);
 
   const handleEditorChange = useCallback((value, _) => {
@@ -77,28 +117,47 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
   const user_email = useAuth0().user.email;
 
-  const handleRun = () => {
+  const onLogMessage = useCallback((msg) => {
+    setTerminalLine(msg);
+  }, []);
+
+  const onSuccessMessage = useCallback(
+    (msg) => {
+      setTerminalLine(msg);
+      console.log("setting alert type");
+      setAlertType("success");
+    },
+    [setAlertType]
+  );
+  const onErrorMessage = useCallback(
+    (msg) => {
+      setTerminalLine(msg);
+      console.log("setting alert type error");
+      setAlertType("error");
+    },
+    [setAlertType]
+  );
+  const onFinish = useCallback(() => {
+    setRunLoading(false);
+  }, []);
+
+  const handleRun = useCallback(() => {
+    let url = getWsUrl(user_email);
+    console.log(user_email);
+    console.log(url);
+
     setRunLoading(true);
     setTerminalOutput("Subiendo código");
+
     sendCodeToRobot({
-      ws_url: `ws://app.gatitolabs.cl/user/${user_email}/proxy/9999`,
+      ws_url: url,
       code: editorRef.current.getValue(),
-      onLogMessage: (msg) => {
-        setTerminalLine(msg);
-      },
-      onSuccessMessage: (msg) => {
-        setTerminalLine(msg);
-        setSuccessAlert();
-      },
-      onErrorMessage: (msg) => {
-        setTerminalLine(msg);
-        setErrorAlert();
-      },
-      onFinish: () => {
-        setRunLoading(false);
-      },
+      onLogMessage: onLogMessage,
+      onSuccessMessage: onSuccessMessage,
+      onErrorMessage: onErrorMessage,
+      onFinish: onFinish,
     });
-  };
+  }, [user_email, onLogMessage, onSuccessMessage, onErrorMessage, onFinish]);
 
   const handleStop = useCallback(() => {
     console.log("parar función");
@@ -127,15 +186,6 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
     fileReader.readAsText(file);
   }, []);
-
-  // HANDLING ALERTS
-  function setSuccessAlert() {
-    setAlertType("success");
-  }
-
-  function setErrorAlert() {
-    setAlertType("error");
-  }
 
   return (
     <>
@@ -180,7 +230,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
       <Grid item sx={{ width: "100%" }}>
         <Tabs
           value={panelSelected}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             setPanelSelected(newValue);
           }}
           indicatorColor="primary"

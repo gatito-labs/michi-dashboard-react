@@ -14,6 +14,8 @@ export const STOP_SERVER = "SERVER/STOP_SERVER/START";
 export const STOP_SERVER_ERROR = "SERVER/STOP_SERVER/ERROR";
 export const STOP_SERVER_SUCCESS = "SERVER/STOP_SERVER/SUCCESS";
 
+export const GET_AVAILABLE_ENVIROMENTS = "GET_AVAILABLE_ENVIROMENTS";
+
 export const initialState = {
   loadingStatus: false,
   serverRunning: false,
@@ -22,8 +24,7 @@ export const initialState = {
   stopingServer: false,
   creatingHubUser: false,
   runningEnviroment: null,
-  availableEnviroments: [],
-  error: null,
+  serverError: null,
 };
 
 export const reducer = (state, action) => {
@@ -38,7 +39,11 @@ export const reducer = (state, action) => {
       return { ...state, loadingStatus: false, ...action.payload };
 
     case CHECK_SERVER_ERROR:
-      return { ...state, loadingStatus: false, error: action.payload };
+      return {
+        ...state,
+        loadingStatus: false,
+        serverError: String(action.payload),
+      };
 
     case CREATE_HUB_USER:
       return { ...state, loadingStatus: true, creatingHubUser: true };
@@ -51,7 +56,7 @@ export const reducer = (state, action) => {
         ...state,
         loadingStatus: false,
         creatingHubUser: false,
-        error: action.payload,
+        serverError: String(action.payload),
       };
 
     case START_SERVER:
@@ -73,7 +78,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         startingServer: false,
-        error: action.payload,
+        serverError: String(action.payload),
         startingServerProgress: 0,
       };
 
@@ -92,7 +97,11 @@ export const reducer = (state, action) => {
       };
 
     case STOP_SERVER_ERROR:
-      return { ...state, stopingServer: false, error: action.payload };
+      return {
+        ...state,
+        stopingServer: false,
+        serverError: String(action.payload),
+      };
 
     default:
       return { ...state };

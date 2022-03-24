@@ -1,12 +1,21 @@
-export function sendCodeToRobot({ws_url, code, onLogMessage, onSuccessMessage, onErrorMessage, onFinish}) {
+export function sendCodeToRobot({
+  ws_url,
+  code,
+  onLogMessage,
+  onSuccessMessage,
+  onErrorMessage,
+  onFinish,
+}) {
+
+  console.log(ws_url);
   const ws = new WebSocket(ws_url);
 
-  ws.onopen = event => {
+  ws.onopen = () => {
     ws.send(code);
     console.log("Socket opened");
-  }
+  };
 
-  ws.onmessage = event => {
+  ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
     const type = data.type;
     const msg = data.msg;
@@ -18,22 +27,23 @@ export function sendCodeToRobot({ws_url, code, onLogMessage, onSuccessMessage, o
       case "success":
         onSuccessMessage(msg);
         ws.close();
-        break
+        break;
       case "error":
         onErrorMessage(msg);
         ws.close();
         break;
       default:
-    };
-  }
-  
-  ws.onclose = event => {
+    }
+  };
+
+  ws.onclose = (event) => {
     console.log("Socket closed:", event);
     onFinish();
-  }
+  };
 
-  ws.onerror = event => {
+  ws.onerror = (event) => {
     console.log("Socket error:", event);
+    onErrorMessage("Falló conexión al servidor");
     onFinish();
-  }
+  };
 }

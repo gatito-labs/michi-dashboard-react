@@ -3,6 +3,7 @@ import Editor from "@monaco-editor/react";
 import { useResizeDetector } from "react-resize-detector";
 import Grid from "@mui/material/Grid";
 
+
 const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   const editorRef = useRef();
 
@@ -59,7 +60,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
     >
       <Editor
         className="panel"
-        defaultLanguage="python"
+        defaultLanguage="c"
         theme="vs-dark"
         onChange={handleEditorChange}
         onMount={_handleEditorDidMount}

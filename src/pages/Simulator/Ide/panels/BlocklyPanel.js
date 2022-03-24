@@ -9,16 +9,17 @@ import { useBlocklyWorkspace } from "react-blockly";
 
 import toolbox from "../../../../michiblock/toolbox";
 
-const PanelBloques = React.memo(({ editorRef }) => {
+const PanelBloques = React.memo(() => {
   const blocklyRef = useRef(null);
 
   const handleOnWorkspaceDidChange = React.useCallback(
     (workspace) => {
       console.log("workspace change");
       const code = Blockly.Python.workspaceToCode(workspace);
-      if (editorRef.current) editorRef.current.setValue(code);
+      console.log(code);
+      // if (editorRef.current) editorRef.current.setValue(code);
     },
-    [editorRef]
+    []
   );
 
   const { xml } = useBlocklyWorkspace({

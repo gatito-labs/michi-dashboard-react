@@ -64,5 +64,3 @@ export default function PanelSimulador() {
     </Box>
   );
 }
-// </Box>
-// react context para obtener el user en el dominio
