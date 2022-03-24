@@ -24,6 +24,7 @@ export const initialState = {
   stopingServer: false,
   creatingHubUser: false,
   runningEnviroment: null,
+  availableEnviroments: null,
   serverError: null,
 };
 
@@ -102,6 +103,16 @@ export const reducer = (state, action) => {
         stopingServer: false,
         serverError: String(action.payload),
       };
+
+    case GET_AVAILABLE_ENVIROMENTS:
+      console.log("setting available enviroments");
+      let new_envs = {};
+
+      action.payload.forEach((e) => {
+        new_envs[e.name] = e;
+      });
+
+      return { ...state, availableEnviroments: new_envs };
 
     default:
       return { ...state };

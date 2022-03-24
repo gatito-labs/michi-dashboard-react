@@ -17,10 +17,6 @@ export function Ide() {
   const theme = useTheme();
   const [alertType, setAlertType] = useState();
 
-  useEffect(() => {
-    console.log(alertType);
-  }, [alertType]);
-
   // variable to handle panel resize
   const [leftPanelMaxWidth, setLeftPanelMaxWidth] = useState(
     parseInt(localStorage.getItem("LPWidth")) || 50

@@ -39,7 +39,7 @@ const ActiveCard = (props) => {
           <CardActions disableSpacing>
             {active && (
               <div style={{ marginLeft: "auto" }}>
-                <Link to={"/simulator"}>
+                <Link to={"/simulador"}>
                   <Button
                     variant="contained"
                     color="success"

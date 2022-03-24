@@ -15,7 +15,6 @@ export default function AlertsHandler({alertType, setAlertType}) {
   };
 
   function renderAlert() {
-    console.log(alertType);
     switch(alertType) {
       case "error":
         return (

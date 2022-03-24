@@ -46,10 +46,16 @@ export const HubServerProvider = ({ children }) => {
         let _token = res.__raw;
         setToken(_token);
 
-
+        if (res[`${process.env.REACT_APP_TOKEN_NAMESPACE}/enviroments`]) {
+          dispatch({
+            type: GET_AVAILABLE_ENVIROMENTS,
+            payload:
+              res[`${process.env.REACT_APP_TOKEN_NAMESPACE}/enviroments`],
+          });
+        }
       });
     }
-  }, [isAuthenticated, getIdTokenClaims, user]);
+  }, [isAuthenticated, getIdTokenClaims]);
 
   const ctrl = useMemo(() => new AbortController(), []);
 
