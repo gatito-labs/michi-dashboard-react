@@ -1,5 +1,3 @@
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -8,27 +6,10 @@ import StopCircleIcon from "@mui/icons-material/StopCircle";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { CodeButtonTooltip } from "../../../../../components/Tooltip";
+import { styled } from "@mui/material/styles";
 
 const FONT_SIZE = "1em";
-
-const LightTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    color: theme.palette.secondary.dark,
-    backgroundColor: theme.palette.common.white,
-    boxShadow: theme.shadows[1],
-    fontSize: 18,
-    fontWeight: "bold",
-    height: "100%",
-  },
-}));
-
-const CodeButtonTooltip = ({ title, children }) => (
-  <LightTooltip title={title} arrow disableInteractive followCursor>
-    {children}
-  </LightTooltip>
-);
 
 const RunButton = ({ runLoading, handleRun }) => (
   <CodeButtonTooltip title="Lanzar programa">

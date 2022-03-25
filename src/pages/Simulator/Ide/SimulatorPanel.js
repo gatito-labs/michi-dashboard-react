@@ -3,29 +3,22 @@ import Box from "@mui/material/Box";
 import Iframe from "react-iframe";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
+import Alert from "@mui/material/Alert";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useHubServer } from "../../../store";
+import { Link } from "react-router-dom";
 
 export default function PanelSimulador() {
   const { user } = useAuth0();
+  const { serverRunning, loadingStatus, startingServer } = useHubServer();
   const [simulatorLoading, setSimulatorLoading] = useState(true);
-  // const [simulatorSuccess, setSimulatorSuccess] = useState(null);
-  const simulatorSuccess = null;
-
   const simulatorUrl = `${process.env.REACT_APP_SIMULATOR_URL}/${user.email}/proxy/1234/`;
-  const failedUrl = simulatorUrl; // url del mensaje personalizado de error
 
   function onLoad() {
     setSimulatorLoading(false);
   }
-
-  // Chequea si se obtiene respuesta del simulador, sirve para mostrar un mensaje de error personalizado
-  /*fetch(simulatorUrl)
-  .then(function(response) {
-    setSimulatorSuccess(true);
-  })
-  .catch(function(error) {
-    setSimulatorSuccess(false);
-  })*/
 
   return (
     <Box
@@ -35,19 +28,23 @@ export default function PanelSimulador() {
       pointerEvents="auto"
       sx={{ position: "relative" }}
     >
-      <Iframe
-        onLoad={onLoad}
-        id="simuladorFrame"
-        title="Simulador Robótico - Gatitolabs"
-        width="100%"
-        height="100%"
-        frameBorder={0}
-        src={simulatorSuccess ? simulatorUrl : failedUrl}
-      />
+      {serverRunning && (
+        <Iframe
+          onLoad={onLoad}
+          id="simuladorFrame"
+          title="Simulador Robótico - Gatitolabs"
+          width="100%"
+          height="100%"
+          frameBorder={0}
+          src={simulatorUrl}
+        />
+      )}
 
       <Backdrop
         id="loading"
-        open={simulatorLoading}
+        open={
+          simulatorLoading || !serverRunning || loadingStatus || startingServer
+        }
         width="100%"
         height="100%"
         sx={{
@@ -59,7 +56,27 @@ export default function PanelSimulador() {
           zIndex: 1,
         }}
       >
-        <CircularProgress color="secondary" />
+        {!serverRunning && !loadingStatus && !startingServer ? (
+          <Alert variant="filled" severity="info">
+            <Grid
+              container
+              direction="column"
+              sx={{ alignItems: "center", gap: "1em" }}
+            >
+              <Grid item>
+                Debes seleccionar un ambiente de simulación para empezar
+              </Grid>
+
+              <Grid item>
+                <Link to="/ambientes">
+                  <Button variant="contained"> Ir a Ambientes </Button>
+                </Link>
+              </Grid>
+            </Grid>
+          </Alert>
+        ) : (
+          <CircularProgress color="secondary" />
+        )}
       </Backdrop>
     </Box>
   );
