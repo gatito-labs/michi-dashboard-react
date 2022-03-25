@@ -1,5 +1,6 @@
+import { useCallback, useState } from "react";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
+import IconButton, { iconButtonClasses } from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
@@ -12,17 +13,22 @@ import { styled } from "@mui/material/styles";
 const FONT_SIZE = "1em";
 
 const RunButton = ({ runLoading, handleRun }) => (
-  <CodeButtonTooltip title="Lanzar programa">
-    <IconButton onClick={handleRun} disabled={runLoading}>
-      {runLoading ? (
-        <CircularProgress color="success" size={FONT_SIZE} />
-      ) : (
+  <CodeButtonTooltip
+    title={runLoading ? "Subiendo Programa" : "Lanzar programa"}
+  >
+    {runLoading ? (
+      <div style={{ display: "inline-block" }}>
+        <IconButton onClick={handleRun} disabled={runLoading}>
+          <CircularProgress color="success" size={FONT_SIZE} />
+        </IconButton>
+      </div>
+    ) : (
+      <IconButton onClick={handleRun}>
         <PlayCircleIcon style={{ fill: "green", fontSize: FONT_SIZE }} />
-      )}
-    </IconButton>
+      </IconButton>
+    )}
   </CodeButtonTooltip>
 );
-
 const StopButton = ({ handleStop }) => (
   <CodeButtonTooltip title="Detener programa">
     <IconButton onClick={handleStop}>
@@ -85,10 +91,10 @@ export default function CodeButtons({
         }}
       >
         <Grid item>
-          <RunButton runLoading={runLoading} handleRun={handleRun} />
-          <StopButton handleStop={handleStop} />
-          <DownloadButton handleDownload={handleDownload} />
-          <UploadButton handleUpload={handleUpload} />
+          <RunButton id="runButton" runLoading={runLoading} handleRun={handleRun} />
+          <StopButton id="stopButton" handleStop={handleStop} />
+          <DownloadButton id="downloadButton" handleDownload={handleDownload} />
+          <UploadButton id="uploadButton" handleUpload={handleUpload} />
         </Grid>
         <Grid item sx={{ flexGrow: 1, height: "100%" }} />
         <Grid>

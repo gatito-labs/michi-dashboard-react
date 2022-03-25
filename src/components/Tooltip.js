@@ -14,8 +14,8 @@ export const LightTooltip = styled(({ className, ...props }) => (
   },
 }));
 
-export const CodeButtonTooltip = ({ title, children }) => (
-  <LightTooltip title={title} arrow followCursor>
+export const CodeButtonTooltip = ({ title, children, ...props}) => (
+  <LightTooltip title={title} arrow followCursor {...props}>
     {children}
   </LightTooltip>
 );
