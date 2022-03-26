@@ -2,7 +2,7 @@ import React, { memo, useEffect, useCallback, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { useResizeDetector } from "react-resize-detector";
 import Grid from "@mui/material/Grid";
-
+import setUpMustakisEditor from "./utils/EditorUtils";
 
 const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   const editorRef = useRef();
@@ -11,6 +11,8 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
     (editor, monaco) => {
       editorRef.current = editor;
       handleEditorDidMount(editor, monaco);
+
+      setUpMustakisEditor(monaco);
     },
     [handleEditorDidMount]
   );
@@ -61,7 +63,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
     >
       <Editor
         className="panel"
-        defaultLanguage="c"
+        defaultLanguage="cpp"
         theme="vs-dark"
         onChange={handleEditorChange}
         onMount={_handleEditorDidMount}
