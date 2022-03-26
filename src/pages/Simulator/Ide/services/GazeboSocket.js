@@ -1,6 +1,7 @@
 export function sendCodeToRobot({
   ws_url,
   code,
+  language,
   onLogMessage,
   onSuccessMessage,
   onErrorMessage,
@@ -9,7 +10,9 @@ export function sendCodeToRobot({
   const ws = new WebSocket(ws_url);
 
   ws.onopen = () => {
-    ws.send(code);
+    let msg = { type: "run", language: language, body: code };
+    console.log(msg);
+    ws.send(JSON.stringify(msg));
     console.log("Socket opened");
   };
 
@@ -18,6 +21,7 @@ export function sendCodeToRobot({
     const type = data.type;
     const msg = data.msg;
     console.log("Socket new message:", data);
+
     switch (type) {
       case "log":
         onLogMessage(msg);
