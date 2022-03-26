@@ -1,12 +1,8 @@
 import React from "react";
-
-import { useHubServer } from "../../store";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
-
-export const SimStatus = () => {
-  const { serverRunning } = useHubServer();
+export const SimStatus = ({on}) => {
   return (
-    <FiberManualRecordIcon sx={{ color: serverRunning ? "green" : "red" }} />
+    <FiberManualRecordIcon sx={{ color: on ? "green" : "red" }} />
   );
 };

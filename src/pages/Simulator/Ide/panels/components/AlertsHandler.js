@@ -1,5 +1,4 @@
 import React from "react";
-
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { AlertTitle } from "@mui/material";
@@ -10,7 +9,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function AlertsHandler({alertType, setAlertType}) {
   
-  function handleCloseAlert(event, reason) {
+  function handleCloseAlert(_event, reason) {
     if (reason === "clickaway") return;
     setAlertType(null);
   };

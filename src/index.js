@@ -18,6 +18,8 @@ ReactDOM.render(
         clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
         redirectUri={process.env.REACT_APP_AUTH0_REDIRECT_URI}
         onRedirectCallback={onRedirectCallback}
+        audience={`https://${process.env.REACT_APP_AUTH0_DOMAIN}/api/v2/`}
+        scope="read:current_user update:current_user_metadata read:roles"
         cacheLocation="localstorage"
       >
         <App />

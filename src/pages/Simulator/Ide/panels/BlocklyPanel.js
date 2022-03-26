@@ -4,27 +4,41 @@ import Grid from "@mui/material/Grid";
 import Blockly from "blockly";
 import "./Blockly.css";
 import "blockly/python";
+import * as Es from "blockly/msg/es";
 import DarkTheme from "@blockly/theme-dark";
 import { useBlocklyWorkspace } from "react-blockly";
-
 import toolbox from "../../../../michiblock/toolbox";
 
-const PanelBloques = React.memo(({ editorRef }) => {
+Blockly.setLocale(Es);
+
+const PREPEND_CODE = `
+import rospy
+from gatitolabs.iroh import Iroh
+robot = Iroh()
+`;
+
+const INITIAL_XML =
+  '<xml><block type="start" deletable="false" movable="false"></block></xml>';
+
+const PanelBloques = React.memo(({ blocklyCodeRef }) => {
   const blocklyRef = useRef(null);
 
   const handleOnWorkspaceDidChange = React.useCallback(
     (workspace) => {
-      console.log("workspace change");
       const code = Blockly.Python.workspaceToCode(workspace);
-      if (editorRef.current) editorRef.current.setValue(code);
+      blocklyCodeRef.current = PREPEND_CODE + code;
     },
-    [editorRef]
+    [blocklyCodeRef]
   );
 
   const { xml } = useBlocklyWorkspace({
     ref: blocklyRef,
     toolboxConfiguration: toolbox, // this must be a JSON toolbox definition
-    initialXml: localStorage.getItem("xml"),
+    initialXml:
+      localStorage.getItem("blocklyXML") &&
+      localStorage.getItem("blocklyXML") !== ""
+        ? localStorage.getItem("blocklyXML")
+        : INITIAL_XML,
     onWorkspaceChange: handleOnWorkspaceDidChange,
     workspaceConfiguration: {
       grid: {
@@ -45,7 +59,7 @@ const PanelBloques = React.memo(({ editorRef }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem("xml", xml);
+    localStorage.setItem("blocklyXML", xml);
   }, [xml]);
 
   return (

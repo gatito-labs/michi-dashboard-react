@@ -11,17 +11,14 @@ import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-// import SmartToyIcon from "@mui/icons-material/SmartToy";
-
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { IconMenuItem } from "mui-nested-menu";
-
 import { useAuth0 } from "@auth0/auth0-react";
 import { SimStatus } from "./SimStatus";
+import { useHubServer } from "../../store";
 
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -69,6 +66,7 @@ export default function Layout(props) {
 
   const theme = useTheme();
   const matchSM = useMediaQuery(theme.breakpoints.up("sm"));
+  const { serverRunning } = useHubServer();
 
   useEffect(() => {
     // This it to avoid keeping the anchor of the small menu if the screen is width enough
@@ -155,10 +153,10 @@ export default function Layout(props) {
                   ></IconMenuItem>
 
                   <IconMenuItem
-                    leftIcon={<SimStatus />}
+                    leftIcon={<SimStatus on={serverRunning} />}
                     label={
                       <Link
-                        to="/simulador"
+                        to={serverRunning ? "/simulador" : "#"}
                         style={{
                           color: "inherit",
                           textDecoration: "none",
@@ -191,7 +189,7 @@ export default function Layout(props) {
                   </Button>
                 </Link>
                 <Link
-                  to="/simulador"
+                  to={serverRunning ? "/simulador" : "#"}
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <Button
@@ -204,7 +202,7 @@ export default function Layout(props) {
                       flexWrap: "wrap",
                     }}
                   >
-                    Simulador <SimStatus />
+                    Simulador <SimStatus on={serverRunning} />
                   </Button>
                 </Link>
               </Box>
@@ -266,7 +264,16 @@ export default function Layout(props) {
         }}
       >
         <Grid item component={DrawerHeader} id="headerSpacer" />
-        <Grid item component={"div"} sx={{ width: "100%", flexGrow: 1, height: `calc(100% - ${headerHeight}px)`, overflow: "auto"}}>
+        <Grid
+          item
+          component={"div"}
+          sx={{
+            width: "100%",
+            flexGrow: 1,
+            height: `calc(100% - ${headerHeight}px)`,
+            overflow: "auto",
+          }}
+        >
           {props.children}
         </Grid>
       </Grid>

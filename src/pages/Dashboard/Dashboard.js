@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import EnvCard from "./EnvCard";
 import ActiveCard from "./ActiveCard";
-
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 import { useHubServer } from "../../store";
 
 function CircularProgressWithLabel(props) {
@@ -45,28 +45,15 @@ const Dashboard = () => {
     runningEnviroment,
     startServer,
     stopServer,
+    serverError,
+    availableEnviroments,
   } = useHubServer();
 
-  
   const [selectedEnv, setSelectedEnv] = useState(null);
-  const [simulationEnviroments, setSimulationEnviroments] = useState(null);
-
-  useEffect(() => {
-    fetch("./enviroments.json").then((res) => {
-      res.json().then((envs) => {
-        setSimulationEnviroments(envs);
-      });
-    });
-  }, []);
 
   return (
     <div style={{ padding: "1em" }}>
-      <Slide
-        direction="right"
-        in={loadingStatus}
-        mountOnEnter
-        unmountOnExit
-      >
+      <Slide direction="right" in={loadingStatus} mountOnEnter unmountOnExit>
         <div>
           <Grid
             container
@@ -125,18 +112,18 @@ const Dashboard = () => {
         <Grid container>
           <Grid item xl={6} md={8} xs={12}>
             {runningEnviroment !== null &&
-              simulationEnviroments !== null &&
-              simulationEnviroments[runningEnviroment] && (
+              availableEnviroments !== null &&
+              availableEnviroments[runningEnviroment] && (
                 <ActiveCard
                   active={serverRunning || serverStarting}
-                  envTitle={simulationEnviroments[runningEnviroment].title}
+                  envTitle={availableEnviroments[runningEnviroment].title}
                   summaryContent={
-                    simulationEnviroments[runningEnviroment].summaryContent
+                    availableEnviroments[runningEnviroment].summaryContent
                   }
                   expandedContent={
-                    simulationEnviroments[runningEnviroment].expandedContent
+                    availableEnviroments[runningEnviroment].expandedContent
                   }
-                  envImage={simulationEnviroments[runningEnviroment].image}
+                  envImage={availableEnviroments[runningEnviroment].image}
                   buttonDisabled={
                     loadingStatus || serverStarting || serverStopping
                   }
@@ -146,35 +133,72 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Slide>
+
+      <Slide
+        direction="right"
+        in={serverError !== null}
+        mountOnEnter
+        unmountOnExit
+      >
+        <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
+          <Alert severity="error">{serverError}</Alert>
+        </Grid>
+      </Slide>
+
       {(loadingStatus ||
         serverRunning ||
         serverStarting ||
-        serverStopping) && <Divider sx={{ margin: "2em" }} />}
+        serverStopping ||
+        serverError) && <Divider sx={{ margin: "2em" }} />}
 
-      <Grid container spacing={2} sx={{ alignItems: "stretch" }}>
-        {simulationEnviroments &&
-          Object.values(simulationEnviroments).map((env) => {
-            // if (currentEnviroment !== env.name) {
-            return (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={env.title}>
-                <EnvCard
-                  active={env.name === runningEnviroment}
-                  envTitle={env.title}
-                  summaryContent={env.summaryContent}
-                  expandedContent={env.expandedContent}
-                  envImage={env.image}
-                  buttonDisabled={
-                    loadingStatus || serverStarting || serverRunning
-                  }
-                  startServer={() => {
-                    setSelectedEnv(env);
-                    startServer(env);
-                  }}
-                />
-              </Grid>
-            );
-          })}
-      </Grid>
+      {availableEnviroments === null ||
+      Object.keys(availableEnviroments).length === 0 ? (
+        <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
+          <Alert severity="error">
+            No hay ambientes disponibles! Al parecer aún no has sido añadido a
+            tus cursos, consulta con tus profesores/monitores.
+          </Alert>
+        </Grid>
+      ) : (
+        availableEnviroments && (
+          <Grid
+            container
+            spacing={2}
+            sx={{ alignItems: "stretch" }}
+            id="available-enviroments"
+          >
+            {Object.values(availableEnviroments).map((env) => {
+              // if (currentEnviroment !== env.name) {
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  key={env.title}
+                  className="available-enviroment"
+                >
+                  <EnvCard
+                    active={env.name === runningEnviroment}
+                    envTitle={env.title}
+                    summaryContent={env.summaryContent}
+                    expandedContent={env.expandedContent}
+                    envImage={env.image}
+                    buttonDisabled={
+                      loadingStatus || serverStarting || serverRunning
+                    }
+                    startServer={() => {
+                      setSelectedEnv(env);
+                      startServer(env);
+                    }}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        )
+      )}
     </div>
   );
 };

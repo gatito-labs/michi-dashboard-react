@@ -1,5 +1,3 @@
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -8,52 +6,41 @@ import StopCircleIcon from "@mui/icons-material/StopCircle";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { CodeButtonTooltip } from "../../../../../components/Tooltip";
+import { styled } from "@mui/material/styles";
 
 const FONT_SIZE = "1em";
 
-const LightTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    color: theme.palette.secondary.dark,
-    backgroundColor: theme.palette.common.white,
-    boxShadow: theme.shadows[1],
-    fontSize: 18,
-    fontWeight: "bold",
-    height: "100%",
-  },
-}));
-
-
-const CodeButtonTooltip = ({ title, children }) => (
-  <LightTooltip title={title} arrow disableInteractive followCursor>
-    {children}
-  </LightTooltip>
-);
-
-const RunButton = ({ runLoading, handleRun }) => (
-  <CodeButtonTooltip title="Lanzar programa">
-    <IconButton onClick={handleRun} disabled={runLoading}>
-      {runLoading ? (
-        <CircularProgress color="success" style={{ fontSize: FONT_SIZE }} />
-      ) : (
-        <PlayCircleIcon style={{ fill: "green", fontSize: FONT_SIZE }} />
-      )}
-    </IconButton>
+const RunButton = ({ id, runLoading, handleRun }) => (
+  <CodeButtonTooltip
+    title={runLoading ? "Subiendo Programa" : "Lanzar programa"}
+  >
+    <Grid id={id}>
+      <IconButton onClick={handleRun} disabled={runLoading}>
+        {runLoading ? (
+          <CircularProgress color="success" size={FONT_SIZE} />
+        ) : (
+          <PlayCircleIcon style={{ fill: "green", fontSize: FONT_SIZE }} />
+        )}
+      </IconButton>
+    </Grid>
   </CodeButtonTooltip>
 );
-
-const StopButton = ({ handleStop }) => (
+const StopButton = ({ id, handleStop, disabled }) => (
   <CodeButtonTooltip title="Detener programa">
-    <IconButton onClick={handleStop}>
-      <StopCircleIcon style={{ fill: "red", fontSize: FONT_SIZE }} />
-    </IconButton>
+    <Grid id={id}>
+      <IconButton onClick={handleStop} disabled={disabled}>
+        <StopCircleIcon
+          style={{ fill: disabled ? "gray" : "red", fontSize: FONT_SIZE }}
+        />
+      </IconButton>
+    </Grid>
   </CodeButtonTooltip>
 );
 
-const DownloadButton = ({ handleDownload }) => (
+const DownloadButton = ({ id, handleDownload }) => (
   <CodeButtonTooltip title="Descargar archivo">
-    <IconButton onClick={handleDownload}>
+    <IconButton onClick={handleDownload} id={id}>
       <FileDownloadIcon style={{ fill: "blue", fontSize: FONT_SIZE }} />
     </IconButton>
   </CodeButtonTooltip>
@@ -63,20 +50,20 @@ const Input = styled("input")({
   display: "none",
 });
 
-const UploadButton = ({ handleUpload }) => (
+const UploadButton = ({ id, handleUpload }) => (
   <CodeButtonTooltip title="Subir archivo">
     <label htmlFor="upload-icon-button-file">
       <Input type="file" id="upload-icon-button-file" onChange={handleUpload} />
-      <IconButton aria-label="upload picture" component="span">
+      <IconButton aria-label="upload picture" component="span" id={id}>
         <FileUploadIcon style={{ fill: "blue", fontSize: FONT_SIZE }} />
       </IconButton>
     </label>
   </CodeButtonTooltip>
 );
 
-const HidePanelButton = ({ handleHide }) => (
+const HidePanelButton = ({ id, handleHide }) => (
   <CodeButtonTooltip title="Ocultar Panel Editor">
-    <IconButton onClick={handleHide}>
+    <IconButton onClick={handleHide} id={id}>
       <ChevronLeftIcon color="primary" sx={{ fontSize: FONT_SIZE }} />
     </IconButton>
   </CodeButtonTooltip>
@@ -84,12 +71,14 @@ const HidePanelButton = ({ handleHide }) => (
 
 export default function CodeButtons({
   runLoading,
+  stopDisabled,
   handleRun,
   handleStop,
   handleDownload,
   handleUpload,
   handleHide,
 }) {
+
   return (
     <>
       <Grid
@@ -105,14 +94,38 @@ export default function CodeButtons({
         }}
       >
         <Grid item>
-          <RunButton runLoading={runLoading} handleRun={handleRun} />
-          <StopButton handleStop={handleStop} />
-          <DownloadButton handleDownload={handleDownload} />
-          <UploadButton handleUpload={handleUpload} />
+          <Grid container direction="row">
+            <Grid item>
+              <RunButton
+                id="run-button"
+                runLoading={runLoading}
+                handleRun={handleRun}
+              />
+            </Grid>
+
+            <Grid item>
+              <StopButton
+                id="stop-button"
+                handleStop={handleStop}
+                disabled={stopDisabled}
+              />
+            </Grid>
+
+            <Grid item>
+              <DownloadButton
+                id="download-button"
+                handleDownload={handleDownload}
+              />
+            </Grid>
+
+            <Grid item>
+              <UploadButton id="upload-button" handleUpload={handleUpload} />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item sx={{ flexGrow: 1, height: "100%" }} />
         <Grid>
-          <HidePanelButton handleHide={handleHide} />
+          <HidePanelButton id="hide-button" handleHide={handleHide} />
         </Grid>
       </Grid>
     </>

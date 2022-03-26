@@ -15,8 +15,10 @@ export const PanelButton = ({name, selected, onClickHandler}) => (
   </Grid>
 );
 
-export const Panel = ({selected, children}) => (
+const Panel = ({selected, children}) => (
   <Box sx={{display: selected ? "flex" : "none", height:"100%"}}>
     {children}
   </Box>
 );
+
+export default Panel;

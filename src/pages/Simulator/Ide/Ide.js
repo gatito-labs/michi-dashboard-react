@@ -3,13 +3,10 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-
 import LeftPanel from "./LeftPanel";
 import SimulatorPanel from "./SimulatorPanel";
 import AlertsHandler from "./panels/components/AlertsHandler";
-
 import { useTheme } from "@mui/material/styles";
-
 
 // DEFAULT CONFIGS (almacenar en localstorage con algún formato estándar de configuraciones)
 // const DEFAULT_THEME = "default";
@@ -17,7 +14,6 @@ const DEFAULT_LEFT_PANEL_WIDTH = 50;
 
 // GENERATING THE IDE
 export function Ide() {
-
   const theme = useTheme();
   const [alertType, setAlertType] = useState();
 
@@ -128,7 +124,7 @@ export function Ide() {
             height: "100%",
             overflowX: "hidden",
             display: hideLeftPanel ? "none" : "flex",
-            flexWrap: "nowrap"
+            flexWrap: "nowrap",
           }}
         >
           <LeftPanel

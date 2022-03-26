@@ -25,6 +25,7 @@ import {
   STOP_SERVER,
   STOP_SERVER_ERROR,
   STOP_SERVER_SUCCESS,
+  GET_AVAILABLE_ENVIROMENTS,
 } from "./reducer";
 
 import { reducer, initialState } from "./reducer";
@@ -44,6 +45,14 @@ export const HubServerProvider = ({ children }) => {
       getIdTokenClaims().then((res) => {
         let _token = res.__raw;
         setToken(_token);
+
+        if (res[`${process.env.REACT_APP_TOKEN_NAMESPACE}/enviroments`]) {
+          dispatch({
+            type: GET_AVAILABLE_ENVIROMENTS,
+            payload:
+              res[`${process.env.REACT_APP_TOKEN_NAMESPACE}/enviroments`],
+          });
+        }
       });
     }
   }, [isAuthenticated, getIdTokenClaims]);
@@ -97,7 +106,10 @@ export const HubServerProvider = ({ children }) => {
         } else {
           dispatch({
             type: CHECK_SERVER_ERROR,
-            payload: response,
+            payload:
+              response.status === 401
+                ? "Usuario no autorizado."
+                : "Error no documentado.",
           });
         }
       }
@@ -111,7 +123,8 @@ export const HubServerProvider = ({ children }) => {
 
   const startServer = useCallback(
     async (env) => {
-      dispatch({ type: START_SERVER, payload: env.name});
+      dispatch({ type: START_SERVER, payload: env.name });
+
       fetch(`${process.env.REACT_APP_API_DOMAIN}${user.email}/server`, {
         // content-type header should not be specified!
         method: "POST",
@@ -120,38 +133,46 @@ export const HubServerProvider = ({ children }) => {
           profile: env.name,
         }),
       })
-        .then(() => {
-          fetchEventSource(
-            `${process.env.REACT_APP_API_DOMAIN}${user.email}/server/progress`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              signal: ctrl.signal,
-              onmessage(msg) {
-                var progressData = msg.data;
+        .then((res) => {
+          if (res.status === 200 || res.status === 202) {
+            fetchEventSource(
+              `${process.env.REACT_APP_API_DOMAIN}${user.email}/server/progress`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                signal: ctrl.signal,
+                onmessage(msg) {
+                  var progressData = msg.data;
 
-                if (progressData && progressData !== "") {
-                  progressData = JSON.parse(progressData);
+                  if (progressData && progressData !== "") {
+                    progressData = JSON.parse(progressData);
 
-                  if (progressData.progress) {
-                    dispatch({
-                      type: START_SERVER_PROGRESS,
-                      payload: progressData.progress,
-                    });
+                    if (progressData.progress) {
+                      dispatch({
+                        type: START_SERVER_PROGRESS,
+                        payload: progressData.progress,
+                      });
+                    }
+
+                    if (progressData.ready) {
+                      dispatch({ type: START_SERVER_SUCCESS });
+                    }
                   }
-
-                  if (progressData.ready) {
-                    dispatch({ type: START_SERVER_SUCCESS });
-                  }
-                }
-              },
+                },
+              }
+            );
+          } else {
+            if (res.status === 401) {
+              dispatch({
+                type: START_SERVER_ERROR,
+                payload: "Error! No estás autorizado para esta operación!",
+              });
             }
-          );
+          }
         })
         .catch((error) => {
-          console.log(error);
           dispatch({ type: START_SERVER_ERROR, payload: error });
         });
     },
