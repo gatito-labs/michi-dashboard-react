@@ -1,16 +1,15 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { styled } from "@mui/system";
-import Grid from "@mui/material/Grid";
 import MuiTab, { tabClasses } from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-
+import Grid from "@mui/material/Grid";
+import DownloadModal from "./components/DownloadModal";
 import CodeButtons from "./panels/components/CodeButtons";
 import Panel from "./panels/Panel";
 import BlocklyPanel from "./panels/BlocklyPanel";
 import EditorPanel from "./panels/EditorPanel";
 import DocumentationPanel from "./panels/DocumentationPanel";
 import Terminal from "./panels/components/Terminal";
-
 import { sendCodeToRobot } from "./services/GazeboSocket";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useHubServer } from "../../../store";
@@ -66,21 +65,21 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const { serverRunning, runningEnviroment, availableEnviroments } =
     useHubServer();
 
+  const user_email = useAuth0().user.email;
   const [enviromentConfig, setEnviromentConfig] = useState(null);
+  const [runLoading, setRunLoading] = useState(false);
+  const [terminalOutput, setTerminalOutput] = useState("Terminal ");
+  const [terminalLine, setTerminalLine] = useState("");
+  const [panelSelected, setPanelSelected] = useState(
+    parseInt(localStorage.getItem("panelSelected")) || EDITOR
+  );
+  const [openDownloadModal, setOpenDownloadModal] = useState(false);
 
   useEffect(() => {
     if (serverRunning) {
       setEnviromentConfig(availableEnviroments[runningEnviroment]);
     }
   }, [serverRunning, runningEnviroment, availableEnviroments]);
-
-  const [runLoading, setRunLoading] = useState(false);
-  const [panelSelected, setPanelSelected] = useState(
-    parseInt(localStorage.getItem("panelSelected")) || "docs"
-  );
-
-  const [terminalOutput, setTerminalOutput] = useState("Terminal ");
-  const [terminalLine, setTerminalLine] = useState("");
 
   useEffect(() => {
     setTerminalOutput((oldOutput) => oldOutput + "\n" + terminalLine);
@@ -96,7 +95,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   }, [panelSelected]);
 
   // HANDLING BLOCKLY
-  // const blocklyRef = useRef();
+  const blocklyCodeRef = useRef("");
 
   // HANDLING EDITOR
   const editorRef = useRef();
@@ -105,9 +104,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const handleEditorDidMount = useCallback((editor, monaco) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
-
     const savedCode = localStorage.getItem("code");
-
     editorRef.current.setValue(savedCode ? savedCode : ARDUINO_TEMPLATE_CODE);
   }, []);
 
@@ -118,8 +115,6 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const handleHideTerminal = useCallback(() => {
     editorRef.current.layout({ width: "auto", height: "auto" });
   }, [editorRef]);
-
-  const user_email = useAuth0().user.email;
 
   const onLogMessage = useCallback((msg) => {
     setTerminalLine(msg);
@@ -132,6 +127,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     },
     [setAlertType]
   );
+
   const onErrorMessage = useCallback(
     (msg) => {
       setTerminalLine(msg);
@@ -139,6 +135,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     },
     [setAlertType]
   );
+
   const onFinish = useCallback(() => {
     setRunLoading(false);
   }, []);
@@ -150,37 +147,47 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
     sendCodeToRobot({
       ws_url: url,
-      code: editorRef.current.getValue(),
+      code:
+        panelSelected === BLOCKLY
+          ? blocklyCodeRef.current
+          : editorRef.current.getValue(),
+      language: panelSelected === BLOCKLY ? "python" : "ino",
       onLogMessage: onLogMessage,
       onSuccessMessage: onSuccessMessage,
       onErrorMessage: onErrorMessage,
       onFinish: onFinish,
     });
-  }, [user_email, onLogMessage, onSuccessMessage, onErrorMessage, onFinish]);
+  }, [
+    panelSelected,
+    user_email,
+    onLogMessage,
+    onSuccessMessage,
+    onErrorMessage,
+    onFinish,
+  ]);
 
   const handleStop = useCallback(() => {
     console.log("parar función");
   }, []);
 
-  const handleDownload = useCallback(() => {
+  const handleDownload = useCallback((filename) => {
     const element = document.createElement("a");
     const file = new Blob([localStorage.getItem("code")], {
       type: "text/plain;charset=utf-8",
     });
     element.href = URL.createObjectURL(file);
-    element.download = "archivo.py";
+    element.download = `${filename}.ino`;
     element.click();
   }, []);
 
   const handleUpload = useCallback((event) => {
     const file = event.target.files[0];
-
     const fileReader = new FileReader();
 
     fileReader.onloadend = () => {
       const content = fileReader.result;
       editorRef.current.setValue(content);
-      setPanelSelected(1);
+      setPanelSelected(EDITOR);
     };
 
     fileReader.readAsText(file);
@@ -190,9 +197,10 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     <>
       <CodeButtons
         runLoading={runLoading}
+        stopDisabled={true}
         handleRun={handleRun}
         handleStop={handleStop}
-        handleDownload={handleDownload}
+        handleDownload={() => setOpenDownloadModal(true)}
         handleUpload={handleUpload}
         handleHide={handleHide}
       />
@@ -202,7 +210,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           <Panel selected={panelSelected === BLOCKLY}>
             {/* this is because blockly-ws breaks when leftPanel is resized while blockly is not active */}
             {panelSelected === BLOCKLY && (
-              <BlocklyPanel editorRef={editorRef} />
+              <BlocklyPanel blocklyCodeRef={blocklyCodeRef} />
             )}
           </Panel>
         )}
@@ -218,6 +226,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
             <Grid
               item
+              id="terminal-container"
               sx={{ flexGrow: 0, maxHeight: "250px", overflowY: "auto" }}
             >
               <Terminal output={terminalOutput} onHide={handleHideTerminal} />
@@ -244,12 +253,16 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           {enviromentConfig && enviromentConfig.blockly && (
             <Tab value={BLOCKLY} label="Bloques" />
           )}
-          {enviromentConfig && enviromentConfig.editor && (
-            <Tab value={EDITOR} label="Editor" />
-          )}
+          <Tab value={EDITOR} label="Editor" />
           <Tab value={DOCUMENTATION} label="Documentación" />
         </Tabs>
       </Grid>
+
+      <DownloadModal
+        open={openDownloadModal}
+        handleClose={() => setOpenDownloadModal(false)}
+        handleDownload={handleDownload}
+      />
     </>
   );
 }
