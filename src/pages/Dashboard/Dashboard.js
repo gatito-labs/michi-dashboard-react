@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import EnvCard from "./EnvCard";
 import ActiveCard from "./ActiveCard";
-
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -146,11 +145,14 @@ const Dashboard = () => {
         </Grid>
       </Slide>
 
-      {(loadingStatus || serverRunning || serverStarting || serverStopping || serverError) && (
-        <Divider sx={{ margin: "2em" }} />
-      )}
+      {(loadingStatus ||
+        serverRunning ||
+        serverStarting ||
+        serverStopping ||
+        serverError) && <Divider sx={{ margin: "2em" }} />}
 
-      { availableEnviroments === null || Object.keys(availableEnviroments).length === 0 ? (
+      {availableEnviroments === null ||
+      Object.keys(availableEnviroments).length === 0 ? (
         <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
           <Alert severity="error">
             No hay ambientes disponibles! Al parecer aún no has sido añadido a
@@ -159,11 +161,24 @@ const Dashboard = () => {
         </Grid>
       ) : (
         availableEnviroments && (
-          <Grid container spacing={2} sx={{ alignItems: "stretch" }}>
+          <Grid
+            container
+            spacing={2}
+            sx={{ alignItems: "stretch" }}
+            id="available-enviroments"
+          >
             {Object.values(availableEnviroments).map((env) => {
               // if (currentEnviroment !== env.name) {
               return (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={env.title}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  key={env.title}
+                  className="available-enviroment"
+                >
                   <EnvCard
                     active={env.name === runningEnviroment}
                     envTitle={env.title}

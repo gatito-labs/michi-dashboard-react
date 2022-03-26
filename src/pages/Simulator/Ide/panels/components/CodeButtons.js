@@ -1,6 +1,5 @@
-import { useCallback, useState } from "react";
 import Grid from "@mui/material/Grid";
-import IconButton, { iconButtonClasses } from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
@@ -12,34 +11,36 @@ import { styled } from "@mui/material/styles";
 
 const FONT_SIZE = "1em";
 
-const RunButton = ({ runLoading, handleRun }) => (
+const RunButton = ({ id, runLoading, handleRun }) => (
   <CodeButtonTooltip
     title={runLoading ? "Subiendo Programa" : "Lanzar programa"}
   >
-    {runLoading ? (
-      <div style={{ display: "inline-block" }}>
-        <IconButton onClick={handleRun} disabled={runLoading}>
+    <Grid id={id}>
+      <IconButton onClick={handleRun} disabled={runLoading}>
+        {runLoading ? (
           <CircularProgress color="success" size={FONT_SIZE} />
-        </IconButton>
-      </div>
-    ) : (
-      <IconButton onClick={handleRun}>
-        <PlayCircleIcon style={{ fill: "green", fontSize: FONT_SIZE }} />
+        ) : (
+          <PlayCircleIcon style={{ fill: "green", fontSize: FONT_SIZE }} />
+        )}
       </IconButton>
-    )}
+    </Grid>
   </CodeButtonTooltip>
 );
-const StopButton = ({ handleStop }) => (
+const StopButton = ({ id, handleStop, disabled }) => (
   <CodeButtonTooltip title="Detener programa">
-    <IconButton onClick={handleStop}>
-      <StopCircleIcon style={{ fill: "red", fontSize: FONT_SIZE }} />
-    </IconButton>
+    <Grid id={id}>
+      <IconButton onClick={handleStop} disabled={disabled}>
+        <StopCircleIcon
+          style={{ fill: disabled ? "gray" : "red", fontSize: FONT_SIZE }}
+        />
+      </IconButton>
+    </Grid>
   </CodeButtonTooltip>
 );
 
-const DownloadButton = ({ handleDownload }) => (
+const DownloadButton = ({ id, handleDownload }) => (
   <CodeButtonTooltip title="Descargar archivo">
-    <IconButton onClick={handleDownload}>
+    <IconButton onClick={handleDownload} id={id}>
       <FileDownloadIcon style={{ fill: "blue", fontSize: FONT_SIZE }} />
     </IconButton>
   </CodeButtonTooltip>
@@ -49,20 +50,20 @@ const Input = styled("input")({
   display: "none",
 });
 
-const UploadButton = ({ handleUpload }) => (
+const UploadButton = ({ id, handleUpload }) => (
   <CodeButtonTooltip title="Subir archivo">
     <label htmlFor="upload-icon-button-file">
       <Input type="file" id="upload-icon-button-file" onChange={handleUpload} />
-      <IconButton aria-label="upload picture" component="span">
+      <IconButton aria-label="upload picture" component="span" id={id}>
         <FileUploadIcon style={{ fill: "blue", fontSize: FONT_SIZE }} />
       </IconButton>
     </label>
   </CodeButtonTooltip>
 );
 
-const HidePanelButton = ({ handleHide }) => (
+const HidePanelButton = ({ id, handleHide }) => (
   <CodeButtonTooltip title="Ocultar Panel Editor">
-    <IconButton onClick={handleHide}>
+    <IconButton onClick={handleHide} id={id}>
       <ChevronLeftIcon color="primary" sx={{ fontSize: FONT_SIZE }} />
     </IconButton>
   </CodeButtonTooltip>
@@ -70,12 +71,14 @@ const HidePanelButton = ({ handleHide }) => (
 
 export default function CodeButtons({
   runLoading,
+  stopDisabled,
   handleRun,
   handleStop,
   handleDownload,
   handleUpload,
   handleHide,
 }) {
+
   return (
     <>
       <Grid
@@ -91,14 +94,38 @@ export default function CodeButtons({
         }}
       >
         <Grid item>
-          <RunButton id="runButton" runLoading={runLoading} handleRun={handleRun} />
-          <StopButton id="stopButton" handleStop={handleStop} />
-          <DownloadButton id="downloadButton" handleDownload={handleDownload} />
-          <UploadButton id="uploadButton" handleUpload={handleUpload} />
+          <Grid container direction="row">
+            <Grid item>
+              <RunButton
+                id="run-button"
+                runLoading={runLoading}
+                handleRun={handleRun}
+              />
+            </Grid>
+
+            <Grid item>
+              <StopButton
+                id="stop-button"
+                handleStop={handleStop}
+                disabled={stopDisabled}
+              />
+            </Grid>
+
+            <Grid item>
+              <DownloadButton
+                id="download-button"
+                handleDownload={handleDownload}
+              />
+            </Grid>
+
+            <Grid item>
+              <UploadButton id="upload-button" handleUpload={handleUpload} />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item sx={{ flexGrow: 1, height: "100%" }} />
         <Grid>
-          <HidePanelButton handleHide={handleHide} />
+          <HidePanelButton id="hide-button" handleHide={handleHide} />
         </Grid>
       </Grid>
     </>

@@ -50,6 +50,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   return (
     <Grid
       item
+      className="monacoEditor"
       sx={{
         position: "relative",
         width: "100%",
