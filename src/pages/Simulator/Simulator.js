@@ -19,7 +19,7 @@ const modalStyle = {
   p: 4,
   alignItems: "center",
   padding: "2em",
-  gap: "1em"
+  gap: "1em",
 };
 
 const StartTutorialModal = ({ open, handleClose, setRun, skipTutorial }) => {
@@ -40,7 +40,7 @@ const StartTutorialModal = ({ open, handleClose, setRun, skipTutorial }) => {
         </Grid>
         <Grid item>
           Notamos que es tu primera vez en el simulador. ¿Quieres realizar un
-          tour por el simulador?
+          tour?
         </Grid>
 
         <Grid item>
@@ -76,6 +76,91 @@ const StartTutorialModal = ({ open, handleClose, setRun, skipTutorial }) => {
   );
 };
 
+const steps = [
+  {
+    target: "#simulator-panel-container",
+    title: "El simulador y tu Robot",
+    disableBeacon: true,
+    content: (
+      <React.Fragment>
+        En este panel encontramos el simulador, aquí encuentras tu robot Iroh y
+        todos sus componentes. A la izquierda encuentras un panel con sus
+        sensores y su pantalla LCD, y a la derecha puedes verlo e interactuar
+        con él directamente.
+      </React.Fragment>
+    ),
+  },
+
+  {
+    target: ".monacoEditor",
+    title: "El Editor de Código",
+    content: (
+      <React.Fragment>
+        En el editor de código puedes programar directamente tu robot. Debes
+        programarlo utilizando el lenguaje Arduino, y cuentas con las mismas
+        funciones que en tu robot físico.
+      </React.Fragment>
+    ),
+  },
+  {
+    target: "#run-button",
+    title: "Correr Código",
+    content: (
+      <React.Fragment>
+        Una vez esté listo de tu programa, dale al botón de play para probar tu
+        código, este lo compilará y subirá a tu robot.
+      </React.Fragment>
+    ),
+  },
+
+  {
+    target: "#terminal-container",
+    title: "La Terminal",
+    content: (
+      <React.Fragment>
+        En esta terminal verás el resultado del proceso de compilación, te
+        avisará si tu programa está listo para ejecutarse, o te indicará los
+        posibles errores de compilación.
+        <br />
+        Si quieres más espacio para programar puedes ocultar esta terminal
+        haciendo click en su barra superior.
+      </React.Fragment>
+    ),
+  },
+
+  {
+    target: "#download-button",
+    title: "Descarga tu código",
+    content: (
+      <React.Fragment>
+        Con este botón puedes descargar tu código. Descarga tu código para
+        guardar diferentes programas en tu computadora, luego puedes
+        probar correr este código en tu robot físico.
+      </React.Fragment>
+    ),
+  },
+  {
+    target: "#upload-button",
+    title: "Sube tu código",
+    content: (
+      <React.Fragment>
+        También puedes subir un programa que hayas escrito y guardado
+        previamente.
+      </React.Fragment>
+    ),
+  },
+  {
+    target: "#divider, #hide-button",
+    title: "Trabaja cómodamente",
+    content: (
+      <React.Fragment>
+        Finalmente, puedes ocultar el editor completamente o puedes arrastrar el
+        divisor para fijar el tamaño a tu gusto.
+      </React.Fragment>
+    ),
+  },
+];
+
 const Simulator = () => {
   const theme = useTheme();
   const [run, setRun] = useState(false);
@@ -84,7 +169,7 @@ const Simulator = () => {
   useEffect(() => {
     if (
       localStorage.getItem("skipTutorial") === undefined ||
-      localStorage.getItem("skipTutorial") === null ||
+      localStorage.getItem("skipTutorial") ===   null ||
       !localStorage.getItem("skipTutorial")
     ) {
       setOpenTutorialModal(true);
@@ -94,91 +179,6 @@ const Simulator = () => {
   const skipTutorial = useCallback(() => {
     localStorage.setItem("skipTutorial", true);
   }, []);
-
-  const [steps, _] = useState([
-    {
-      target: "#simulator-panel-container",
-      title: "El simulador y tu Robot",
-      disableBeacon: true,
-      content: (
-        <React.Fragment>
-          En este panel encontramos el simulador, aquí encuentras tu robot Iroh
-          y todos sus componentes. A la izquierda encuentras un panel con sus
-          sensores y su pantalla LCD, y a la derecha puedes verlo e interactuar
-          con él directamente.
-        </React.Fragment>
-      ),
-    },
-
-    {
-      target: ".monacoEditor",
-      title: "El Editor de Código",
-      content: (
-        <React.Fragment>
-          En el editor de código puedes programar directamente tu robot. Debes
-          programarlo utilizando el lenguaje Arduino, y cuentas con las mismas
-          funciones que en tu robot físico.
-        </React.Fragment>
-      ),
-    },
-    {
-      target: "#run-button",
-      title: "Correr Código",
-      content: (
-        <React.Fragment>
-          Una vez esté listo de tu programa, dale al botón de play para probar
-          tu código, este lo compilará y subirá a tu robot.
-        </React.Fragment>
-      ),
-    },
-
-    {
-      target: "#terminal-container",
-      title: "La Terminal",
-      content: (
-        <React.Fragment>
-          En esta terminal verás el resultado del proceso de compilación, te
-          avisará si tu programa está listo para ejecutarse, o te indicará los
-          posibles errores de compilación.
-          <br />
-          Si quieres más espacio para programar puedes ocultar esta terminal
-          haciendo click en su barra superior.
-        </React.Fragment>
-      ),
-    },
-
-    {
-      target: "#download-button",
-      title: "Descarga tu código",
-      content: (
-        <React.Fragment>
-          Con este botón puedes descargar tu código. Descarga tu código para
-          guardar diferentes programas en tu computadora, estos programas puedes
-          probarlo luego en tu robot físico.
-        </React.Fragment>
-      ),
-    },
-    {
-      target: "#upload-button",
-      title: "Sube tu código",
-      content: (
-        <React.Fragment>
-          También puedes suber un programa que hayas escrito y guardado
-          previamente.
-        </React.Fragment>
-      ),
-    },
-    {
-      target: "#divider, #hide-button",
-      title: "Trabaja cómodamente",
-      content: (
-        <React.Fragment>
-          Finalmente, puedes ocultar el editor completamente o puedes arrastra
-          el divisor para fijar el tamaño a tu gusto. .
-        </React.Fragment>
-      ),
-    },
-  ]);
 
   const handleJoyrideCallback = useCallback(
     (data) => {

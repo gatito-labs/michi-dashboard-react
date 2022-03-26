@@ -25,7 +25,6 @@ const PanelBloques = React.memo(({ blocklyCodeRef }) => {
 
   const handleOnWorkspaceDidChange = React.useCallback(
     (workspace) => {
-      console.log("workspace change");
       const code = Blockly.Python.workspaceToCode(workspace);
       blocklyCodeRef.current = PREPEND_CODE + code;
     },

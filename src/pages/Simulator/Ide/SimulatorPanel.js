@@ -14,7 +14,7 @@ export default function PanelSimulador() {
   const { user } = useAuth0();
   const { serverRunning, loadingStatus, startingServer } = useHubServer();
   const [simulatorLoading, setSimulatorLoading] = useState(true);
-  const simulatorUrl = `${process.env.REACT_APP_SIMULATOR_URL}/${user.email}/proxy/1234/`;
+  const simulatorUrl = `${process.env.REACT_APP_SIMULATOR_URL}${user.email}`;
 
   function onLoad() {
     setSimulatorLoading(false);

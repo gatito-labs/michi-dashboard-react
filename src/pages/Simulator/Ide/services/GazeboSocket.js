@@ -11,16 +11,16 @@ export function sendCodeToRobot({
 
   ws.onopen = () => {
     let msg = { type: "run", language: language, body: code };
-    console.log(msg);
+    // console.log(msg);
+    // console.log("Socket opened");
     ws.send(JSON.stringify(msg));
-    console.log("Socket opened");
   };
 
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
     const type = data.type;
     const msg = data.msg;
-    console.log("Socket new message:", data);
+    // console.log("Socket new message:", data);
 
     switch (type) {
       case "log":
@@ -39,12 +39,12 @@ export function sendCodeToRobot({
   };
 
   ws.onclose = (event) => {
-    console.log("Socket closed:", event);
+    // console.log("Socket closed:", event);
     onFinish();
   };
 
   ws.onerror = (event) => {
-    console.log("Socket error:", event);
+    // console.log("Socket error:", event);
     onErrorMessage("Falló conexión al servidor");
     onFinish();
   };
