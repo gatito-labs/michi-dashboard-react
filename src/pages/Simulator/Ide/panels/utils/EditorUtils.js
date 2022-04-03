@@ -1,6 +1,6 @@
 const commands = require("./commands.json");
 
-const _getCommands = name => {
+const _getCommandsNames = name => {
   return commands[name];
 }
 
@@ -86,7 +86,7 @@ const _setUpSignaturesHelp = (monaco, language) => {
         lastParenthesis
       );
 
-      const commands = _getCommands(commandName);
+      const commands = _getCommandsNames(commandName);
       
       if (commands) {
         const activeSignature = 0;
@@ -135,8 +135,21 @@ export function setUpArduinoCompletions(monaco) {
   });
 }
 
+export function setUpHighlighting(monaco, language) {
+  monaco.editor.defineTheme('mustakisTheme', {
+    base: 'vs-dark',
+    inherit: true, // can also be false to completely replace the builtin rules
+    rules: [],
+    colors: {}
+  });
+
+  monaco.editor.setTheme("mustakisTheme");
+}
+
+
 export default function setUpMustakisEditor(monaco) {
   _setUpCompletionItems(monaco, "cpp");
   _setUpSignaturesHelp(monaco, "cpp");
   setUpArduinoCompletions(monaco);
+  setUpHighlighting(monaco);
 };

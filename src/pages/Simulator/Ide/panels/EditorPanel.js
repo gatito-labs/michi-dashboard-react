@@ -2,7 +2,6 @@ import React, { memo, useEffect, useCallback, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { useResizeDetector } from "react-resize-detector";
 import Grid from "@mui/material/Grid";
-
 import setUpMustakisEditor from "./utils/EditorUtils";
 
 const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
@@ -21,7 +20,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   const onResize = useCallback(
     (width, height) => {
       if (editorRef.current) {
-        editorRef.current.layout({ height, width });
+        editorRef.current?.layout({ height, width });
       }
     },
     [editorRef]
@@ -36,7 +35,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   });
 
   const windowResize = useCallback(() => {
-    editorRef.current.layout({
+    editorRef.current?.layout({
       width: "auto",
       height: "auto",
     });
@@ -53,6 +52,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
   return (
     <Grid
       item
+      className="monacoEditor"
       sx={{
         position: "relative",
         width: "100%",
@@ -64,12 +64,15 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
       <Editor
         className="panel"
         defaultLanguage="cpp"
-        theme="vs-dark"
+        theme="mustakisTheme"
         onChange={handleEditorChange}
         onMount={_handleEditorDidMount}
         options={{
           minimap: {
             enabled: false,
+          },
+          semanticHighlighting: {
+            enabled: true,
           },
           scrollBeyondLastLine: false,
         }}
