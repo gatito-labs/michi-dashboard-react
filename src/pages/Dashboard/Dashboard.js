@@ -43,6 +43,7 @@ const Dashboard = () => {
     startingServerProgress,
     loadingStatus,
     runningEnviroment,
+    clearErrors,
     startServer,
     stopServer,
     serverError,
@@ -53,6 +54,17 @@ const Dashboard = () => {
 
   return (
     <div style={{ padding: "1em" }}>
+      <Slide
+        direction="right"
+        in={serverError !== null}
+        mountOnEnter
+        unmountOnExit
+      >
+        <Grid item xl={6} md={6} sm={9} sx={{ margin: "1em auto" }}>
+          <Alert severity="error" onClose={clearErrors}>{serverError}</Alert>
+        </Grid>
+      </Slide>
+      
       <Slide direction="right" in={loadingStatus} mountOnEnter unmountOnExit>
         <div>
           <Grid
@@ -131,17 +143,6 @@ const Dashboard = () => {
                 />
               )}
           </Grid>
-        </Grid>
-      </Slide>
-
-      <Slide
-        direction="right"
-        in={serverError !== null}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
-          <Alert severity="error">{serverError}</Alert>
         </Grid>
       </Slide>
 

@@ -15,6 +15,7 @@ export const STOP_SERVER_ERROR = "SERVER/STOP_SERVER/ERROR";
 export const STOP_SERVER_SUCCESS = "SERVER/STOP_SERVER/SUCCESS";
 
 export const GET_AVAILABLE_ENVIROMENTS = "GET_AVAILABLE_ENVIROMENTS";
+export const CLEAR_ERRORS = "CLEAR_ERRORS";
 
 export const initialState = {
   loadingStatus: false,
@@ -107,14 +108,18 @@ export const reducer = (state, action) => {
     case GET_AVAILABLE_ENVIROMENTS:
       let new_envs = {};
 
-      action.payload.forEach((e) => {        
-        new_envs[e.name] = {...e};
+      action.payload.forEach((e) => {
+        new_envs[e.name] = { ...e };
         new_envs[e.name]["blockly"] = new_envs[e.name]["blockly"] === "true";
-        new_envs[e.name]["editor"] = new_envs[e.name]["editor"] ? new_envs[e.name]["editor"]
+        new_envs[e.name]["editor"] = new_envs[e.name]["editor"]
+          ? new_envs[e.name]["editor"]
           : null;
       });
 
       return { ...state, availableEnviroments: new_envs };
+
+    case CLEAR_ERRORS:
+      return { ...state, serverError: null };
 
     default:
       return { ...state };
