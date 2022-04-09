@@ -26,6 +26,7 @@ import {
   STOP_SERVER_ERROR,
   STOP_SERVER_SUCCESS,
   GET_AVAILABLE_ENVIROMENTS,
+  CLEAR_ERRORS,
 } from "./reducer";
 
 import { reducer, initialState } from "./reducer";
@@ -59,6 +60,38 @@ export const HubServerProvider = ({ children }) => {
 
   const ctrl = useMemo(() => new AbortController(), []);
 
+  const checkServerStartingProgress = useCallback(() => {
+    fetchEventSource(
+      `${process.env.REACT_APP_API_DOMAIN}${user.email}/server/progress`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        signal: ctrl.signal,
+        onmessage(msg) {
+          var progressData = msg.data;
+          // console.log(msg.data);
+          if (progressData && progressData !== "") {
+            progressData = JSON.parse(progressData);
+
+            if (progressData.progress) {
+              dispatch({
+                type: START_SERVER_PROGRESS,
+                payload: progressData.progress,
+              });
+            }
+
+            if (progressData.ready) {
+              dispatch({ type: START_SERVER_SUCCESS });
+              ctrl.abort();
+            }
+          }
+        },
+      }
+    );
+  }, [ctrl, token, user?.email]);
+
   const checkServerStatus = useCallback(async () => {
     try {
       if (user && token) {
@@ -72,17 +105,23 @@ export const HubServerProvider = ({ children }) => {
 
         if (response.status === 200) {
           const json = await response.json();
+
+          if (json.pending === "spawn") {
+            checkServerStartingProgress();
+          }
           dispatch({
             type: CHECK_SERVER_SUCCESS,
             payload: {
               serverRunning: json.server ? json.servers[""].ready : false,
+              startingServer: json.pending === "spawn",
               runningEnviroment:
-                json.server && json.servers[""]
+                (json.server && json.servers[""]) || json.pending === "spawn"
                   ? json.servers[""].user_options.profile
                   : null,
             },
           });
         } else if (response.status === 404) {
+          console.log("creando hub user");
           dispatch({
             type: CREATE_HUB_USER,
           });
@@ -93,7 +132,7 @@ export const HubServerProvider = ({ children }) => {
           });
 
           if (createHubUserResponse.status === 201) {
-            dispatch({ dispatch: CREATE_HUB_USER_SUCCESS });
+            dispatch({ type: CREATE_HUB_USER_SUCCESS });
           } else {
             dispatch({
               type: CREATE_HUB_USER_ERROR,
@@ -119,7 +158,7 @@ export const HubServerProvider = ({ children }) => {
         payload: error,
       });
     }
-  }, [user, token]);
+  }, [user, token, checkServerStartingProgress]);
 
   const startServer = useCallback(
     async (env) => {
@@ -135,52 +174,29 @@ export const HubServerProvider = ({ children }) => {
       })
         .then((res) => {
           if (res.status === 200 || res.status === 202) {
-            fetchEventSource(
-              `${process.env.REACT_APP_API_DOMAIN}${user.email}/server/progress`,
-              {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-                signal: ctrl.signal,
-                onmessage(msg) {
-                  var progressData = msg.data;
-
-                  if (progressData && progressData !== "") {
-                    progressData = JSON.parse(progressData);
-
-                    if (progressData.progress) {
-                      dispatch({
-                        type: START_SERVER_PROGRESS,
-                        payload: progressData.progress,
-                      });
-                    }
-
-                    if (progressData.ready) {
-                      dispatch({ type: START_SERVER_SUCCESS });
-                    }
-                  }
-                },
-              }
-            );
+            checkServerStartingProgress();
           } else {
-            if (res.status === 401) {
-              dispatch({
-                type: START_SERVER_ERROR,
-                payload: "Error! No estás autorizado para esta operación!",
-              });
-            }
+            dispatch({
+              type: START_SERVER_ERROR,
+              payload:
+                res.status === 401
+                  ? "Error! No estás autorizado para esta operación!"
+                  : res.status === 400
+                  ? "Ya hay un servidor corriendo!"
+                  : `Error no documentado (${res.status})`,
+            });
+
+            checkServerStatus();
           }
         })
         .catch((error) => {
           dispatch({ type: START_SERVER_ERROR, payload: error });
         });
     },
-    [user, ctrl, token]
+    [user, token, checkServerStartingProgress, checkServerStatus]
   );
 
   const stopServer = useCallback(async () => {
-    // setServerStopping(true);
     dispatch({ type: STOP_SERVER });
     fetch(`${process.env.REACT_APP_API_DOMAIN}${user.email}/server`, {
       // content-type header should not be specified!
@@ -193,9 +209,14 @@ export const HubServerProvider = ({ children }) => {
       })
       .catch((error) => {
         dispatch({ type: STOP_SERVER_ERROR });
+        checkServerStatus();
         console.log(error);
       });
-  }, [user, ctrl, token]);
+  }, [user, ctrl, token, checkServerStatus]);
+
+  const clearErrors = useCallback(() => {
+    dispatch({ type: CLEAR_ERRORS });
+  }, []);
 
   return (
     <Store.Provider
@@ -204,6 +225,7 @@ export const HubServerProvider = ({ children }) => {
         checkServerStatus,
         startServer,
         stopServer,
+        clearErrors,
       }}
     >
       {children}
