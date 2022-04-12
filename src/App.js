@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { LoginLanding, NotLoggedPage } from "./pages/Login/Login";
+import { LoginLanding, VerifyEmail, NotLoggedPage } from "./pages/Login/Login";
 import Layout from "./components/Layout/Layout";
 import { useAuth0 } from "@auth0/auth0-react";
 import { HubServerProvider } from "./store";
@@ -38,6 +38,15 @@ function App() {
               element={
                 <Layout>
                   <LoginLanding />
+                </Layout>
+              }
+            />
+
+            <Route
+              path="/login/verify_email"
+              element={
+                <Layout>
+                  <VerifyEmail />
                 </Layout>
               }
             />

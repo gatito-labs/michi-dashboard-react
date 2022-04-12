@@ -18,7 +18,7 @@ export default function Home() {
     checkServerStatus();
   }, [checkServerStatus]);
 
-  if (isAuthenticated) {
+  if (isAuthenticated && user && user.email_verified) {
     return (
       <Layout>
         <Routes>
