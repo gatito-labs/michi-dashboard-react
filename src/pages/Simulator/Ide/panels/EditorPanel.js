@@ -64,12 +64,15 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
       <Editor
         className="panel"
         defaultLanguage="cpp"
-        theme="vs-dark"
+        theme="mustakisTheme"
         onChange={handleEditorChange}
         onMount={_handleEditorDidMount}
         options={{
           minimap: {
             enabled: false,
+          },
+          semanticHighlighting: {
+            enabled: true,
           },
           scrollBeyondLastLine: false,
         }}
