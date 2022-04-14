@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import EnvCard from "./EnvCard";
 import ActiveCard from "./ActiveCard";
@@ -10,6 +10,7 @@ import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import { useHubServer } from "../../store";
+import ReactGA from 'react-ga4';
 
 function CircularProgressWithLabel(props) {
   return (
@@ -36,6 +37,13 @@ function CircularProgressWithLabel(props) {
 }
 
 const Dashboard = () => {
+  useEffect(() => {
+    ReactGA.send({
+      hitType: "pageview",
+      page: window.location.pathname + window.location.search
+    });
+  }, []);
+
   const {
     serverRunning,
     startingServer: serverStarting,

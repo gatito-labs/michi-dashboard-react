@@ -9,6 +9,7 @@ import Layout from "../components/Layout";
 import { NotLoggedPage } from "./Login/Login";
 import { useHubServer } from "../store";
 import Simulator from "./Simulator";
+import ReactGA from 'react-ga4';
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth0();
@@ -19,6 +20,7 @@ export default function Home() {
   }, [checkServerStatus]);
 
   if (isAuthenticated) {
+    ReactGA.set({ userId: user.nickname });
     return (
       <Layout>
         <Routes>
@@ -41,6 +43,7 @@ export default function Home() {
       </Layout>
     );
   } else {
+    ReactGA.set({ userId: "none" });
     return (
       <Layout>
         <NotLoggedPage />

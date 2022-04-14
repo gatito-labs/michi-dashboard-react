@@ -8,7 +8,9 @@ import { LoginLanding, NotLoggedPage } from "./pages/Login/Login";
 import Layout from "./components/Layout/Layout";
 import { useAuth0 } from "@auth0/auth0-react";
 import { HubServerProvider } from "./store";
+import ReactGA from 'react-ga4';
 import "./App.css";
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -22,7 +24,21 @@ const theme = createTheme({
 
 function App() {
   // const theme = useTheme();
-  const { isAuthenticated } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
+
+  React.useEffect(() => {
+    ReactGA.initialize("G-FHTYXPFZ7N", {
+      debug: true,
+      titleCase: false,
+      gaOptions: {
+        userId: user ? user.nickname : "none",
+      }
+    });
+    ReactGA.send({
+      hitType: "pageview",
+      page: window.location.pathname + window.location.search
+    });
+  }, [user]);
 
   return (
     <div

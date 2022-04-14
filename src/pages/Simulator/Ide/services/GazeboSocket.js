@@ -1,12 +1,13 @@
-export function sendCodeToRobot({
-  ws_url,
-  code,
-  language,
-  onLogMessage,
-  onSuccessMessage,
-  onErrorMessage,
-  onFinish,
-}) {
+import ReactGA from 'react-ga4';
+
+export function sendCodeToRobot({ws_url, code, language,
+  onLogMessage, onSuccessMessage, onErrorMessage, onFinish}) {
+  
+  ReactGA.event({
+    category: 'Code',
+    action: 'Run',
+  });
+
   const ws = new WebSocket(ws_url);
 
   ws.onopen = () => {
