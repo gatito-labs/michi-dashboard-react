@@ -4,13 +4,14 @@ function _sentCodeToAnalytics({user_name, language, code_text}) {
   fetch("https://api.gatitolabs.cl/michi-api/upload_code_to_s3", {
     method: "POST",
     headers: {
-      'Authorization': `Bearer ${process.env.REACT_APP_CODE_TO_S3_TOKEN}`
+      'Authorization': `Bearer ${process.env.REACT_APP_CODE_TO_S3_TOKEN}`,
+      'Content-Type': 'application/json'
     },
-    data: {
+    body: JSON.stringify({
       user_name: user_name,
       language: language,
-      code_text: code_text,
-    },
+      code_text: code_text
+    })
   })
 }
 

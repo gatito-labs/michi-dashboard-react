@@ -147,7 +147,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
     sendCodeToRobot({
       ws_url: url,
-      user: "test",
+      user: user_email,
       code:
         panelSelected === BLOCKLY
           ? blocklyCodeRef.current
