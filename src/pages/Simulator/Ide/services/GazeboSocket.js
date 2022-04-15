@@ -1,12 +1,35 @@
-export function sendCodeToRobot({
-  ws_url,
-  code,
-  language,
-  onLogMessage,
-  onSuccessMessage,
-  onErrorMessage,
-  onFinish,
-}) {
+import ReactGA from 'react-ga4';
+
+function _sentCodeToAnalytics({user_name, language, code_text}) {
+  fetch("https://api.gatitolabs.cl/michi-api/upload_code_to_s3", {
+    method: "POST",
+    headers: {
+      'Authorization': `Bearer ${process.env.REACT_APP_CODE_TO_S3_TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      user_name: user_name,
+      language: language,
+      code_text: code_text
+    })
+  })
+}
+
+
+export function sendCodeToRobot({ws_url, user, code, language,
+  onLogMessage, onSuccessMessage, onErrorMessage, onFinish}) {
+  
+  ReactGA.event({
+    category: 'Code',
+    action: 'Run',
+  });
+
+  _sentCodeToAnalytics({
+    user_name: user,
+    language: language,
+    code_text: code
+  });
+
   const ws = new WebSocket(ws_url);
 
   ws.onopen = () => {

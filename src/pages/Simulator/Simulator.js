@@ -6,6 +6,8 @@ import { useTheme } from "@mui/styles";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
+import ReactGA from 'react-ga4';
+
 
 const modalStyle = {
   position: "absolute",
@@ -167,6 +169,11 @@ const Simulator = () => {
   const [openTutorialModal, setOpenTutorialModal] = useState(false);
 
   useEffect(() => {
+    ReactGA.send({
+      hitType: "pageview",
+      page: window.location.pathname + window.location.search
+    });
+    
     if (
       localStorage.getItem("skipTutorial") === undefined ||
       localStorage.getItem("skipTutorial") ===   null ||
