@@ -19,7 +19,8 @@ export default function Home() {
     checkServerStatus();
   }, [checkServerStatus]);
 
-  if (isAuthenticated) {
+
+  if (isAuthenticated && user && user.email_verified) {
     ReactGA.set({ userId: user.nickname });
     return (
       <Layout>
