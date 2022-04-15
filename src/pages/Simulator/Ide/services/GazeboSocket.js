@@ -1,10 +1,10 @@
 import ReactGA from 'react-ga4';
 
-function _sentCodeToAnalytics({user_name, language, code_text}) {
-  fetch("https://api.gatitolabs.cl/michi-api/upload_code_to_s3", {
+function _sentCodeToAnalytics({token, user_name, language, code_text}) {
+  fetch(`${process.env.REACT_APP_MICHI_API}/upload_code_to_s3`, {
     method: "POST",
     headers: {
-      'Authorization': `Bearer ${process.env.REACT_APP_CODE_TO_S3_TOKEN}`,
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -17,17 +17,11 @@ function _sentCodeToAnalytics({user_name, language, code_text}) {
 
 
 export function sendCodeToRobot({ws_url, user, code, language,
-  onLogMessage, onSuccessMessage, onErrorMessage, onFinish}) {
+  onLogMessage, onSuccessMessage, onErrorMessage, onFinish, getAccessTokenSilently}) {
   
   ReactGA.event({
     category: 'Code',
     action: 'Run',
-  });
-
-  _sentCodeToAnalytics({
-    user_name: user,
-    language: language,
-    code_text: code
   });
 
   const ws = new WebSocket(ws_url);
@@ -71,4 +65,14 @@ export function sendCodeToRobot({ws_url, user, code, language,
     onErrorMessage("Falló conexión al servidor");
     onFinish();
   };
+
+  getAccessTokenSilently().then((token) => {
+    _sentCodeToAnalytics({
+      token: token,
+      user_name: user,
+      language: language,
+      code_text: code
+    });
+  });
+  
 }

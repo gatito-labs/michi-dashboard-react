@@ -66,6 +66,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     useHubServer();
 
   const user_email = useAuth0().user.email;
+  const { getAccessTokenSilently } = useAuth0();
   const [enviromentConfig, setEnviromentConfig] = useState(null);
   const [runLoading, setRunLoading] = useState(false);
   const [terminalOutput, setTerminalOutput] = useState("Terminal ");
@@ -157,6 +158,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
       onSuccessMessage: onSuccessMessage,
       onErrorMessage: onErrorMessage,
       onFinish: onFinish,
+      getAccessTokenSilently: getAccessTokenSilently
     });
   }, [
     panelSelected,
@@ -165,6 +167,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
     onSuccessMessage,
     onErrorMessage,
     onFinish,
+    getAccessTokenSilently
   ]);
 
   const handleStop = useCallback(() => {
