@@ -153,7 +153,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         panelSelected === BLOCKLY
           ? blocklyCodeRef.current
           : editorRef.current.getValue(),
-      language: panelSelected === BLOCKLY ? "python" : "ino",
+      language: panelSelected === BLOCKLY ? "python" : "python",
       onLogMessage: onLogMessage,
       onSuccessMessage: onSuccessMessage,
       onErrorMessage: onErrorMessage,
