@@ -147,9 +147,6 @@ export function setUpHighlighting(monaco, language) {
 }
 
 
-export default function setUpMustakisEditor(monaco) {
-  _setUpCompletionItems(monaco, "cpp");
-  _setUpSignaturesHelp(monaco, "cpp");
-  setUpArduinoCompletions(monaco);
-  setUpHighlighting(monaco);
+export default function setUpMustakisEditor(monaco) {;
+  setUpHighlighting(monaco,'python');
 };

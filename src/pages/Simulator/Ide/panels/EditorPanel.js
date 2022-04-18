@@ -63,7 +63,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
     >
       <Editor
         className="panel"
-        defaultLanguage="cpp"
+        defaultLanguage="python"
         theme="mustakisTheme"
         onChange={handleEditorChange}
         onMount={_handleEditorDidMount}

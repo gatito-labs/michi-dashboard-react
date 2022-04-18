@@ -20,25 +20,9 @@ const EDITOR = "editor";
 const DOCUMENTATION = "docs";
 
 const ARDUINO_TEMPLATE_CODE = `
-// En este editor debes escribir código arduino.
+from gatitolabs.katobot import Katobot
 
-#include <KnightRoboticsLibs_Iroh.h>
-#include <NewPing.h>
-#include <Servo.h>
-#include <Wire.h>         
-#include <LiquidCrystal_I2C.h>
-
-int IR_Derecho;
-int IR_Izquierdo;
-
-void setup(){
-    inicializarMovimientoRobot();
-    botonInicio();
-}
-
-void loop(){
-
-}
+robot = Katobot()
 `;
 
 const getWsUrl = (user_email) => {
@@ -180,7 +164,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
       type: "text/plain;charset=utf-8",
     });
     element.href = URL.createObjectURL(file);
-    element.download = `${filename}.ino`;
+    element.download = `${filename}.py`;
     element.click();
   }, []);
 
