@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { LoginLanding, VerifyEmail, NotLoggedPage } from "./pages/Login/Login";
+import { LoginLanding, VerifyEmail, NotLoggedPage } from "./pages/Login";
 import Layout from "./components/Layout/Layout";
 import { useAuth0 } from "@auth0/auth0-react";
 import { HubServerProvider } from "./store";

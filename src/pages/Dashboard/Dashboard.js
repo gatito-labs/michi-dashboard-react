@@ -69,10 +69,12 @@ const Dashboard = () => {
         unmountOnExit
       >
         <Grid item xl={6} md={6} sm={9} sx={{ margin: "1em auto" }}>
-          <Alert severity="error" onClose={clearErrors}>{serverError}</Alert>
+          <Alert severity="error" onClose={clearErrors}>
+            {serverError}
+          </Alert>
         </Grid>
       </Slide>
-      
+
       <Slide direction="right" in={loadingStatus} mountOnEnter unmountOnExit>
         <div>
           <Grid
