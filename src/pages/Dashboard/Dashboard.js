@@ -1,46 +1,41 @@
 import React, { useEffect, useState } from "react";
 
-import EnvCard from "./EnvCard";
 import ActiveCard from "./ActiveCard";
+import BuyCard from "./BuyCard";
+import EnvCard from "./EnvCard";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
-import { useHubServer } from "../../store";
-import ReactGA from 'react-ga4';
 
-function CircularProgressWithLabel(props) {
+import CircularProgressWithLabel from "../../components/CircularProgressWithLabel";
+import { useHubServer } from "../../store";
+import ReactGA from "react-ga4";
+import { useTheme } from "@mui/styles";
+import Footer from "../../components/Layout/Footer";
+
+const DividerTitle = ({ children }) => {
+  const theme = useTheme();
   return (
-    <Box sx={{ position: "relative", display: "inline-flex" }}>
-      <CircularProgress variant="determinate" {...props} />
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          position: "absolute",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography variant="caption" component="div" color="text.secondary">
-          {`${Math.round(props.value)}%`}
-        </Typography>
-      </Box>
-    </Box>
+    <Divider
+      sx={{ margin: "2em", "&::before": { width: "2%" } }}
+      textAlign="left"
+      variant="middle"
+    >
+      <Typography variant="subtitle1" color={theme.palette.primary.dark}>
+        {children}
+      </Typography>
+    </Divider>
   );
-}
+};
 
 const Dashboard = () => {
   useEffect(() => {
     ReactGA.send({
       hitType: "pageview",
-      page: window.location.pathname + window.location.search
+      page: window.location.pathname + window.location.search,
     });
   }, []);
 
@@ -56,6 +51,7 @@ const Dashboard = () => {
     stopServer,
     serverError,
     availableEnviroments,
+    availableCoursesToBuy,
   } = useHubServer();
 
   const [selectedEnv, setSelectedEnv] = useState(null);
@@ -125,6 +121,16 @@ const Dashboard = () => {
           </Grid>
         </div>
       </Slide>
+
+      <DividerTitle>Mis Ambientes</DividerTitle>
+
+      {/* {(loadingStatus ||
+        serverRunning ||
+        serverStarting ||
+        serverStopping ||
+        serverError) && 
+      } */}
+
       <Slide
         direction="right"
         in={serverRunning && runningEnviroment !== null && !serverStopping}
@@ -156,18 +162,13 @@ const Dashboard = () => {
         </Grid>
       </Slide>
 
-      {(loadingStatus ||
-        serverRunning ||
-        serverStarting ||
-        serverStopping ||
-        serverError) && <Divider sx={{ margin: "2em" }} />}
-
       {availableEnviroments === null ||
       Object.keys(availableEnviroments).length === 0 ? (
         <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
-          <Alert severity="error">
-            No hay ambientes disponibles! Al parecer aún no has sido añadido a
-            tus cursos, consulta con tus profesores/monitores.
+          <Alert severity="info">
+            No hay ambientes disponibles. Aún no has comprado ningún curso o no
+            has sido añadido a un taller. Si eres parte de un taller, consulta
+            con tus profesores/monitores para que se añadan tus cursos.
           </Alert>
         </Grid>
       ) : (
@@ -210,6 +211,47 @@ const Dashboard = () => {
           </Grid>
         )
       )}
+
+      {Object.keys(availableCoursesToBuy).length !== 0 &&
+      availableCoursesToBuy !== null &&
+      availableCoursesToBuy !== undefined ? (
+        <>
+          {/* <Divider sx={{ margin: "2em", '&::before': {"width": "2%"}}} textAlign="left" variant="middle">
+            <Typography variant="subtitle1" color={theme.palette.primary.dark}>
+              Tienda:
+            </Typography>
+          </Divider> */}
+
+          <DividerTitle>Tienda</DividerTitle>
+
+          <Grid
+            container
+            spacing={2}
+            sx={{ alignItems: "stretch" }}
+            id="course-store"
+          >
+            {Object.values(availableCoursesToBuy).map((course) => {
+              return (
+                <Grid
+                  key={course.title}
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  className="available-course-to-buy"
+                >
+                  <BuyCard course={course} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </>
+      ) : (
+        <></>
+      )}
+
+      <Footer />
     </div>
   );
 };
