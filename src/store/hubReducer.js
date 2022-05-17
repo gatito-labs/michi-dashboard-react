@@ -26,6 +26,18 @@ export const initialState = {
   creatingHubUser: false,
   runningEnviroment: null,
   availableEnviroments: null,
+  availableCoursesToBuy: {
+    "robotica-con-python": {
+      name: "robotica-con-python",
+      title: "Programación en Python",
+      summaryContent:
+        "Aprender a programar un robot usando el lenguaje Python.",
+      expandedContent:
+        "Aprender a programar un robot usando el lenguaje Python.",
+      envImage: "/static/cards/seguidor.png",
+      price: 7500
+    },
+  },
   serverError: null,
 };
 
@@ -108,15 +120,21 @@ export const reducer = (state, action) => {
     case GET_AVAILABLE_ENVIROMENTS:
       let new_envs = {};
 
+      let availableCoursesToBuy = state.availableCoursesToBuy;
+
       action.payload.forEach((e) => {
         new_envs[e.name] = { ...e };
         new_envs[e.name]["blockly"] = new_envs[e.name]["blockly"] === "true";
         new_envs[e.name]["editor"] = new_envs[e.name]["editor"]
           ? new_envs[e.name]["editor"]
           : null;
+
+        if(e.name in state.availableCoursesToBuy){
+          delete availableCoursesToBuy[e.name];
+        }
       });
 
-      return { ...state, availableEnviroments: new_envs };
+      return { ...state, availableEnviroments: new_envs, availableCoursesToBuy: availableCoursesToBuy};
 
     case CLEAR_ERRORS:
       return { ...state, serverError: null };

@@ -27,13 +27,12 @@ import {
   STOP_SERVER_SUCCESS,
   GET_AVAILABLE_ENVIROMENTS,
   CLEAR_ERRORS,
-} from "./reducer";
+} from "./hubReducer";
 
-import { reducer, initialState } from "./reducer";
+import { reducer, initialState } from "./hubReducer";
 
 const Store = createContext();
 Store.displayName = "HubServerStore";
-
 export const useHubServer = () => useContext(Store);
 
 export const HubServerProvider = ({ children }) => {
@@ -56,7 +55,7 @@ export const HubServerProvider = ({ children }) => {
         }
       });
     }
-  }, [isAuthenticated, getIdTokenClaims]);
+  }, [isAuthenticated, getIdTokenClaims, state.availableCoursesToBuy]);
 
   const ctrl = useMemo(() => new AbortController(), []);
 
@@ -155,8 +154,9 @@ export const HubServerProvider = ({ children }) => {
     } catch (error) {
       dispatch({
         type: CHECK_SERVER_ERROR,
-        payload: error,
+        payload: "Error desconocido al chequear el estado del servidor",
       });
+      console.error(error);
     }
   }, [user, token, checkServerStartingProgress]);
 
