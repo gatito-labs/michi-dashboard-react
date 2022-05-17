@@ -3,30 +3,38 @@ import React, { useEffect, useState } from "react";
 import ActiveCard from "./ActiveCard";
 import BuyCard from "./BuyCard";
 import EnvCard from "./EnvCard";
+import Footer from "../../components/Layout/Footer";
+import CircularProgressWithLabel from "../../components/CircularProgressWithLabel";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
-import Divider from "@mui/material/Divider";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
 
-import CircularProgressWithLabel from "../../components/CircularProgressWithLabel";
 import { useHubServer } from "../../store";
-import ReactGA from "react-ga4";
 import { useTheme } from "@mui/styles";
-import Footer from "../../components/Layout/Footer";
+import ReactGA from "react-ga4";
+
 
 const DividerTitle = ({ children }) => {
   const theme = useTheme();
   return (
     <Divider
-      sx={{ margin: "2em", "&::before": { width: "2%" } }}
+      color="primary"
+      sx={{
+        margin: "2em",
+        "&::before": { width: "2%", borderColor: theme.palette.primary.light},
+        "&::after": { borderColor: theme.palette.primary.light},
+      }}
       textAlign="left"
       variant="middle"
     >
-      <Typography variant="subtitle1" color={theme.palette.primary.dark}>
-        {children}
-      </Typography>
+      <Chip
+        color="primary"
+        label={<Typography color="white" variant="subtitle2">{children}</Typography>}
+      ></Chip>
     </Divider>
   );
 };
@@ -124,13 +132,6 @@ const Dashboard = () => {
 
       <DividerTitle>Mis Ambientes</DividerTitle>
 
-      {/* {(loadingStatus ||
-        serverRunning ||
-        serverStarting ||
-        serverStopping ||
-        serverError) && 
-      } */}
-
       <Slide
         direction="right"
         in={serverRunning && runningEnviroment !== null && !serverStopping}
@@ -180,7 +181,6 @@ const Dashboard = () => {
             id="available-enviroments"
           >
             {Object.values(availableEnviroments).map((env) => {
-              // if (currentEnviroment !== env.name) {
               return (
                 <Grid
                   item
@@ -216,12 +216,6 @@ const Dashboard = () => {
       availableCoursesToBuy !== null &&
       availableCoursesToBuy !== undefined ? (
         <>
-          {/* <Divider sx={{ margin: "2em", '&::before': {"width": "2%"}}} textAlign="left" variant="middle">
-            <Typography variant="subtitle1" color={theme.palette.primary.dark}>
-              Tienda:
-            </Typography>
-          </Divider> */}
-
           <DividerTitle>Tienda</DividerTitle>
 
           <Grid
