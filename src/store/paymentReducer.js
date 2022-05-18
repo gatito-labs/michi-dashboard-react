@@ -11,6 +11,10 @@ export const SET_COURSE_TO_BUY = "PAYMENT/SET_COURSE_TO_BUY/SUCCESS";
 export const CLEAR_ERRORS = "PAYMENT/CLEAR_ERRORS/SUCCESS";
 export const CLEAR_PAYMENT_INFO = "PAYMENT/CLEAR_PAYMENT_INFO/SUCCESS";
 
+export const REDEEM_COURSE = "PAYMENT/REDEEM_COURSE/START";
+export const REDEEM_COURSE_ERROR = "PAYMENT/REDEEM_COURSE/ERROR";
+export const REDEEM_COURSE_SUCCESS = "PAYMENT/REDEEM_COURSE/SUCCESS";
+
 export const NO_PAYMENT = -2;
 export const LOADING_PAYMENT_STATUS = -1;
 export const PAYMENT_PENDING = 1;
@@ -25,6 +29,11 @@ export const initialState = {
   paymentCreated: false,
   paymentStatus: NO_PAYMENT,
   course: null,
+
+  redeemCourseCode: "",
+  redeemCourseLoading: false,
+  redeemCourseSuccess: false,
+
   paymentInfo: {
     paymentRequestToken: "",
     paymentRequestURL: "",
@@ -82,6 +91,29 @@ export const reducer = (state, action) => {
       return {
         ...initialState,
         availableCoursesToBuy: state.availableCoursesToBuy,
+      };
+
+    case REDEEM_COURSE:
+      return {
+        ...state,
+        redeemCourseCode: action.payload,
+        redeemCourseLoading: true,
+        redeemCourseSuccess: false,
+      };
+
+    case REDEEM_COURSE_ERROR:
+      return {
+        ...state,
+        redeemCourseLoading: false,
+        redeemCourseSuccess: false,
+        error: action.payload,
+      };
+
+    case REDEEM_COURSE_SUCCESS:
+      return {
+        ...state,
+        redeemCourseLoading: false,
+        redeemCourseSuccess: true,
       };
 
     default:

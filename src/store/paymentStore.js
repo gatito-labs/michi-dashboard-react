@@ -24,6 +24,9 @@ import {
   PAYMENT_ABORTED,
   PAYMENT_COMPLETED,
   PAYMENT_REJECTED,
+  REDEEM_COURSE,
+  REDEEM_COURSE_ERROR,
+  REDEEM_COURSE_SUCCESS,
 } from "./paymentReducer";
 
 import { reducer, initialState } from "./paymentReducer";
@@ -121,10 +124,6 @@ export const PaymentProvider = ({ children }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          // body: JSON.stringify({
-          //   user: { email: user.email, user_id: user.sub },
-          //   token: paymentToken === null ? state.paymentInfo.paymentRequestToken : paymentToken,
-          // }),
         }
       )
         .then(async (res) => {
@@ -177,6 +176,55 @@ export const PaymentProvider = ({ children }) => {
 
   const clearPaymentInfo = useCallback(() => {}, []);
 
+  const redeemCourse = useCallback(
+    (code) => {
+      dispatch({ type: REDEEM_COURSE, payload: code });
+
+      fetch(`${process.env.REACT_APP_PAYMENT_API}/redeem`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code: code,
+          user: { email: user.email, user_id: user.sub },
+        }),
+      })
+        .then(async (res) => {
+          if (res.status === 200) {
+            const json = await res.json();
+
+            if (json.status === "reedemed") {
+              dispatch({ type: REDEEM_COURSE_SUCCESS });
+            } else {
+              dispatch({
+                type: REDEEM_COURSE_ERROR,
+                payload:
+                  json.status === "rejected"
+                    ? "¡Código Incorrecto! No hay ningún curso/taller asociado a ese código."
+                    : "Error de conexión, no podemos canjear el código de tu curso en este momento!",
+              });
+            }
+          } else {
+            dispatch({
+              type: REDEEM_COURSE_ERROR,
+              payload:
+                "Error de conexión, no podemos canjear el código de tu curso en este momento!",
+            });
+          }
+        })
+        .catch(() => {
+          dispatch({
+            type: REDEEM_COURSE_ERROR,
+            payload:
+              "Error de conexión, no podemos canjear el código de tu curso en este momento!",
+          });
+        });
+    },
+    [token, user?.email, user?.sub]
+  );
+
   const setCourse = useCallback((course) => {
     dispatch({ type: SET_COURSE_TO_BUY, payload: course });
   }, []);
@@ -190,6 +238,7 @@ export const PaymentProvider = ({ children }) => {
         clearErrors,
         clearPaymentInfo,
         setCourse,
+        redeemCourse,
       }}
     >
       {children}
