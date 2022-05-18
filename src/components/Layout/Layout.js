@@ -242,6 +242,9 @@ export default function Layout(props) {
                   <MenuItem>
                     <Typography>{user.email}</Typography>
                   </MenuItem>
+                  <MenuItem onClick={()=>{navigate("/curso_codigo")}}>
+                    <Typography>Añadir Código de Curso</Typography>
+                  </MenuItem>
                   <MenuItem onClick={handleLogout}>
                     <IconButton>
                       <LogoutIcon />

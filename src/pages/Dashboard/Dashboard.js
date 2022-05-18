@@ -5,6 +5,7 @@ import BuyCard from "./BuyCard";
 import EnvCard from "./EnvCard";
 import Footer from "../../components/Layout/Footer";
 import CircularProgressWithLabel from "../../components/CircularProgressWithLabel";
+
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import Chip from "@mui/material/Chip";
@@ -16,7 +17,7 @@ import Slide from "@mui/material/Slide";
 import { useHubServer } from "../../store";
 import { useTheme } from "@mui/styles";
 import ReactGA from "react-ga4";
-
+import { Link } from "react-router-dom";
 
 const DividerTitle = ({ children }) => {
   const theme = useTheme();
@@ -25,15 +26,19 @@ const DividerTitle = ({ children }) => {
       color="primary"
       sx={{
         margin: "2em",
-        "&::before": { width: "2%", borderColor: theme.palette.primary.light},
-        "&::after": { borderColor: theme.palette.primary.light},
+        "&::before": { width: "2%", borderColor: theme.palette.primary.light },
+        "&::after": { borderColor: theme.palette.primary.light },
       }}
       textAlign="left"
       variant="middle"
     >
       <Chip
         color="primary"
-        label={<Typography color="white" variant="subtitle2">{children}</Typography>}
+        label={
+          <Typography color="white" variant="subtitle2">
+            {children}
+          </Typography>
+        }
       ></Chip>
     </Divider>
   );
@@ -168,8 +173,9 @@ const Dashboard = () => {
         <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
           <Alert severity="info">
             No hay ambientes disponibles. Aún no has comprado ningún curso o no
-            has sido añadido a un taller. Si eres parte de un taller, consulta
-            con tus profesores/monitores para que se añadan tus cursos.
+            has sido añadido a un taller. Si eres parte de un taller, añade el
+            código asociado en el siguiente{" "}
+            <Link to="/curso_codigo">link </Link>.
           </Alert>
         </Grid>
       ) : (

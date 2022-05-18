@@ -11,6 +11,7 @@ import { useHubServer } from "../store";
 import Simulator from "./Simulator";
 import Payment, { PaymentConfirmation } from "./Payment";
 import ReactGA from "react-ga4";
+import CourseCode from "./CourseCode";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth0();
@@ -45,6 +46,8 @@ export default function Home() {
               element={<PaymentConfirmation />}
             />
             <Route exact path="/payment" element={<Payment />} />
+            <Route exact path="/curso_codigo" element={<CourseCode />} />
+
           </React.Fragment>
         </Routes>
       </Layout>
