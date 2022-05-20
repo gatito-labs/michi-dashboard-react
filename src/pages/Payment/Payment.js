@@ -34,7 +34,6 @@ const Payment = () => {
     createPayment();
   }, [createPayment]);
 
-  console.log(error);
 
   if (creatingPayment || paymentCreated) {
     return (
@@ -78,7 +77,7 @@ const Payment = () => {
                 <CardMedia
                   component="img"
                   height="194"
-                  image={course.envImage}
+                  image={course.img_url}
                   alt="Imagen del ambiente de robótica"
                 />
                 <CardContent>

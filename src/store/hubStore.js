@@ -25,7 +25,9 @@ import {
   STOP_SERVER,
   STOP_SERVER_ERROR,
   STOP_SERVER_SUCCESS,
-  GET_AVAILABLE_ENVIROMENTS,
+  GET_AVAILABLE_ENVIROMENTS_START,
+  GET_AVAILABLE_ENVIROMENTS_ERROR,
+  GET_AVAILABLE_ENVIROMENTS_SUCCESS,
   CLEAR_ERRORS,
 } from "./hubReducer";
 
@@ -45,14 +47,6 @@ export const HubServerProvider = ({ children }) => {
       getIdTokenClaims().then((res) => {
         let _token = res.__raw;
         setToken(_token);
-
-        if (res[`${process.env.REACT_APP_TOKEN_NAMESPACE}/enviroments`]) {
-          dispatch({
-            type: GET_AVAILABLE_ENVIROMENTS,
-            payload:
-              res[`${process.env.REACT_APP_TOKEN_NAMESPACE}/enviroments`],
-          });
-        }
       });
     }
   }, [isAuthenticated, getIdTokenClaims, state.availableCoursesToBuy]);
@@ -214,6 +208,40 @@ export const HubServerProvider = ({ children }) => {
       });
   }, [user, ctrl, token, checkServerStatus]);
 
+  const getAvailableEnviroments = useCallback(async () => {
+    dispatch({ type: GET_AVAILABLE_ENVIROMENTS_START });
+
+    fetch(`${process.env.REACT_APP_MICHI_API}/available_enviroments`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.sub,
+      }),
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        console.log(json);
+        if (res.status === 200 && json.status !== "error") {
+          dispatch({
+            type: GET_AVAILABLE_ENVIROMENTS_SUCCESS,
+            payload: { enviroments: json.enviroments, store: json.store },
+          });
+        } else {
+          dispatch({
+            type: GET_AVAILABLE_ENVIROMENTS_ERROR,
+            payload: json.msg ? json.msg : json.detail,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch({ type: GET_AVAILABLE_ENVIROMENTS_ERROR, payload: error });
+      });
+  }, [token, user]);
+
   const clearErrors = useCallback(() => {
     dispatch({ type: CLEAR_ERRORS });
   }, []);
@@ -222,6 +250,7 @@ export const HubServerProvider = ({ children }) => {
     <Store.Provider
       value={{
         ...state,
+        getAvailableEnviroments,
         checkServerStatus,
         startServer,
         stopServer,

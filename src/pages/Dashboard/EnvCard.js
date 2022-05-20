@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-
-import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import CardActions from "@mui/material/CardActions";
-import CardActionArea from "@mui/material/CardActionArea";
-import Typography from "@mui/material/Typography";
+import CardMedia from "@mui/material/CardMedia";
+import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+
 
 const EnvCard = (props) => {
   const [expanded, setExpanded] = useState(false);
@@ -17,7 +17,7 @@ const EnvCard = (props) => {
     setExpanded(!expanded);
   };
 
-  const { envTitle, envImage, summaryContent, buttonDisabled, startServer } =
+  const { envTitle, envImage, description, buttonDisabled, startServer } =
     props;
 
   return (
@@ -42,7 +42,7 @@ const EnvCard = (props) => {
             />
 
             <CardContent>
-              <Typography>{summaryContent}</Typography>
+              <Typography>{description}</Typography>
             </CardContent>
           </CardActionArea>
         </Grid>

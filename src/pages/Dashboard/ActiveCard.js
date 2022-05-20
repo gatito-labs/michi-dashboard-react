@@ -1,16 +1,16 @@
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 import { Link } from "react-router-dom";
 
 const ActiveCard = (props) => {
-  const { envTitle, envImage, summaryContent, buttonDisabled, stopServer } =
+  const { envTitle, envImage, description, buttonDisabled, stopServer } =
     props;
 
   let active = true;
@@ -18,7 +18,7 @@ const ActiveCard = (props) => {
   return (
     <Card>
       <CardHeader title={`Ambiente Activo: ${envTitle}`} />
-      <Box sx={{ display: "flex" }}>
+      <Grid>
         <CardMedia
           component="img"
           height="194"
@@ -26,15 +26,9 @@ const ActiveCard = (props) => {
           alt="Imagen del ambiente de robótica"
         />
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
+        <Grid direction="column" justifyContent="space-between">
           <CardContent>
-            <Typography>{summaryContent}</Typography>
+            <Typography>{description}</Typography>
           </CardContent>
           <CardActions disableSpacing>
             {active && (
@@ -47,7 +41,6 @@ const ActiveCard = (props) => {
                     disabled={buttonDisabled}
                   >
                     Ir
-                    
                   </Button>
                 </Link>
 
@@ -63,8 +56,8 @@ const ActiveCard = (props) => {
               </div>
             )}
           </CardActions>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </Card>
   );
 };

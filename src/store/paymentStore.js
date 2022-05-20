@@ -58,7 +58,7 @@ export const PaymentProvider = ({ children }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        course: state.course.title,
+        course: state.course.name,
         user: { email: user.email, user_id: user.sub },
         redirect: window.location.host,
       }),
@@ -92,7 +92,7 @@ export const PaymentProvider = ({ children }) => {
           payload: "Error de conexión con el servidor de pagos",
         });
       });
-  }, [token, user, state?.course?.title]);
+  }, [token, user, state?.course?.name]);
 
   const checkPaymentStatus = useCallback(
     (paymentToken = null) => {
@@ -202,7 +202,7 @@ export const PaymentProvider = ({ children }) => {
                 type: REDEEM_COURSE_ERROR,
                 payload:
                   json.status === "rejected"
-                    ? "¡Código Incorrecto! No hay ningún curso/taller asociado a ese código."
+                    ? json.msg
                     : "Error de conexión, no podemos canjear el código de tu curso en este momento!",
               });
             }

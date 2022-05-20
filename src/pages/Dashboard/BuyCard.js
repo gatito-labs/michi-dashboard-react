@@ -44,7 +44,7 @@ const EnvCard = ({ course }) => {
             <CardMedia
               component="img"
               height="194"
-              image={course.envImage}
+              image={course.img_url}
               alt="Imagen del ambiente de robótica"
             />
 

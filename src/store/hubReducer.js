@@ -14,8 +14,15 @@ export const STOP_SERVER = "SERVER/STOP_SERVER/START";
 export const STOP_SERVER_ERROR = "SERVER/STOP_SERVER/ERROR";
 export const STOP_SERVER_SUCCESS = "SERVER/STOP_SERVER/SUCCESS";
 
-export const GET_AVAILABLE_ENVIROMENTS = "GET_AVAILABLE_ENVIROMENTS";
+// export const GET_AVAILABLE_ENVIROMENTS = "GET_AVAILABLE_ENVIROMENTS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
+
+export const GET_AVAILABLE_ENVIROMENTS_START =
+  "SERVER/GET_AVAILABLE_ENVIROMENTS/START";
+export const GET_AVAILABLE_ENVIROMENTS_ERROR =
+  "SERVER/GET_AVAILABLE_ENVIROMENTS/ERROR";
+export const GET_AVAILABLE_ENVIROMENTS_SUCCESS =
+  "SERVER/GET_AVAILABLE_ENVIROMENTS/SUCCESS";
 
 export const initialState = {
   loadingStatus: false,
@@ -25,19 +32,9 @@ export const initialState = {
   stopingServer: false,
   creatingHubUser: false,
   runningEnviroment: null,
+  gettingEnviroments: false,
   availableEnviroments: null,
-  availableCoursesToBuy: {
-    "robotica-con-python": {
-      name: "robotica-con-python",
-      title: "Programación en Python",
-      summaryContent:
-        "Aprender a programar un robot usando el lenguaje Python.",
-      expandedContent:
-        "Aprender a programar un robot usando el lenguaje Python.",
-      envImage: "/static/cards/seguidor.png",
-      price: 7500
-    },
-  },
+  availableCoursesToBuy: null,
   serverError: null,
 };
 
@@ -117,24 +114,45 @@ export const reducer = (state, action) => {
         serverError: String(action.payload),
       };
 
-    case GET_AVAILABLE_ENVIROMENTS:
-      let new_envs = {};
+    case GET_AVAILABLE_ENVIROMENTS_START:
+      return {
+        ...state,
+        gettingEnviroments: true,
+      };
 
-      let availableCoursesToBuy = state.availableCoursesToBuy;
+    case GET_AVAILABLE_ENVIROMENTS_ERROR:
+      return {
+        ...state,
+        gettingEnviroments: false,
+        error: action.payload,
+      };
 
-      action.payload.forEach((e) => {
-        new_envs[e.name] = { ...e };
-        new_envs[e.name]["blockly"] = new_envs[e.name]["blockly"] === "true";
-        new_envs[e.name]["editor"] = new_envs[e.name]["editor"]
-          ? new_envs[e.name]["editor"]
+    case GET_AVAILABLE_ENVIROMENTS_SUCCESS:
+      let availableEnviroments = {};
+      let availableCoursesToBuy = {};
+
+      // let availableCoursesToBuy = state.availableCoursesToBuy;
+
+      action.payload.enviroments.forEach((e) => {
+        availableEnviroments[e.name] = { ...e };
+        // availableEnviroments[e.name]["blockly"] = availableEnviroments[e.name]["blockly"] === "true";
+        availableEnviroments[e.name]["editor"] = availableEnviroments[e.name][
+          "language"
+        ]
+          ? availableEnviroments[e.name]["language"]
           : null;
-
-        if(e.name in state.availableCoursesToBuy){
-          delete availableCoursesToBuy[e.name];
-        }
       });
 
-      return { ...state, availableEnviroments: new_envs, availableCoursesToBuy: availableCoursesToBuy};
+      action.payload.store.forEach((e) => {
+        availableCoursesToBuy[e.name] = { ...e };
+      });
+
+      return {
+        ...state,
+        gettingEnviroments: false,
+        availableEnviroments,
+        availableCoursesToBuy,
+      };
 
     case CLEAR_ERRORS:
       return { ...state, serverError: null };

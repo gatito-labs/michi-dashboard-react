@@ -65,9 +65,15 @@ const Dashboard = () => {
     serverError,
     availableEnviroments,
     availableCoursesToBuy,
+    getAvailableEnviroments,
+    gettingEnviroments,
   } = useHubServer();
 
   const [selectedEnv, setSelectedEnv] = useState(null);
+
+  useEffect(() => {
+    getAvailableEnviroments();
+  }, [getAvailableEnviroments]);
 
   return (
     <div style={{ padding: "1em" }}>
@@ -151,13 +157,13 @@ const Dashboard = () => {
                 <ActiveCard
                   active={serverRunning || serverStarting}
                   envTitle={availableEnviroments[runningEnviroment].title}
-                  summaryContent={
+                  description={
                     availableEnviroments[runningEnviroment].summaryContent
                   }
                   expandedContent={
                     availableEnviroments[runningEnviroment].expandedContent
                   }
-                  envImage={availableEnviroments[runningEnviroment].image}
+                  envImage={availableEnviroments[runningEnviroment].img_url}
                   buttonDisabled={
                     loadingStatus || serverStarting || serverStopping
                   }
@@ -168,8 +174,17 @@ const Dashboard = () => {
         </Grid>
       </Slide>
 
-      {availableEnviroments === null ||
-      Object.keys(availableEnviroments).length === 0 ? (
+      {gettingEnviroments ? (
+        <Grid
+          container
+          sx={{ justifyContent: "center", width: "100%", height: "100%" }}
+        >
+          <Grid item xs={6} sx={{ textAlign: "center", marginBottom: "2em" }}>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      ) : availableEnviroments === null ||
+        Object.keys(availableEnviroments).length === 0 ? (
         <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
           <Alert severity="info">
             No hay ambientes disponibles. Aún no has comprado ningún curso o no
@@ -200,9 +215,8 @@ const Dashboard = () => {
                   <EnvCard
                     active={env.name === runningEnviroment}
                     envTitle={env.title}
-                    summaryContent={env.summaryContent}
-                    expandedContent={env.expandedContent}
-                    envImage={env.image}
+                    description={env.summary}
+                    envImage={env.img_url}
                     buttonDisabled={
                       loadingStatus || serverStarting || serverRunning
                     }
@@ -218,9 +232,9 @@ const Dashboard = () => {
         )
       )}
 
-      {Object.keys(availableCoursesToBuy).length !== 0 &&
-      availableCoursesToBuy !== null &&
-      availableCoursesToBuy !== undefined ? (
+      {availableCoursesToBuy !== null &&
+      availableCoursesToBuy !== undefined &&
+      Object.keys(availableCoursesToBuy).length !== 0 ? (
         <>
           <DividerTitle>Tienda</DividerTitle>
 
