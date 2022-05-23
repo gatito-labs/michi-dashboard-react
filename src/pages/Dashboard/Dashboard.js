@@ -148,6 +148,7 @@ const Dashboard = () => {
         in={serverRunning && runningEnviroment !== null && !serverStopping}
         mountOnEnter
         unmountOnExit
+        style={{marginBottom: "1em"}}
       >
         <Grid container>
           <Grid item xl={6} md={8} xs={12}>

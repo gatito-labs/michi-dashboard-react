@@ -11,7 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Payment = () => {
   const {
@@ -30,10 +30,17 @@ const Payment = () => {
     }
   }, [paymentCreated, paymentInfo]);
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!course) {
+      navigate("/dashboard");
+    }
+  }, [course, navigate]);
+
   const buyCourse = useCallback(() => {
     createPayment();
   }, [createPayment]);
-
 
   if (creatingPayment || paymentCreated) {
     return (

@@ -9,10 +9,13 @@ import Typography from "@mui/material/Typography";
 
 import { Link } from "react-router-dom";
 
-const ActiveCard = (props) => {
-  const { envTitle, envImage, description, buttonDisabled, stopServer } =
-    props;
-
+const ActiveCard = ({
+  envTitle,
+  envImage,
+  description,
+  buttonDisabled,
+  stopServer,
+}) => {
   let active = true;
 
   return (
@@ -26,7 +29,7 @@ const ActiveCard = (props) => {
           alt="Imagen del ambiente de robótica"
         />
 
-        <Grid direction="column" justifyContent="space-between">
+        <Grid container direction="column" justifyContent="space-between">
           <CardContent>
             <Typography>{description}</Typography>
           </CardContent>

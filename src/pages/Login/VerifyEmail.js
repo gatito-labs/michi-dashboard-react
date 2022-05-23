@@ -5,7 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export const VerifyEmail = () => {
   const { loginWithRedirect } = useAuth0();

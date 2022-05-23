@@ -129,11 +129,13 @@ export const HubServerProvider = ({ children }) => {
           } else {
             dispatch({
               type: CREATE_HUB_USER_ERROR,
-              payload: createHubUserResponse,
+              payload:
+                "Error al crear usuario en el hub, recargar para probar de nuevo.",
             });
             console.log(
               "Error al crear usuario en el hub, recargar para probar de nuevo."
             );
+            console.log(createHubUserResponse);
           }
         } else {
           dispatch({
