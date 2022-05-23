@@ -1,27 +1,36 @@
-import ReactGA from 'react-ga4';
+import ReactGA from "react-ga4";
 
-function _sentCodeToAnalytics({token, user_name, language, code_text}) {
+function _sentCodeToAnalytics({ token, user_name, language, code_text }) {
   fetch(`${process.env.REACT_APP_MICHI_API}/upload_code_to_s3`, {
     method: "POST",
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       user_name: user_name,
       language: language,
-      code_text: code_text
-    })
-  })
+      code_text: code_text,
+    }),
+  }).catch(() => {
+    console.log("No se pudo enviar el código a aws");
+  });
 }
 
-
-export function sendCodeToRobot({ws_url, user, code, language,
-  onLogMessage, onSuccessMessage, onErrorMessage, onFinish, getAccessTokenSilently}) {
-  
+export function sendCodeToRobot({
+  ws_url,
+  user,
+  code,
+  language,
+  onLogMessage,
+  onSuccessMessage,
+  onErrorMessage,
+  onFinish,
+  getAccessTokenSilently,
+}) {
   ReactGA.event({
-    category: 'Code',
-    action: 'Run',
+    category: "Code",
+    action: "Run",
   });
 
   const ws = new WebSocket(ws_url);
@@ -56,7 +65,7 @@ export function sendCodeToRobot({ws_url, user, code, language,
   };
 
   ws.onclose = (event) => {
-    // console.log("Socket closed:", event);
+    console.log("Socket closed:", event);
     onFinish();
   };
 
@@ -66,13 +75,16 @@ export function sendCodeToRobot({ws_url, user, code, language,
     onFinish();
   };
 
-  getAccessTokenSilently().then((token) => {
-    _sentCodeToAnalytics({
-      token: token,
-      user_name: user,
-      language: language,
-      code_text: code
+  getAccessTokenSilently()
+    .then((token) => {
+      _sentCodeToAnalytics({
+        token: token,
+        user_name: user,
+        language: language,
+        code_text: code,
+      });
+    })
+    .catch(() => {
+      console.log("No se pudo enviar el código a aws");
     });
-  });
-  
 }

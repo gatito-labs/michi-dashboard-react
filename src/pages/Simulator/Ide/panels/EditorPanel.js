@@ -4,7 +4,7 @@ import { useResizeDetector } from "react-resize-detector";
 import Grid from "@mui/material/Grid";
 import setUpMustakisEditor from "./utils/EditorUtils";
 
-const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
+const PanelEditor = memo(({ language, handleEditorDidMount, handleEditorChange }) => {
   const editorRef = useRef();
 
   const _handleEditorDidMount = useCallback(
@@ -63,7 +63,7 @@ const PanelEditor = memo(({ handleEditorDidMount, handleEditorChange }) => {
     >
       <Editor
         className="panel"
-        defaultLanguage="cpp"
+        language={language === "python" ? language :  "cpp"}
         theme="mustakisTheme"
         onChange={handleEditorChange}
         onMount={_handleEditorDidMount}

@@ -33,8 +33,10 @@ export const initialState = {
   creatingHubUser: false,
   runningEnviroment: null,
   gettingEnviroments: false,
-  availableEnviroments: null,
-  availableCoursesToBuy: null,
+  availableEnviroments:
+    JSON.parse(localStorage.getItem("availableEnviroments")) || {},
+  availableCoursesToBuy:
+    JSON.parse(localStorage.getItem("availableCoursesToBuy")) || {},
   serverError: null,
 };
 
@@ -135,17 +137,24 @@ export const reducer = (state, action) => {
 
       action.payload.enviroments.forEach((e) => {
         availableEnviroments[e.name] = { ...e };
-        // availableEnviroments[e.name]["blockly"] = availableEnviroments[e.name]["blockly"] === "true";
-        availableEnviroments[e.name]["editor"] = availableEnviroments[e.name][
-          "language"
-        ]
-          ? availableEnviroments[e.name]["language"]
-          : null;
+        availableEnviroments[e.name]["editor"] =
+          availableEnviroments[e.name]["language"] === "python"
+            ? "python"
+            : "cpp";
       });
 
       action.payload.store.forEach((e) => {
         availableCoursesToBuy[e.name] = { ...e };
       });
+
+      localStorage.setItem(
+        "availableEnviroments",
+        JSON.stringify(availableEnviroments)
+      );
+      localStorage.setItem(
+        "availableCoursesToBuy",
+        JSON.stringify(availableCoursesToBuy)
+      );
 
       return {
         ...state,

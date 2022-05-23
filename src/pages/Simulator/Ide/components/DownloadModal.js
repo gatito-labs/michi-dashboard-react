@@ -19,7 +19,7 @@ const style = {
   padding: "2em",
 };
 
-const DownloadModal = ({ open, handleClose, handleDownload }) => {
+const DownloadModal = ({ open, handleClose, handleDownload, extension }) => {
   const [filename, setFilename] = useState("");
   const [error, setError] = useState(false);
   return (
@@ -47,7 +47,7 @@ const DownloadModal = ({ open, handleClose, handleDownload }) => {
             sx={{ m: 1, width: "25ch" }}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">.ino</InputAdornment>
+                <InputAdornment position="end">.{extension}</InputAdornment>
               ),
             }}
           />
