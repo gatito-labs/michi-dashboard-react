@@ -280,7 +280,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         </Panel>
 
         <Panel id="documentacion" selected={panelSelected === DOCUMENTATION}>
-          <DocumentationPanel />
+          <DocumentationPanel url_doc={enviromentConfig?.doc_url}/>
         </Panel>
       </Grid>
 
