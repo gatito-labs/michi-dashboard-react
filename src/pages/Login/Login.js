@@ -9,6 +9,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Typography from "@mui/material/Typography";
 
 import { EmailNotVerified } from "./VerifyEmail";
+import { Button } from "@mui/material";
 
 export const LoginButton = () => {
   const { isAuthenticated, loginWithRedirect } = useAuth0();
@@ -17,21 +18,14 @@ export const LoginButton = () => {
     return <></>;
   } else {
     loginWithRedirect();
-    return <></>
-      // <Button
-      //   variant="contained"
-      //   type="submit"
-      //   color="primary"
-      //   onClick={loginWithRedirect}
-      // >
-      //   Ingresar con OAuth
-      // </Button>
-    // );
+    return <></>;
   }
 };
 
 export const LoginLanding = () => {
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { isAuthenticated, isLoading, error, logout } = useAuth0();
+
+  console.log(`Cargando: ${isLoading} - ${isAuthenticated}`);
 
   if (isAuthenticated) {
     return <Navigate to="/dashboard" />;
@@ -57,12 +51,16 @@ export const LoginLanding = () => {
             <Grid item>
               <Alert severity="error" sx={{ marginBottom: "2em" }}>
                 <AlertTitle>Error de Autentificación</AlertTitle>
-                Prueba Nuevamente
+                {error.message} <br />
               </Alert>
             </Grid>
-            <Grid item>
-              <LoginButton />
-            </Grid>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => logout({ returnTo: window.location.origin })}
+            >
+              Probar de Nuevo
+            </Button>
           </React.Fragment>
         )}
       </Grid>
@@ -105,4 +103,3 @@ export const NotLoggedPage = () => {
     </Grid>
   );
 };
-
