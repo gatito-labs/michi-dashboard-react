@@ -38,6 +38,7 @@ export const initialState = {
   availableCoursesToBuy:
     JSON.parse(localStorage.getItem("availableCoursesToBuy")) || {},
   serverError: null,
+  envError: null,
 };
 
 export const reducer = (state, action) => {
@@ -126,7 +127,9 @@ export const reducer = (state, action) => {
       return {
         ...state,
         gettingEnviroments: false,
-        error: action.payload,
+        envError: action.payload,
+        availableCoursesToBuy: null,
+        availableEnviroments: null
       };
 
     case GET_AVAILABLE_ENVIROMENTS_SUCCESS:
@@ -159,12 +162,13 @@ export const reducer = (state, action) => {
       return {
         ...state,
         gettingEnviroments: false,
+        envError: null,
         availableEnviroments,
         availableCoursesToBuy,
       };
 
     case CLEAR_ERRORS:
-      return { ...state, serverError: null };
+      return { ...state, serverError: null, envError: null };
 
     default:
       return { ...state };

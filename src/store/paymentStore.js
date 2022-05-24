@@ -76,7 +76,7 @@ export const PaymentProvider = ({ children }) => {
               paymentEmail: json.payerEmail,
             },
           });
-        } else {
+        } else {          
           dispatch({
             type: CREATE_PAYMENT_REQUEST_ERROR,
             payload:
@@ -202,7 +202,7 @@ export const PaymentProvider = ({ children }) => {
                 type: REDEEM_COURSE_ERROR,
                 payload:
                   json.status === "rejected"
-                    ? json.msg
+                    ? json.message
                     : "Error de conexión, no podemos canjear el código de tu curso en este momento!",
               });
             }

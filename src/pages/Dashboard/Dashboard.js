@@ -39,6 +39,7 @@ const Dashboard = () => {
     availableCoursesToBuy,
     getAvailableEnviroments,
     gettingEnviroments,
+    envError,
   } = useHubServer();
 
   const [selectedEnv, setSelectedEnv] = useState(null);
@@ -156,6 +157,12 @@ const Dashboard = () => {
             <CircularProgress />
           </Grid>
         </Grid>
+      ) : envError !== null ? (
+        <Grid item xl={6} md={6} sm={9} sx={{ margin: "1em auto" }}>
+          <Alert severity="error">
+            { envError}
+          </Alert>
+        </Grid>
       ) : availableEnviroments === null ||
         Object.keys(availableEnviroments).length === 0 ? (
         <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
@@ -206,7 +213,8 @@ const Dashboard = () => {
       )}
 
       {availableCoursesToBuy !== null &&
-      availableCoursesToBuy !== undefined &&
+       availableCoursesToBuy !== undefined &&
+      !gettingEnviroments && !envError &&
       Object.keys(availableCoursesToBuy).length !== 0 ? (
         <>
           <DividerTitle>Tienda</DividerTitle>

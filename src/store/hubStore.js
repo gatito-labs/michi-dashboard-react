@@ -213,35 +213,41 @@ export const HubServerProvider = ({ children }) => {
   const getAvailableEnviroments = useCallback(async () => {
     dispatch({ type: GET_AVAILABLE_ENVIROMENTS_START });
 
-    fetch(`${process.env.REACT_APP_MICHI_API}/available_enviroments`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: user.sub,
-      }),
-    })
-      .then(async (res) => {
-        const json = await res.json();
-        console.log(json);
-        if (res.status === 200 && json.status !== "error") {
-          dispatch({
-            type: GET_AVAILABLE_ENVIROMENTS_SUCCESS,
-            payload: { enviroments: json.enviroments, store: json.store },
-          });
-        } else {
+    if (token !== null) {
+      fetch(`${process.env.REACT_APP_MICHI_API}/available_enviroments`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.sub,
+        }),
+      })
+        .then(async (res) => {
+          const json = await res.json();
+          if (res.status === 200 && json.status !== "error") {
+            dispatch({
+              type: GET_AVAILABLE_ENVIROMENTS_SUCCESS,
+              payload: { enviroments: json.enviroments, store: json.store },
+            });
+          } else {
+            dispatch({
+              type: GET_AVAILABLE_ENVIROMENTS_ERROR,
+              payload: `Error para obtener los ambientes actuales: ${
+                json.message ? json.message : json.detail
+              }`,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
           dispatch({
             type: GET_AVAILABLE_ENVIROMENTS_ERROR,
-            payload: json.msg ? json.msg : json.detail,
+            payload: "Error para obtener los ambientes actuales",
           });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch({ type: GET_AVAILABLE_ENVIROMENTS_ERROR, payload: error });
-      });
+        });
+    }
   }, [token, user]);
 
   const clearErrors = useCallback(() => {

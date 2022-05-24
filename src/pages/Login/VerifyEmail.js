@@ -48,7 +48,7 @@ export const EmailNotVerified = () => {
   const resendEmailVerification = useCallback(async () => {
     setAskingEmail(true);
     getAccessTokenSilently().then((token) => {
-      fetch(`${process.env.REACT_APP_MICHI_API}resend_verification_email`, {
+      fetch(`${process.env.REACT_APP_MICHI_API}/resend_verification_email`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
