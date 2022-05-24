@@ -5,44 +5,16 @@ import BuyCard from "./BuyCard";
 import EnvCard from "./EnvCard";
 import Footer from "../../components/Layout/Footer";
 import CircularProgressWithLabel from "../../components/CircularProgressWithLabel";
-
+import DividerTitle from "../../components/DividerTitle";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import Chip from "@mui/material/Chip";
-import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 
 import { useHubServer } from "../../store";
-import { useTheme } from "@mui/styles";
 import ReactGA from "react-ga4";
 import { Link } from "react-router-dom";
-
-const DividerTitle = ({ children }) => {
-  const theme = useTheme();
-  return (
-    <Divider
-      color="primary"
-      sx={{
-        margin: "2em",
-        "&::before": { width: "2%", borderColor: theme.palette.primary.light },
-        "&::after": { borderColor: theme.palette.primary.light },
-      }}
-      textAlign="left"
-      variant="middle"
-    >
-      <Chip
-        color="primary"
-        label={
-          <Typography color="white" variant="subtitle2">
-            {children}
-          </Typography>
-        }
-      ></Chip>
-    </Divider>
-  );
-};
 
 const Dashboard = () => {
   useEffect(() => {
@@ -148,7 +120,7 @@ const Dashboard = () => {
         in={serverRunning && runningEnviroment !== null && !serverStopping}
         mountOnEnter
         unmountOnExit
-        style={{marginBottom: "1em"}}
+        style={{ marginBottom: "1em" }}
       >
         <Grid container>
           <Grid item xl={6} md={8} xs={12}>
