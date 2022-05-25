@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { usePayment } from "../../store";
-import Grid from "@mui/material/Grid";
+
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-// import CardMedia from "@mui/material/CardMedia";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
-import Button from "@mui/material/Button";
+import CardHeader from "@mui/material/CardHeader";
+// import CardMedia from "@mui/material/CardMedia";
 import CircularProgress from "@mui/material/CircularProgress";
+import Grid from "@mui/material/Grid";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 
 import {
   LOADING_PAYMENT_STATUS,
@@ -18,30 +20,42 @@ import {
   PAYMENT_COMPLETED,
   PAYMENT_REJECTED,
   PAYMENT_ABORTED,
+  PAYMENT_NOT_FOUND,
 } from "../../store/paymentReducer";
 
 export const PaymentConfirmation = () => {
-  const { course, checkPaymentStatus, paymentStatus, paymentInfo, error } =
+  const { checkPaymentStatus, paymentStatus, paymentInfo, error } =
     usePayment();
 
   const [msg, setMsg] = useState("");
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("No hay compra asociada");
   const [timer, setTimer] = useState(null);
-  const [firstExecution, setFirstExecution] = useState(true);
   let navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
 
-  const loadStatus = useCallback(() => {
-    checkPaymentStatus(searchParams.get("token", null));
-  }, [checkPaymentStatus, searchParams]);
+  const loadStatus = useCallback(
+    (forceLoad = false) => {
+      if (
+        !forceLoad &&
+        (paymentStatus === LOADING_PAYMENT_STATUS ||
+          paymentStatus === PAYMENT_COMPLETED ||
+          paymentStatus === PAYMENT_REJECTED ||
+          paymentStatus === PAYMENT_ABORTED ||
+          paymentStatus === PAYMENT_PENDING ||
+          paymentStatus === PAYMENT_NOT_FOUND)
+      ) {
+        return;
+      }
+
+      checkPaymentStatus(searchParams.get("token", null));
+    },
+    [checkPaymentStatus, searchParams, paymentStatus]
+  );
 
   useEffect(() => {
-    if (firstExecution) {
-      setFirstExecution(false);
-      loadStatus();
-    }
-  }, [loadStatus, firstExecution]);
+    loadStatus();
+  }, [loadStatus]);
 
   useEffect(() => {
     return () => {
@@ -55,7 +69,7 @@ export const PaymentConfirmation = () => {
         `¡Muchas gracias por tu compra! n°${paymentInfo.paymentCommerceOrder}`
       );
       setMsg(
-        `Muchas gracias por tu compra! Ya puedes acceder a tu curso ${course} desde el selector de Ambientes:`
+        `Muchas gracias por tu compra! Ya puedes acceder a tu curso desde el selector de Ambientes:`
       );
     } else if (paymentStatus === PAYMENT_REJECTED) {
       setTitle(`Compra no concretada`);
@@ -67,20 +81,29 @@ export const PaymentConfirmation = () => {
       setMsg(
         `No hemos podido concretar tu compra (n°${paymentInfo.paymentCommerceOrder}) debido a que el pago no fue concretado. Puedes volver a intentarlo en la Tienda.\nSi crees que esto es un error porfavor contactanos a soporte@gatitolabs.cl con tu número de compra. `
       );
+    } else if (paymentStatus === PAYMENT_NOT_FOUND) {
+      setTitle(`Pago no existente`);
+      setMsg(
+        `No hemos encontrado un pago asociado a este token.\nSi crees que esto es un error porfavor contactanos a soporte@gatitolabs.cl con tu número de compra. `
+      );
     } else if (paymentStatus === PAYMENT_PENDING) {
       setTitle(`Compra pendiente`);
       setMsg(
-        `Esperando la confirmación de tu compra n°${paymentInfo.paymentCommerceOrder}, porfavor espera unos segundos!`
+        <>
+          Esperando la confirmación de tu compra n°$
+          {paymentInfo.paymentCommerceOrder}, porfavor espera unos segundos!{" "}
+          <br /> Si cancelaste la compra, puedes volver a inicio
+        </>
       );
 
       setTimer(
         setTimeout(() => {
           console.log("checking status again");
-          loadStatus();
+          loadStatus(true);
         }, 15000)
       );
     }
-  }, [paymentStatus, course, paymentInfo.paymentCommerceOrder, loadStatus]);
+  }, [paymentStatus, paymentInfo.paymentCommerceOrder, loadStatus]);
 
   if (paymentStatus !== LOADING_PAYMENT_STATUS) {
     return (
@@ -144,7 +167,9 @@ export const PaymentConfirmation = () => {
         }}
       >
         <Grid item xs={8} md={6} xl={4}>
-          <Typography sx={{ color: "red" }}>{error}</Typography>
+          <Alert severity="error">
+            <Typography>{error}</Typography>
+          </Alert>
         </Grid>
       </Grid>
     );

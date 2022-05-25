@@ -17,13 +17,6 @@ import {
   CHECK_PAYMENT_STATUS_SUCCESS,
   SET_COURSE_TO_BUY,
   CLEAR_ERRORS,
-  // CLEAR_PAYMENT_INFO,
-  LOADING_PAYMENT_STATUS,
-  // NO_PAYMENT,
-  // PAYMENT_PENDING,
-  PAYMENT_ABORTED,
-  PAYMENT_COMPLETED,
-  PAYMENT_REJECTED,
   REDEEM_COURSE,
   REDEEM_COURSE_ERROR,
   REDEEM_COURSE_SUCCESS,
@@ -66,7 +59,6 @@ export const PaymentProvider = ({ children }) => {
       .then(async (res) => {
         if (res.status === 200) {
           const json = await res.json();
-          console.log(json);
           dispatch({
             type: CREATE_PAYMENT_REQUEST_SUCCESS,
             payload: {
@@ -76,7 +68,7 @@ export const PaymentProvider = ({ children }) => {
               paymentEmail: json.payerEmail,
             },
           });
-        } else {          
+        } else {
           dispatch({
             type: CREATE_PAYMENT_REQUEST_ERROR,
             payload:
@@ -97,50 +89,71 @@ export const PaymentProvider = ({ children }) => {
   const checkPaymentStatus = useCallback(
     (paymentToken = null) => {
       if (
-        state.paymentStatus === PAYMENT_ABORTED ||
-        state.paymentStatus === PAYMENT_COMPLETED ||
-        state.paymentStatus === PAYMENT_REJECTED ||
-        state.paymentStatus === LOADING_PAYMENT_STATUS
-      ) {
-        return;
-      }
-
-      if (
         paymentToken === null &&
         state.paymentInfo.paymentRequestToken === ""
       ) {
         console.error("No token provider to check payment");
-        return;
       }
 
-      dispatch({ type: CHECK_PAYMENT_STATUS });
+      if (token) {
+        dispatch({ type: CHECK_PAYMENT_STATUS });
 
-      fetch(
-        `${process.env.REACT_APP_PAYMENT_API}/status?token=${
-          paymentToken ? paymentToken : state.paymentInfo.paymentRequestToken
-        }`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-        .then(async (res) => {
-          if (res.status === 200) {
-            const json = await res.json();
+        fetch(
+          `${process.env.REACT_APP_PAYMENT_API}/status?token=${
+            paymentToken ? paymentToken : state.paymentInfo.paymentRequestToken
+          }`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+          .then(async (res) => {
+            if (res.status === 200) {
+              const json = await res.json();
 
-            console.log(json);
+              if (json.paymentStatus !== undefined) {
+                dispatch({
+                  type: CHECK_PAYMENT_STATUS_SUCCESS,
+                  payload: {
+                    paymentStatus: json.paymentStatus,
+                    paymentInfo: { paymentCommerceOrder: json.flowOrder },
+                  },
+                });
+              } else {
+                dispatch({
+                  type: CHECK_PAYMENT_STATUS_ERROR,
+                  payload: (
+                    <>
+                      No podemos encontrar un pago asociado al token{" "}
+                      {paymentToken}.
+                      <br /> Si crees que esto es un error, porfavor contáctanos
+                      a soporte@gatitolabs.cl.
+                    </>
+                  ),
+                });
+              }
+            } else {
+              console.error(res);
+
+              dispatch({
+                type: CHECK_PAYMENT_STATUS_ERROR,
+                payload: (
+                  <>
+                    Error para obtener la información de pago, recarga la página
+                    porfavor.
+                    <br /> Si aún no puedes acceder al curso que compraste,
+                    porfavor contáctanos a soporte@gatitolabs.cl.
+                  </>
+                ),
+              });
+            }
+          })
+          .catch((err) => {
+            console.error(err);
             dispatch({
-              type: CHECK_PAYMENT_STATUS_SUCCESS,
-              payload: {
-                paymentStatus: json.paymentStatus,
-                paymentInfo: { paymentCommerceOrder: json.flowOrder },
-              },
-            });
-          } else {
-            dispatch({
-              type: CHECK_PAYMENT_STATUS_ERROR,
+              type: CREATE_PAYMENT_REQUEST_ERROR,
               payload: (
                 <>
                   Error para obtener la información de pago, recarga la página
@@ -150,24 +163,12 @@ export const PaymentProvider = ({ children }) => {
                 </>
               ),
             });
-            console.error(res);
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          dispatch({
-            type: CREATE_PAYMENT_REQUEST_ERROR,
-            payload: (
-              <>
-                Error para obtener la información de pago, recarga la página.{" "}
-                <br /> Si aún no puedes acceder al curso que compraste, porfavor
-                contáctanos a soporte@gatitolabs.cl o en Instagram @gatitolabs.
-              </>
-            ),
           });
-        });
+      } else {
+        console.log("Check status - No user token provided");
+      }
     },
-    [state.paymentInfo, state.paymentStatus, token]
+    [state.paymentInfo.paymentRequestToken, token]
   );
 
   const clearErrors = useCallback(() => {

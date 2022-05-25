@@ -16,7 +16,8 @@ export const REDEEM_COURSE_ERROR = "PAYMENT/REDEEM_COURSE/ERROR";
 export const REDEEM_COURSE_SUCCESS = "PAYMENT/REDEEM_COURSE/SUCCESS";
 
 export const NO_PAYMENT = -2;
-export const LOADING_PAYMENT_STATUS = -1;
+export const PAYMENT_NOT_FOUND = -1;
+export const LOADING_PAYMENT_STATUS = 0;
 export const PAYMENT_PENDING = 1;
 export const PAYMENT_COMPLETED = 2;
 export const PAYMENT_REJECTED = 3;
