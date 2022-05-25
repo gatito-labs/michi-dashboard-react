@@ -20,25 +20,8 @@ const EDITOR = "editor";
 const DOCUMENTATION = "docs";
 
 const ARDUINO_TEMPLATE_CODE = `
-// En este editor debes escribir código arduino.
+// En este editor debes escribir tu código
 
-#include <KnightRoboticsLibs_Iroh.h>
-#include <NewPing.h>
-#include <Servo.h>
-#include <Wire.h>         
-#include <LiquidCrystal_I2C.h>
-
-int IR_Derecho;
-int IR_Izquierdo;
-
-void setup(){
-    inicializarMovimientoRobot();
-    botonInicio();
-}
-
-void loop(){
-
-}
 `;
 
 const getWsUrl = (user_email) => {
@@ -62,12 +45,19 @@ const Tab = styled(MuiTab)(
 );
 
 export default function LeftPanel({ setAlertType, handleHide }) {
-  const { serverRunning, runningEnviroment, availableEnviroments } =
-    useHubServer();
+  const {
+    serverRunning,
+    runningEnviroment,
+    availableEnviroments,
+    getAvailableEnviroments,
+  } = useHubServer();
 
   const user_email = useAuth0().user.email;
   const { getAccessTokenSilently } = useAuth0();
-  const [enviromentConfig, setEnviromentConfig] = useState(null);
+  const [enviromentConfig, setEnviromentConfig] = useState({
+    language: "",
+    editor: "",
+  });
   const [runLoading, setRunLoading] = useState(false);
   const [terminalOutput, setTerminalOutput] = useState("Terminal ");
   const [terminalLine, setTerminalLine] = useState("");
@@ -78,9 +68,24 @@ export default function LeftPanel({ setAlertType, handleHide }) {
 
   useEffect(() => {
     if (serverRunning) {
-      setEnviromentConfig(availableEnviroments[runningEnviroment]);
+      if (availableEnviroments === null) {
+        getAvailableEnviroments();
+      } else {
+        if (availableEnviroments[runningEnviroment]) {
+          setEnviromentConfig(availableEnviroments[runningEnviroment]);
+        } else {
+          console.error(
+            "Error inesperado, ambiente no se encuentra en los ambientes disponibles"
+          );
+        }
+      }
     }
-  }, [serverRunning, runningEnviroment, availableEnviroments]);
+  }, [
+    serverRunning,
+    runningEnviroment,
+    availableEnviroments,
+    getAvailableEnviroments,
+  ]);
 
   useEffect(() => {
     setTerminalOutput((oldOutput) => oldOutput + "\n" + terminalLine);
@@ -105,13 +110,39 @@ export default function LeftPanel({ setAlertType, handleHide }) {
   const handleEditorDidMount = useCallback((editor, monaco) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
-    const savedCode = localStorage.getItem("code");
-    editorRef.current.setValue(savedCode ? savedCode : ARDUINO_TEMPLATE_CODE);
-  }, []);
 
-  const handleEditorChange = useCallback((value, _) => {
-    localStorage.setItem("code", value);
-  }, []);
+    if (runningEnviroment) {
+      const savedCode =
+        localStorage.getItem(`code_${runningEnviroment}`) || null;
+
+      editorRef.current.setValue(
+        savedCode !== null && savedCode !== undefined
+          ? savedCode
+          : ARDUINO_TEMPLATE_CODE
+      );
+    }
+  }, [runningEnviroment]);
+
+  useEffect(() => {
+    console.log("aqui");
+    if (editorRef && editorRef.current) {
+      const savedCode =
+        localStorage.getItem(`code_${runningEnviroment}`) || null;
+
+      editorRef.current.setValue(
+        savedCode !== null && savedCode !== undefined
+          ? savedCode
+          : ARDUINO_TEMPLATE_CODE
+      );
+    }
+  }, [runningEnviroment, editorRef]);
+
+  const handleEditorChange = useCallback(
+    (value, _) => {
+      localStorage.setItem(`code_${runningEnviroment}`, value);
+    },
+    [runningEnviroment]
+  );
 
   const handleHideTerminal = useCallback(() => {
     editorRef.current.layout({ width: "auto", height: "auto" });
@@ -153,36 +184,45 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         panelSelected === BLOCKLY
           ? blocklyCodeRef.current
           : editorRef.current.getValue(),
-      language: panelSelected === BLOCKLY ? "python" : "ino",
+      language: enviromentConfig.language,
       onLogMessage: onLogMessage,
       onSuccessMessage: onSuccessMessage,
       onErrorMessage: onErrorMessage,
       onFinish: onFinish,
-      getAccessTokenSilently: getAccessTokenSilently
+      getAccessTokenSilently: getAccessTokenSilently,
     });
   }, [
     panelSelected,
     user_email,
+    enviromentConfig,
     onLogMessage,
     onSuccessMessage,
     onErrorMessage,
     onFinish,
-    getAccessTokenSilently
+    getAccessTokenSilently,
   ]);
 
   const handleStop = useCallback(() => {
     console.log("parar función");
   }, []);
 
-  const handleDownload = useCallback((filename) => {
-    const element = document.createElement("a");
-    const file = new Blob([localStorage.getItem("code")], {
-      type: "text/plain;charset=utf-8",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = `${filename}.ino`;
-    element.click();
-  }, []);
+  const handleDownload = useCallback(
+    (filename) => {
+      const element = document.createElement("a");
+      const file = new Blob(
+        [localStorage.getItem(`code_${runningEnviroment}`)],
+        {
+          type: "text/plain;charset=utf-8",
+        }
+      );
+      element.href = URL.createObjectURL(file);
+      element.download = `${filename}.${
+        enviromentConfig.language === "python" ? "py" : "ino"
+      }`;
+      element.click();
+    },
+    [enviromentConfig, runningEnviroment]
+  );
 
   const handleUpload = useCallback((event) => {
     const file = event.target.files[0];
@@ -223,6 +263,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           <Grid container direction="column">
             <Grid item sx={{ flexGrow: 1, height: "20%" }}>
               <EditorPanel
+                language={enviromentConfig?.editor}
                 handleEditorDidMount={handleEditorDidMount}
                 handleEditorChange={handleEditorChange}
               />
@@ -239,7 +280,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         </Panel>
 
         <Panel id="documentacion" selected={panelSelected === DOCUMENTATION}>
-          <DocumentationPanel />
+          <DocumentationPanel url_doc={enviromentConfig?.doc_url}/>
         </Panel>
       </Grid>
 
@@ -254,7 +295,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          {enviromentConfig && enviromentConfig.blockly && (
+          {enviromentConfig && enviromentConfig["blockly?"] && (
             <Tab value={BLOCKLY} label="Bloques" />
           )}
           <Tab value={EDITOR} label="Editor" />
@@ -266,6 +307,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
         open={openDownloadModal}
         handleClose={() => setOpenDownloadModal(false)}
         handleDownload={handleDownload}
+        extension={enviromentConfig?.language === "python" ? "py" : "ino"}
       />
     </>
   );

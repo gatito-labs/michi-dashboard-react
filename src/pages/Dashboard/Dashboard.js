@@ -1,46 +1,26 @@
 import React, { useEffect, useState } from "react";
 
-import EnvCard from "./EnvCard";
 import ActiveCard from "./ActiveCard";
+import BuyCard from "./BuyCard";
+import EnvCard from "./EnvCard";
+import Footer from "../../components/Layout/Footer";
+import CircularProgressWithLabel from "../../components/CircularProgressWithLabel";
+import DividerTitle from "../../components/DividerTitle";
+import Alert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
-import Divider from "@mui/material/Divider";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
-import { useHubServer } from "../../store";
-import ReactGA from 'react-ga4';
 
-function CircularProgressWithLabel(props) {
-  return (
-    <Box sx={{ position: "relative", display: "inline-flex" }}>
-      <CircularProgress variant="determinate" {...props} />
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          position: "absolute",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography variant="caption" component="div" color="text.secondary">
-          {`${Math.round(props.value)}%`}
-        </Typography>
-      </Box>
-    </Box>
-  );
-}
+import { useHubServer } from "../../store";
+import ReactGA from "react-ga4";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   useEffect(() => {
     ReactGA.send({
       hitType: "pageview",
-      page: window.location.pathname + window.location.search
+      page: window.location.pathname + window.location.search,
     });
   }, []);
 
@@ -56,9 +36,17 @@ const Dashboard = () => {
     stopServer,
     serverError,
     availableEnviroments,
+    availableCoursesToBuy,
+    getAvailableEnviroments,
+    gettingEnviroments,
+    envError,
   } = useHubServer();
 
   const [selectedEnv, setSelectedEnv] = useState(null);
+
+  useEffect(() => {
+    getAvailableEnviroments();
+  }, [getAvailableEnviroments]);
 
   return (
     <div style={{ padding: "1em" }}>
@@ -69,10 +57,12 @@ const Dashboard = () => {
         unmountOnExit
       >
         <Grid item xl={6} md={6} sm={9} sx={{ margin: "1em auto" }}>
-          <Alert severity="error" onClose={clearErrors}>{serverError}</Alert>
+          <Alert severity="error" onClose={clearErrors}>
+            {serverError}
+          </Alert>
         </Grid>
       </Slide>
-      
+
       <Slide direction="right" in={loadingStatus} mountOnEnter unmountOnExit>
         <div>
           <Grid
@@ -123,11 +113,15 @@ const Dashboard = () => {
           </Grid>
         </div>
       </Slide>
+
+      <DividerTitle>Mis Ambientes</DividerTitle>
+
       <Slide
         direction="right"
         in={serverRunning && runningEnviroment !== null && !serverStopping}
         mountOnEnter
         unmountOnExit
+        style={{ marginBottom: "1em" }}
       >
         <Grid container>
           <Grid item xl={6} md={8} xs={12}>
@@ -137,13 +131,13 @@ const Dashboard = () => {
                 <ActiveCard
                   active={serverRunning || serverStarting}
                   envTitle={availableEnviroments[runningEnviroment].title}
-                  summaryContent={
+                  description={
                     availableEnviroments[runningEnviroment].summaryContent
                   }
                   expandedContent={
                     availableEnviroments[runningEnviroment].expandedContent
                   }
-                  envImage={availableEnviroments[runningEnviroment].image}
+                  envImage={availableEnviroments[runningEnviroment].img_url}
                   buttonDisabled={
                     loadingStatus || serverStarting || serverStopping
                   }
@@ -154,18 +148,29 @@ const Dashboard = () => {
         </Grid>
       </Slide>
 
-      {(loadingStatus ||
-        serverRunning ||
-        serverStarting ||
-        serverStopping ||
-        serverError) && <Divider sx={{ margin: "2em" }} />}
-
-      {availableEnviroments === null ||
-      Object.keys(availableEnviroments).length === 0 ? (
-        <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
+      {gettingEnviroments ? (
+        <Grid
+          container
+          sx={{ justifyContent: "center", width: "100%", height: "100%" }}
+        >
+          <Grid item xs={6} sx={{ textAlign: "center", marginBottom: "2em" }}>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      ) : envError !== null ? (
+        <Grid item xl={6} md={6} sm={9} sx={{ margin: "1em auto" }}>
           <Alert severity="error">
-            No hay ambientes disponibles! Al parecer aún no has sido añadido a
-            tus cursos, consulta con tus profesores/monitores.
+            { envError}
+          </Alert>
+        </Grid>
+      ) : availableEnviroments === null ||
+        Object.keys(availableEnviroments).length === 0 ? (
+        <Grid item xl={6} md={6} sm={9} sx={{ margin: "auto" }}>
+          <Alert severity="info">
+            No hay ambientes disponibles. Aún no has comprado ningún curso o no
+            has sido añadido a un taller. Si eres parte de un taller, añade el
+            código asociado en el siguiente{" "}
+            <Link to="/curso_codigo">link </Link>.
           </Alert>
         </Grid>
       ) : (
@@ -177,7 +182,6 @@ const Dashboard = () => {
             id="available-enviroments"
           >
             {Object.values(availableEnviroments).map((env) => {
-              // if (currentEnviroment !== env.name) {
               return (
                 <Grid
                   item
@@ -191,9 +195,8 @@ const Dashboard = () => {
                   <EnvCard
                     active={env.name === runningEnviroment}
                     envTitle={env.title}
-                    summaryContent={env.summaryContent}
-                    expandedContent={env.expandedContent}
-                    envImage={env.image}
+                    description={env.summary}
+                    envImage={env.img_url}
                     buttonDisabled={
                       loadingStatus || serverStarting || serverRunning
                     }
@@ -208,6 +211,42 @@ const Dashboard = () => {
           </Grid>
         )
       )}
+
+      {availableCoursesToBuy !== null &&
+       availableCoursesToBuy !== undefined &&
+      !gettingEnviroments && !envError &&
+      Object.keys(availableCoursesToBuy).length !== 0 ? (
+        <>
+          <DividerTitle>Tienda</DividerTitle>
+
+          <Grid
+            container
+            spacing={2}
+            sx={{ alignItems: "stretch" }}
+            id="course-store"
+          >
+            {Object.values(availableCoursesToBuy).map((course) => {
+              return (
+                <Grid
+                  key={course.title}
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  className="available-course-to-buy"
+                >
+                  <BuyCard course={course} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </>
+      ) : (
+        <></>
+      )}
+
+      <Footer />
     </div>
   );
 };

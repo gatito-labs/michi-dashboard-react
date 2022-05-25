@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
-const OpenPopupButton = () => (
+const OpenPopupButton = ({ url_doc }) => (
   <IconButton
     sx={{
       position: "absolute",
@@ -13,7 +13,7 @@ const OpenPopupButton = () => (
     }}
     onClick={() =>
       window.open(
-        `${process.env.REACT_APP_DOCUMENTATION_URL}`,
+        url_doc ? url_doc : `${process.env.REACT_APP_DOCUMENTATION_URL}`,
         "_blank",
         "height=900,width=800,menubar=0,location=0,status=0,titlebar=0,toolbar=0,left=500,top=50"
       )
@@ -23,7 +23,7 @@ const OpenPopupButton = () => (
   </IconButton>
 );
 
-export default function PanelDocumentacion() {
+export default function PanelDocumentacion({ url_doc }) {
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
       <Iframe
@@ -33,12 +33,10 @@ export default function PanelDocumentacion() {
         width="100%"
         height="100%"
         frameBorder={0}
-        src={`${process.env.REACT_APP_DOCUMENTATION_URL}`}
+        src={url_doc ? url_doc : `${process.env.REACT_APP_DOCUMENTATION_URL}`}
         sx={{ overflow: "hidden" }}
       ></Iframe>
-      <OpenPopupButton />
+      <OpenPopupButton url_doc={url_doc} />
     </Box>
   );
 }
-
-// react context para obtener el user en el dominio

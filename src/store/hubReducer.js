@@ -14,8 +14,15 @@ export const STOP_SERVER = "SERVER/STOP_SERVER/START";
 export const STOP_SERVER_ERROR = "SERVER/STOP_SERVER/ERROR";
 export const STOP_SERVER_SUCCESS = "SERVER/STOP_SERVER/SUCCESS";
 
-export const GET_AVAILABLE_ENVIROMENTS = "GET_AVAILABLE_ENVIROMENTS";
+// export const GET_AVAILABLE_ENVIROMENTS = "GET_AVAILABLE_ENVIROMENTS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
+
+export const GET_AVAILABLE_ENVIROMENTS_START =
+  "SERVER/GET_AVAILABLE_ENVIROMENTS/START";
+export const GET_AVAILABLE_ENVIROMENTS_ERROR =
+  "SERVER/GET_AVAILABLE_ENVIROMENTS/ERROR";
+export const GET_AVAILABLE_ENVIROMENTS_SUCCESS =
+  "SERVER/GET_AVAILABLE_ENVIROMENTS/SUCCESS";
 
 export const initialState = {
   loadingStatus: false,
@@ -25,8 +32,13 @@ export const initialState = {
   stopingServer: false,
   creatingHubUser: false,
   runningEnviroment: null,
-  availableEnviroments: null,
+  gettingEnviroments: false,
+  availableEnviroments:
+    JSON.parse(localStorage.getItem("availableEnviroments")) || {},
+  availableCoursesToBuy:
+    JSON.parse(localStorage.getItem("availableCoursesToBuy")) || {},
   serverError: null,
+  envError: null,
 };
 
 export const reducer = (state, action) => {
@@ -105,21 +117,58 @@ export const reducer = (state, action) => {
         serverError: String(action.payload),
       };
 
-    case GET_AVAILABLE_ENVIROMENTS:
-      let new_envs = {};
+    case GET_AVAILABLE_ENVIROMENTS_START:
+      return {
+        ...state,
+        gettingEnviroments: true,
+      };
 
-      action.payload.forEach((e) => {
-        new_envs[e.name] = { ...e };
-        new_envs[e.name]["blockly"] = new_envs[e.name]["blockly"] === "true";
-        new_envs[e.name]["editor"] = new_envs[e.name]["editor"]
-          ? new_envs[e.name]["editor"]
-          : null;
+    case GET_AVAILABLE_ENVIROMENTS_ERROR:
+      return {
+        ...state,
+        gettingEnviroments: false,
+        envError: action.payload,
+        availableCoursesToBuy: null,
+        availableEnviroments: null
+      };
+
+    case GET_AVAILABLE_ENVIROMENTS_SUCCESS:
+      let availableEnviroments = {};
+      let availableCoursesToBuy = {};
+
+      // let availableCoursesToBuy = state.availableCoursesToBuy;
+
+      action.payload.enviroments.forEach((e) => {
+        availableEnviroments[e.name] = { ...e };
+        availableEnviroments[e.name]["editor"] =
+          availableEnviroments[e.name]["language"] === "python"
+            ? "python"
+            : "cpp";
       });
 
-      return { ...state, availableEnviroments: new_envs };
+      action.payload.store.forEach((e) => {
+        availableCoursesToBuy[e.name] = { ...e };
+      });
+
+      localStorage.setItem(
+        "availableEnviroments",
+        JSON.stringify(availableEnviroments)
+      );
+      localStorage.setItem(
+        "availableCoursesToBuy",
+        JSON.stringify(availableCoursesToBuy)
+      );
+
+      return {
+        ...state,
+        gettingEnviroments: false,
+        envError: null,
+        availableEnviroments,
+        availableCoursesToBuy,
+      };
 
     case CLEAR_ERRORS:
-      return { ...state, serverError: null };
+      return { ...state, serverError: null, envError: null };
 
     default:
       return { ...state };

@@ -9,7 +9,9 @@ import Layout from "../components/Layout";
 import { NotLoggedPage } from "./Login/Login";
 import { useHubServer } from "../store";
 import Simulator from "./Simulator";
-import ReactGA from 'react-ga4';
+import Payment, { PaymentConfirmation } from "./Payment";
+import ReactGA from "react-ga4";
+import CourseCode from "./CourseCode";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth0();
@@ -18,7 +20,6 @@ export default function Home() {
   useEffect(() => {
     checkServerStatus();
   }, [checkServerStatus]);
-
 
   if (isAuthenticated && user && user.email_verified) {
     ReactGA.set({ userId: user.nickname });
@@ -39,6 +40,14 @@ export default function Home() {
               path="/dashboard"
               element={<Navigate to="/ambientes" />}
             />
+            <Route
+              exact
+              path="/payment/confirmation"
+              element={<PaymentConfirmation />}
+            />
+            <Route exact path="/payment" element={<Payment />} />
+            <Route exact path="/curso_codigo" element={<CourseCode />} />
+
           </React.Fragment>
         </Routes>
       </Layout>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -67,7 +67,7 @@ export default function Layout(props) {
   const theme = useTheme();
   const matchSM = useMediaQuery(theme.breakpoints.up("sm"));
   const { serverRunning } = useHubServer();
-
+  const navigate = useNavigate();
   useEffect(() => {
     // This it to avoid keeping the anchor of the small menu if the screen is width enough
     if (matchSM) {
@@ -174,37 +174,42 @@ export default function Layout(props) {
               <Logo sx={{ flexGrow: 1 }} />
 
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <Link
-                  to="/ambientes"
-                  style={{ color: "inherit", textDecoration: "none" }}
+                <Button
+                  onClick={()=> navigate("/ambientes")}
+                  sx={{
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: theme.palette.primary.dark,
+                    },
+                    mx: 0,
+                    color: "inherit",
+                    textTransform: "none",
+                    borderRadius: "2em",
+                  }}
                 >
-                  <Button
-                    sx={{
-                      mx: 0,
-                      color: "inherit",
-                      textTransform: "none",
-                    }}
-                  >
-                    Mis Ambientes
-                  </Button>
-                </Link>
-                <Link
-                  to={serverRunning ? "/simulador" : "#"}
-                  style={{ color: "inherit", textDecoration: "none" }}
+                  Mis Ambientes
+                </Button>
+                
+                <Button
+                  onClick={() => {
+                    navigate(serverRunning ? "/simulador" : "#");
+                  }}
+                  sx={{
+                    "&:hover": {
+                      color: "white",
+                      backgroundColor: theme.palette.primary.dark,
+                    },
+                    mx: 0,
+                    color: "inherit",
+                    textTransform: "none",
+                    borderRadius: "2em",
+                    display: "flex",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                  }}
                 >
-                  <Button
-                    sx={{
-                      mx: 0,
-                      color: "inherit",
-                      textTransform: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    Simulador <SimStatus on={serverRunning} />
-                  </Button>
-                </Link>
+                  Simulador <SimStatus on={serverRunning} />
+                </Button>
               </Box>
 
               <div>
@@ -236,6 +241,9 @@ export default function Layout(props) {
                 >
                   <MenuItem>
                     <Typography>{user.email}</Typography>
+                  </MenuItem>
+                  <MenuItem onClick={()=>{navigate("/curso_codigo")}}>
+                    <Typography>Añadir Código de Curso</Typography>
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>
                     <IconButton>

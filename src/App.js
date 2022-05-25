@@ -4,10 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { LoginLanding, VerifyEmail, NotLoggedPage } from "./pages/Login/Login";
+import { LoginLanding, VerifyEmail, NotLoggedPage } from "./pages/Login";
 import Layout from "./components/Layout/Layout";
 import { useAuth0 } from "@auth0/auth0-react";
-import { HubServerProvider } from "./store";
+import { HubServerProvider, PaymentProvider } from "./store";
 import ReactGA from 'react-ga4';
 import "./App.css";
 
@@ -48,6 +48,7 @@ function App() {
       <CssBaseline />
       <ThemeProvider theme={theme}>
         <HubServerProvider>
+          <PaymentProvider>
           <Routes>
             <Route
               path="/login/success"
@@ -80,6 +81,7 @@ function App() {
               }
             />
           </Routes>
+          </PaymentProvider>
         </HubServerProvider>
       </ThemeProvider>
     </div>
