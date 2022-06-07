@@ -194,7 +194,6 @@ export default function LeftPanel({ setAlertType, handleHide }) {
       />
 
       <Grid item sx={{ flexGrow: 2, width: "100%", overflowX: "hidden" }}>
-        {enviromentConfig && enviromentConfig.blockly && (
           <Panel selected={panelSelected === BLOCKLY}>
             {/* this is because blockly-ws breaks when leftPanel is resized while blockly is not active */}
             {panelSelected === BLOCKLY && (
@@ -238,7 +237,9 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab value={BLOCKLY} label="Bloques" />
+          {enviromentConfig && enviromentConfig.blockly && (
+            <Tab value={BLOCKLY} label="Bloques" />
+          )}
           <Tab value={EDITOR} label="Editor" />
           <Tab value={DOCUMENTATION} label="Documentación" />
         </Tabs>
