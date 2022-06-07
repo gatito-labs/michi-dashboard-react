@@ -238,9 +238,7 @@ export default function LeftPanel({ setAlertType, handleHide }) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          {enviromentConfig && enviromentConfig.blockly && (
-            <Tab value={BLOCKLY} label="Bloques" />
-          )}
+          <Tab value={BLOCKLY} label="Bloques" />
           <Tab value={EDITOR} label="Editor" />
           <Tab value={DOCUMENTATION} label="Documentación" />
         </Tabs>
