@@ -200,7 +200,6 @@ export default function LeftPanel({ setAlertType, handleHide }) {
               <BlocklyPanel blocklyCodeRef={blocklyCodeRef} />
             )}
           </Panel>
-        )}
 
         <Panel selected={panelSelected === EDITOR}>
           <Grid container direction="column">
