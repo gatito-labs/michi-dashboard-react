@@ -86,7 +86,7 @@ export const NotLoggedPage = () => {
         <Grid item>
           <CircularProgress />
         </Grid>
-      ) : isAuthenticated && user && !user.email_verified ? (
+      ) : isAuthenticated && user ? (
         <EmailNotVerified />
       ) : (
         <React.Fragment>
